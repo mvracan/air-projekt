@@ -12,8 +12,6 @@ public class Person implements Serializable {
     String name;
     String surname;
     Credentials credentials;
-    // String token
-    // TODO: ERA and rest
 
     public long getId() {
         return id;
