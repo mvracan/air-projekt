@@ -23,5 +23,10 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.0.1'
+
+    // design android
+    compile 'com.android.support:design:22.2.0'
+
+    // modules
     compile project (":webservice")
 }

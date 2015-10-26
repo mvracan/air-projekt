@@ -1,5 +1,9 @@
 package hr.foi.teamup.webservice;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +28,7 @@ public class ServiceCaller {
      * @throws IOException when connection cannot open
      */
     public static String call(URL url, String method, Serializable object) throws IOException {
+        Log.i("hr.foi.teamup.debug", "ServiceCaller -- initiating");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
@@ -31,13 +36,17 @@ public class ServiceCaller {
         connection.setRequestMethod(method);
         connection.connect();
 
+        Log.i("hr.foi.teamup.debug", "ServiceCaller -- successfully connected to service: " + url.toString());
         if(object != null) {
             // write
+            Log.i("hr.foi.teamup.debug", "ServiceCaller -- sending object:"
+                    + object.toString() + " to " + url.toString());
             OutputStream os = connection.getOutputStream();
-            os.write(null); // needs Gson
+            os.write(new Gson().toJson(object).getBytes());
             os.close();
         }
 
+        Log.i("hr.foi.teamup.debug", "ServiceCaller -- receiving response from service " + url.toString());
         // read
         BufferedInputStream bis = (BufferedInputStream) connection.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(bis));
@@ -47,6 +56,9 @@ public class ServiceCaller {
             json += line;
         }
         connection.disconnect();
+
+        Log.i("hr.foi.teamup.debug", "ServiceCaller -- received response: "
+                + json + " from " + url.toString());
         return json;
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -9,7 +9,7 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:id="@+id/registrationScrollView" >
 
         <LinearLayout
@@ -17,43 +17,79 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/firstNameInput"
-                android:inputType="text"
-                android:hint="@string/first_name" />
+            <!-- First name -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:hint="@string/first_name"
+                android:id="@+id/firstNameInputLayout">
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/lastNameInput"
-                android:inputType="text"
-                android:hint="@string/last_name" />
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/firstNameInput"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/usernameInput"
-                android:inputType="text"
-                android:hint="@string/username" />
+            <!-- Last name -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:hint="@string/last_name"
+                android:id="@+id/lastNameInputLayout">
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/passwordInput"
-                android:hint="@string/password" />
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lastNameInput"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/confirmPasswordInput"
-                android:hint="@string/confirm_password" />
+            <!-- Username -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:hint="@string/username"
+                android:id="@+id/usernameInputLayout">
 
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/usernameInput"
+                    android:inputType="text" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Password -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:hint="@string/password"
+                android:id="@+id/passwordInputLayout">
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    android:id="@+id/passwordInput" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Confirm password -->
+            <android.support.design.widget.TextInputLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:hint="@string/confirm_password"
+            android:id="@+id/confirmPasswordInputLayout">
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    android:id="@+id/confirmPasswordInput" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Submit button -->
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -62,4 +98,4 @@
         </LinearLayout>
     </ScrollView>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
