@@ -4,10 +4,8 @@
  * and open the template in the editor.
  */
 package hr.foi.teamup.model;
-
 import java.io.Serializable;
 import javax.persistence.Embeddable;
-
 /**
  *
  * @author Tomislav Turek
