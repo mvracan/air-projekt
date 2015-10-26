@@ -21,7 +21,7 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, String> {
         sp = params[0];
         String jsonResponse = null;
 
-        Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Initiating service call to " + sp.toString());
+        Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Initiating service call to " + sp.getUrl());
         try {
             URL url = new URL(sp.getUrl());
             String method = sp.getMethod();
