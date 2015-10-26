@@ -29,4 +29,5 @@ dependencies {
 
     // modules
     compile project (":webservice")
+    compile project (":model")
 }

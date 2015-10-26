@@ -6,6 +6,6 @@ package hr.foi.teamup.webservice;
  */
 public interface ServiceResponseHandler {
 
-    boolean handleResponse(String response);
+    boolean handleResponse(ServiceResponse response);
 
 }

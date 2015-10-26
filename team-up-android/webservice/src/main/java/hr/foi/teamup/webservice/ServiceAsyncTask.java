@@ -12,14 +12,14 @@ import java.net.URL;
  *
  * Created by Tomislav Turek on 23.10.15..
  */
-public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, String> {
+public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResponse> {
 
     ServiceParams sp;
 
     @Override
-    protected String doInBackground(ServiceParams... params) {
+    protected ServiceResponse doInBackground(ServiceParams... params) {
         sp = params[0];
-        String jsonResponse = null;
+        ServiceResponse jsonResponse = null;
 
         Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Initiating service call to " + sp.getUrl());
         try {
@@ -37,7 +37,7 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String s) {
+    protected void onPostExecute(ServiceResponse s) {
         if(sp != null) {
             Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Calling service response handler");
             sp.getHandler().handleResponse(s);

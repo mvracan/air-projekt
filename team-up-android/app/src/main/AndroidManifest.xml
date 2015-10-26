@@ -17,6 +17,9 @@
         </activity>
         <activity android:name=".RegistrationActivity" >
         </activity>
+        <activity android:name=".GroupListActivity"
+            android:label="Groups">
+        </activity>
     </application>
 
 </manifest>

@@ -27,7 +27,7 @@ public class ServiceCaller {
      * @return response in json format
      * @throws IOException when connection cannot open
      */
-    public static String call(URL url, String method, Serializable object) throws IOException {
+    public static ServiceResponse call(URL url, String method, Serializable object) throws IOException {
         Log.i("hr.foi.teamup.debug", "ServiceCaller -- initiating");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
@@ -55,11 +55,12 @@ public class ServiceCaller {
         while((line = reader.readLine()) != null) {
             json += line;
         }
+        int code = connection.getResponseCode();
         connection.disconnect();
 
         Log.i("hr.foi.teamup.debug", "ServiceCaller -- received response: "
                 + json + " from " + url.toString());
-        return json;
+        return new ServiceResponse(code, json);
     }
 
 }
