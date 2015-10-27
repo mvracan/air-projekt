@@ -28,8 +28,8 @@
                 android:color="#d24c0056"
                 />
             <size
-                android:width="290dp"
-                android:height="60dp"
+                android:width="220dp"
+                android:height="50dp"
                 />
         </shape>
     </item>

@@ -21,13 +21,13 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:hint="@string/first_name"
                 android:id="@+id/firstNameInputLayout">
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/firstNameInput"
+                    android:hint="@string/first_name"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
@@ -35,13 +35,13 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:hint="@string/last_name"
                 android:id="@+id/lastNameInputLayout">
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/lastNameInput"
+                    android:hint="@string/last_name"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
@@ -49,13 +49,13 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:hint="@string/username"
                 android:id="@+id/usernameInputLayout">
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/usernameInput"
+                    android:hint="@string/username"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
@@ -63,13 +63,13 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:hint="@string/password"
                 android:id="@+id/passwordInputLayout">
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:hint="@string/password"
                     android:ems="10"
                     android:id="@+id/passwordInput" />
             </android.support.design.widget.TextInputLayout>
@@ -78,13 +78,13 @@
             <android.support.design.widget.TextInputLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:hint="@string/confirm_password"
             android:id="@+id/confirmPasswordInputLayout">
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:hint="@string/confirm_password"
                     android:ems="10"
                     android:id="@+id/confirmPasswordInput" />
             </android.support.design.widget.TextInputLayout>
@@ -93,7 +93,10 @@
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/buttonstyle"
+                android:textColor="@color/white"
                 android:text="@string/submit"
+                android:layout_gravity="bottom"
                 android:id="@+id/submitButton" />
         </LinearLayout>
     </ScrollView>

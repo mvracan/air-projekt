@@ -5,6 +5,7 @@
  */
 package hr.foi.teamup.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -13,7 +14,7 @@ import javax.persistence.Embeddable;
  * @author paz
  */
 @Embeddable
-public class Location {
+public class Location implements Serializable {
     
     @Column(name="lat")
     private double lat;

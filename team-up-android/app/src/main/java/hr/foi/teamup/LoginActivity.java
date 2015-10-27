@@ -42,50 +42,29 @@ public class LoginActivity extends Activity {
         register=(TextView)findViewById(R.id.txtRegister);
         usernameLayout=(TextInputLayout)findViewById(R.id.txtUsernameLayout);
         passwordLayout=(TextInputLayout)findViewById(R.id.txtPasswordLayout);
-
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
+        signIn.setOnClickListener(onSignIn);
 
         startAnimation();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     /**
-     * login user
+     * checks if username and passwords are valid
+     * @param username text from username edittext
+     * @param password text from password edittext
+     * @return true if valid, false otherwise
      */
-    // TODO: add response checks, login value checks and logs
-    private void login() {
-        Log.i("hr.foi.teamup.debug", "Initiated login");
-        String usernameValue = username.getText().toString();
-        String passwordValue = password.getText().toString();
-        // ako usernameValue ili passwordValue ne valja treba staviti
-        // username.setError("TEXT DA NE VALJA USERNAME");
-        Credentials credentials = new Credentials(usernameValue, passwordValue);
-        ServiceResponseHandler handler = new ServiceResponseHandler() {
-            @Override
-            public boolean handleResponse(ServiceResponse response) {
-                //if(response.getHttpCode() == 200) {
-                    Intent intent = new Intent(getApplicationContext(), GroupListActivity.class);
-                    startActivity(intent);
-                    return true;
-                //} else {
-                //    return false;
-                //}
-            }
-        };
-        ServiceParams params = new ServiceParams("", "POST", credentials, handler);
-        new ServiceAsyncTask().execute(params);
+    private boolean checkInputs(String username, String password) {
+        // TODO: login value checks with logs
+        Log.i("hr.foi.teamup.debug", "LoginActivity -- initiating username and password input check");
+        return false;
     }
 
     /**
      * starts login animations
      */
-    private  void startAnimation() {
-        Log.i("hr.foi.teamup.debug", "Animation started");
+    private void startAnimation() {
+        Log.i("hr.foi.teamup.debug", "LoginActivity -- login animation started");
         Animation moveAnimation= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_logo);
         Animation fadeAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.show_login_form);
 
@@ -96,5 +75,38 @@ public class LoginActivity extends Activity {
         passwordLayout.startAnimation(fadeAnimation);
         signIn.startAnimation(fadeAnimation);
         register.startAnimation(fadeAnimation);
+        Log.i("hr.foi.teamup.debug", "LoginActivity -- login animation ended");
     }
+
+    // listener that is called when sign in button is clicked
+    View.OnClickListener onSignIn = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.i("hr.foi.teamup.debug", "LoginActivity -- initiated login");
+            String usernameValue = username.getText().toString();
+            String passwordValue = password.getText().toString();
+            // TODO: checkInputs(usernameValue, passwordValue);
+            // ako usernameValue ili passwordValue ne valja treba staviti
+            // username.setError("TEXT DA NE VALJA USERNAME");
+            Credentials credentials = new Credentials(usernameValue, passwordValue);
+            Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
+            ServiceParams params = new ServiceParams("", "POST", credentials, loginHandler);
+            new ServiceAsyncTask().execute(params);
+        }
+    };
+
+    // handler that is called when user login is finished
+    ServiceResponseHandler loginHandler = new ServiceResponseHandler() {
+        @Override
+        public boolean handleResponse(ServiceResponse response) {
+            // TODO: add response checks with logs
+            //if(response.getHttpCode() == 200) {
+            Intent intent = new Intent(getApplicationContext(), GroupListActivity.class);
+            startActivity(intent);
+            return true;
+            //} else {
+            //    return false;
+            //}
+        }
+    };
 }
