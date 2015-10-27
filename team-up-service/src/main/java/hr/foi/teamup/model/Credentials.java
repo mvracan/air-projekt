@@ -5,6 +5,7 @@
  */
 package hr.foi.teamup.model;
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 /**
  *
@@ -13,7 +14,9 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Credentials implements Serializable {
     
+    @Column(name="username")
     String username;
+    @Column(name="password")
     String password;
 
     public Credentials() {
