@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  *
  * @author Tomislav Turek
+ * 
+ * 
  */
 @RestController
 @RequestMapping(value = "/person")
