@@ -5,8 +5,8 @@
  */
 package hr.foi.teamup.controllers;
 
-import hr.foi.teamup.model.Group;
-import hr.foi.teamup.repositories.GroupRepository;
+import hr.foi.teamup.model.Team;
+import hr.foi.teamup.repositories.TeamRepository;
 import java.util.List;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @author paz
  */
 @RestController
-@RequestMapping(value = "/group")
-public class GroupController {
+@RequestMapping(value = "/team")
+public class TeamController {
     
-    GroupRepository groupRepository;
+    TeamRepository teamRepository;
      
     @Autowired
-    public GroupController(GroupRepository groupRepository) {
+    public TeamController(TeamRepository groupRepository) {
          
-        this.groupRepository = groupRepository;
+        this.teamRepository = groupRepository;
         
     }
      
@@ -38,10 +38,10 @@ public class GroupController {
      * @return all groups in json format with HTTP 200
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<List<Group>> retrieveAll() {
+    public ResponseEntity<List<Team>> retrieveAll() {
         Logger.getLogger("GroupController.java").log(Logger.Level.INFO,
                 "GET on /group -- retrieving full list of groups");
-        return new ResponseEntity(this.groupRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity(this.teamRepository.findAll(), HttpStatus.OK);
     }
     
     

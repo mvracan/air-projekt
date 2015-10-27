@@ -16,10 +16,10 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Location implements Serializable {
     
-    @Column(name="lat")
+    @Column(name="latitude")
     private double lat;
     
-    @Column(name="lng")
+    @Column(name="longitude")
     private double lng;
 
     public double getLat() {

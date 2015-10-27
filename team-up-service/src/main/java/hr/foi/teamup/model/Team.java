@@ -27,18 +27,18 @@ import javax.persistence.Table;
  * @author paz
  */
 @Entity
-@Table(name="group")
-public class Group implements Serializable {
+@Table(name="team")
+public class Team implements Serializable {
     
     @Id 
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id_group")
-    private long idGroup;
+    @Column(name = "id_team")
+    private long idTeam;
     
-    @Column(name="name")
+    @Column(name="team_title")
     private String name;
     @Column(name="desc")
-    private String description;
+    private String teamDesc;
     @Column(name="password")
     private String password;
     @Column(name="radius")
@@ -49,23 +49,41 @@ public class Group implements Serializable {
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_creator")
-    protected User creator;
+    protected Person creator;
     
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "groupmembers",  joinColumns = { 
-			@JoinColumn(name = "id_group", nullable = false, updatable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "id_user", 
+			@JoinColumn(name = "id_team", nullable = false, updatable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "id_person", 
 					nullable = false, updatable = false) })
     @JsonManagedReference 
-    private List<User> members;
+    private List<Person> members;
 
-    public long getIdGroup() {
-        return idGroup;
+    public long getIdTeam() {
+        return idTeam;
     }
 
-    public void setIdGroup(long idGroup) {
-        this.idGroup = idGroup;
+    public void setIdTeam(long idTeam) {
+        this.idTeam = idTeam;
     }
+
+    public String getTeamDesc() {
+        return teamDesc;
+    }
+
+    public void setTeamDesc(String teamDesc) {
+        this.teamDesc = teamDesc;
+    }
+
+    public List<Person> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Person> members) {
+        this.members = members;
+    }
+
+   
 
     public String getName() {
         return name;
@@ -75,13 +93,7 @@ public class Group implements Serializable {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+   
 
     public String getPassword() {
         return password;
@@ -107,11 +119,11 @@ public class Group implements Serializable {
         this.nfcCode = nfcCode;
     }
 
-    public User getCreator() {
+    public Person getCreator() {
         return creator;
     }
 
-    public void setCreator(User creator) {
+    public void setCreator(Person creator) {
         this.creator = creator;
     }
     

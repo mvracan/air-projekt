@@ -6,13 +6,13 @@
 package hr.foi.teamup.repositories;
 
 
-import hr.foi.teamup.model.Group;
+import hr.foi.teamup.model.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author paz
  */
-public interface GroupRepository extends JpaRepository<Group, String> {
+public interface TeamRepository extends JpaRepository<Team, String> {
 
 }

@@ -25,18 +25,18 @@ import javax.persistence.Table;
  * @author Tomislav Turek
  */
 @Entity
-@Table(name="user")
-public class User implements Serializable {
+@Table(name="person")
+public class Person implements Serializable {
     
     @Id 
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id_user")
-    long idUser;
+    @Column(name = "id_person")
+    long idPerson;
     
-    @Column(name="name")
+    @Column(name="firstname")
     String name;
     
-    @Column(name="surname")
+    @Column(name="lastname")
     String surname;
    
     
@@ -48,21 +48,23 @@ public class User implements Serializable {
     
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL)
-    private List<Group> creatorOfGroups;
+    private List<Team> creatorOfGroups;
     
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "members")
     @JsonBackReference
-    private  List<Group> memberOfGroups;
+    private  List<Team> memberOfGroups;
 
     // String token
 
-    public long getIdUser() {
-        return idUser;
+    public long getIdPerson() {
+        return idPerson;
     }
 
-    public void setIdUser(long idUser) {
-        this.idUser = idUser;
+    public void setIdPerson(long idPerson) {
+        this.idPerson = idPerson;
     }
+
+    
 
     public Location getLocation() {
         return location;
@@ -72,19 +74,19 @@ public class User implements Serializable {
         this.location = location;
     }
 
-    public List<Group> getCreatorOfGroups() {
+    public List<Team> getCreatorOfGroups() {
         return creatorOfGroups;
     }
 
-    public void setCreatorOfGroups(List<Group> creatorOfGroups) {
+    public void setCreatorOfGroups(List<Team> creatorOfGroups) {
         this.creatorOfGroups = creatorOfGroups;
     }
 
-    public List<Group> getMemberOfGroups() {
+    public List<Team> getMemberOfGroups() {
         return memberOfGroups;
     }
 
-    public void setMemberOfGroups(List<Group> memberOfGroups) {
+    public void setMemberOfGroups(List<Team> memberOfGroups) {
         this.memberOfGroups = memberOfGroups;
     }
 
