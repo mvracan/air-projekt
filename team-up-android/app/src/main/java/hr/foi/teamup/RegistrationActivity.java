@@ -1,10 +1,12 @@
 package hr.foi.teamup;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -36,6 +38,48 @@ public class RegistrationActivity extends AppCompatActivity {
         confirmPassword = (EditText) findViewById(R.id.confirmPasswordInput);
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    /**
+     * Checks registration form input values
+     * @param firstNameValue name value
+     * @param lastNameValue surname value
+     * @param usernameValue username value
+     * @param passwordValue password value
+     * @param confirmPasswordValue confirmed password value
+     * @return false if there is an error else return true
+     */
+    private boolean checkValues(String firstNameValue, String lastNameValue, String usernameValue,
+                                String passwordValue, String confirmPasswordValue){
+        if(firstNameValue.length() < 3 || firstNameValue.length() > 45){
+            Log.w("hr.foi.teamup.debug","RegistrationActivity -- first name too short or too long");
+            firstName.setError("First name has to be 3-45 characters long");
+            return false;
+        }
+        else if (lastNameValue.length() < 3 || lastNameValue.length() > 45){
+            Log.w("hr.foi.teamup.debug","RegistrationActivity -- last name too short or too long");
+            lastName.setError("Last name has to be 3-45 characters long");
+            return false;
+        }
+        else if(usernameValue.length() < 5 || usernameValue.length() > 45){
+            Log.w("hr.foi.teamup.debug","RegistrationActivity -- username too short or too long");
+            username.setError("Username has to be 5-45 characters long");
+            return false;
+        }
+        else if(passwordValue.length() < 5){
+            Log.w("hr.foi.teamup.debug","RegistrationActivity -- password too short");
+            password.setError("Password too short (min 5)");
+            return false;
+        }
+        else if(!confirmPasswordValue.equals(passwordValue)){
+            Log.w("hr.foi.teamup.debug","RegistrationActivity -- passwords do not match");
+            confirmPassword.setError("Passwords do not match");
+            return false;
+        }
+        Log.i("hr.foi.teamup.debug","RegistrationActivity -- all fields are valid");
+        return true;
     }
 
     // listener that triggers when submit is clicked
@@ -43,15 +87,20 @@ public class RegistrationActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Log.i("hr.foi.teamup.debug", "RegistrationActivity -- initiated user registration");
-            // TODO: check if password and confirmPassword match and if user input is valid with logs
-            // (username/password length, etc)
-            // if everything is ok, load credentials into user and call service (fill url)
 
-            Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
-            User user = new User(0, firstName.getText().toString(), lastName.getText().toString(),
-                    new Credentials(username.getText().toString(), password.getText().toString()));
-            // TODO: change url
-            new ServiceAsyncTask().execute(new ServiceParams("url", "POST", user, registrationHandler));
+            String firstNameValue = firstName.getText().toString();
+            String lastNameValue = lastName.getText().toString();
+            String usernameValue = username.getText().toString();
+            String passwordValue = password.getText().toString();
+            String confirmPasswordValue = confirmPassword.getText().toString();
+
+            if(checkValues(firstNameValue,lastNameValue,usernameValue,passwordValue,confirmPasswordValue)){
+                Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
+                Credentials credentials = new Credentials(usernameValue,passwordValue);
+                User user = new User(0,firstNameValue,lastNameValue,credentials);
+                // TODO: change url
+                new ServiceAsyncTask().execute(new ServiceParams("url", "POST", user, registrationHandler));
+            }
         }
     };
 
@@ -60,6 +109,8 @@ public class RegistrationActivity extends AppCompatActivity {
         @Override
         public boolean handleResponse(ServiceResponse response) {
             // TODO: if everything went fine, initiate GroupListActivity through Intent (checks with logs)
+            Intent intent = new Intent(getApplicationContext(),GroupListActivity.class);
+            startActivity(intent);
             return false;
         }
     };

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -43,21 +44,34 @@ public class LoginActivity extends Activity {
         usernameLayout=(TextInputLayout)findViewById(R.id.txtUsernameLayout);
         passwordLayout=(TextInputLayout)findViewById(R.id.txtPasswordLayout);
         signIn.setOnClickListener(onSignIn);
+        register.setOnClickListener(onRegister);
 
-        startAnimation();
+        if(savedInstanceState == null) {
+            startAnimation();
+        }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     /**
      * checks if username and passwords are valid
-     * @param username text from username edittext
-     * @param password text from password edittext
+     * @param usernameText text from username edittext
+     * @param passwordText text from password edittext
      * @return true if valid, false otherwise
      */
-    private boolean checkInputs(String username, String password) {
-        // TODO: login value checks with logs
+    private boolean checkInputs(String usernameText, String passwordText) {
         Log.i("hr.foi.teamup.debug", "LoginActivity -- initiating username and password input check");
-        return false;
+        if(usernameText.length() <5 ){
+            Log.w("hr.foi.teamup.debug","LoginActivity -- username too short");
+            username.setError("Username too short (min 5 characters)");
+            return false;
+        }
+        else if(passwordText.length() < 5){
+            Log.w("hr.foi.teamup.debug","LoginActivity -- password too short");
+            password.setError("Password too short (min 5 characters)");
+            return false;
+        }
+        Log.i("hr.foi.teamup.debug","LoginActivity -- username and password are valid");
+        return true;
     }
 
     /**
@@ -85,13 +99,12 @@ public class LoginActivity extends Activity {
             Log.i("hr.foi.teamup.debug", "LoginActivity -- initiated login");
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
-            // TODO: checkInputs(usernameValue, passwordValue);
-            // ako usernameValue ili passwordValue ne valja treba staviti
-            // username.setError("TEXT DA NE VALJA USERNAME");
-            Credentials credentials = new Credentials(usernameValue, passwordValue);
-            Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
-            ServiceParams params = new ServiceParams("", "POST", credentials, loginHandler);
-            new ServiceAsyncTask().execute(params);
+            if(checkInputs(usernameValue,passwordValue)) {
+                Credentials credentials = new Credentials(usernameValue, passwordValue);
+                Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
+                ServiceParams params = new ServiceParams("", "POST", credentials, loginHandler);
+                new ServiceAsyncTask().execute(params);
+            }
         }
     };
 
@@ -107,6 +120,14 @@ public class LoginActivity extends Activity {
             //} else {
             //    return false;
             //}
+        }
+    };
+
+    View.OnClickListener onRegister = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
+            startActivity(intent);
         }
     };
 }

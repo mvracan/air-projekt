@@ -115,4 +115,21 @@ public class PersonController {
         }
     }
     
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity modify(@RequestParam long id, @RequestBody Person person) {
+        Logger.getLogger("PersonController.java").log(Level.INFO,
+                "PUT on /person/" + id + " -- " + person.toString());
+        
+        Person signed = this.personRepository.findById(id);
+        if(signed != null) {
+            this.personRepository.save(person);
+            Logger.getLogger("PersonController.java").log(Level.INFO,
+                    "Update successful for " + person.toString());
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            Logger.getLogger("PersonController.java").log(Level.WARN,
+                    "No user found for id " + id);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
 }
