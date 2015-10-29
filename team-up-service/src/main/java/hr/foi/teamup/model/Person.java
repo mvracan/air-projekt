@@ -6,6 +6,10 @@
 package hr.foi.teamup.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -46,11 +50,11 @@ public class Person implements Serializable {
     @Embedded
     Location location;
     
-    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
-			cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Team> creatorOfGroups;
     
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "members")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "members")
     @JsonBackReference
     private  List<Team> memberOfGroups;
 

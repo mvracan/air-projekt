@@ -6,7 +6,10 @@
 
 package hr.foi.teamup.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -28,6 +31,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="team")
+
 public class Team implements Serializable {
     
     @Id 
@@ -47,16 +51,16 @@ public class Team implements Serializable {
     private String nfcCode;
     
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "id_creator")
-    protected Person creator;
+    private Person creator;
     
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "groupmembers",  joinColumns = { 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(name = "teammember",  joinColumns = { 
 			@JoinColumn(name = "id_team", nullable = false, updatable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "id_person", 
 					nullable = false, updatable = false) })
-    @JsonManagedReference 
+    @JsonManagedReference
     private List<Person> members;
 
     public long getIdTeam() {

@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package hr.foi.teamup.controllers;
-
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.repositories.PersonRepository;
@@ -41,7 +40,7 @@ public class PersonController {
      * gets all users from database
      * @return all users in json format with HTTP 200
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> retrieveAll() {
         Logger.getLogger("PersonController.java").log(Level.INFO,
                 "GET on /person -- retrieving full list of users");
@@ -60,7 +59,7 @@ public class PersonController {
         String username = credentials.getUsername();
         String password = credentials.getPassword();
         
-        Person found = this.personRepository.findByUsername(username);
+        Person found = this.personRepository.findByCredentials(username);
         if(found != null && found.getCredentials().getPassword().equals(password)) {
             Logger.getLogger("PersonController.java").log(Level.INFO,
                     "Successfully verified, returning " + found.toString());
@@ -70,6 +69,7 @@ public class PersonController {
                     "Verification failed for " + credentials.toString());
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+     
     }
     
     /**
@@ -103,7 +103,7 @@ public class PersonController {
     public ResponseEntity<Person> retrieveById(@RequestParam long id) {
         Logger.getLogger("PersonController.java").log(Level.INFO,
                 "GET on /person/" + id + " -- ");
-        Person found = this.personRepository.findById(id);
+        Person found = this.personRepository.findByIdPerson(id);
         if(found != null) {
             Logger.getLogger("PersonController.java").log(Level.INFO,
                     "User found for id " + id + ", returning " + found.toString());

@@ -6,6 +6,7 @@
 package hr.foi.teamup.repositories;
 
 import hr.foi.teamup.model.Person;
+import javax.persistence.Table;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,9 +15,9 @@ import org.springframework.stereotype.Repository;
  * @author Tomislav Turek
  */
 @Repository
+@Table(name="person")
 public interface PersonRepository extends JpaRepository<Person, String> {
     
-    public Person findByUsername(String username);
-    public Person findById(long id);
-    
+    public Person findByIdPerson(long id);
+    public Person findByCredentials(String username);
 }

@@ -37,7 +37,7 @@ public class TeamController {
      * gets all groups from database
      * @return all groups in json format with HTTP 200
      */
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<List<Team>> retrieveAll() {
         Logger.getLogger("GroupController.java").log(Logger.Level.INFO,
                 "GET on /group -- retrieving full list of groups");
