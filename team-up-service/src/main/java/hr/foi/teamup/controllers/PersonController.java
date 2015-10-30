@@ -120,7 +120,7 @@ public class PersonController {
         Logger.getLogger("PersonController.java").log(Level.INFO,
                 "PUT on /person/" + id + " -- " + person.toString());
         
-        Person signed = this.personRepository.findById(id);
+        Person signed = this.personRepository.findByIdPerson(id);
         if(signed != null) {
             this.personRepository.save(person);
             Logger.getLogger("PersonController.java").log(Level.INFO,
