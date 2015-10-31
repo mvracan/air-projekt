@@ -1,6 +1,5 @@
 package hr.foi.teamup;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import hr.foi.teamup.model.Credentials;
-import hr.foi.teamup.model.User;
+import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
@@ -97,9 +96,9 @@ public class RegistrationActivity extends AppCompatActivity {
             if(checkValues(firstNameValue,lastNameValue,usernameValue,passwordValue,confirmPasswordValue)){
                 Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
                 Credentials credentials = new Credentials(usernameValue,passwordValue);
-                User user = new User(0,firstNameValue,lastNameValue,credentials);
+                Person person = new Person(0,firstNameValue,lastNameValue,credentials);
                 // TODO: change url
-                new ServiceAsyncTask().execute(new ServiceParams("url", "POST", user, registrationHandler));
+                new ServiceAsyncTask().execute(new ServiceParams("url", "POST", person, registrationHandler));
             }
         }
     };

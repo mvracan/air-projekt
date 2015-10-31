@@ -6,29 +6,29 @@ import java.io.Serializable;
  *
  * Created by Tomislav Turek on 23.10.15..
  */
-public class User implements Serializable {
+public class Person implements Serializable {
 
-    long id;
+    long idPerson;
     String name;
     String surname;
     Credentials credentials;
 
-    public User() {
+    public Person() {
     }
 
-    public User(long id, String name, String surname, Credentials credentials) {
-        this.id = id;
+    public Person(long idPerson, String name, String surname, Credentials credentials) {
+        this.idPerson = idPerson;
         this.name = name;
         this.surname = surname;
         this.credentials = credentials;
     }
 
-    public long getId() {
-        return id;
+    public long getidPerson() {
+        return idPerson;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setidPerson(long idPerson) {
+        this.idPerson = idPerson;
     }
 
     public String getName() {

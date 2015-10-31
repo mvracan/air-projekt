@@ -6,10 +6,7 @@
 
 package hr.foi.teamup.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -87,8 +84,6 @@ public class Team implements Serializable {
         this.members = members;
     }
 
-   
-
     public String getName() {
         return name;
     }
@@ -96,9 +91,7 @@ public class Team implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-   
-
+    
     public String getPassword() {
         return password;
     }
