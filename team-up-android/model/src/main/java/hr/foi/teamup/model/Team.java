@@ -60,4 +60,9 @@ public class Team {
     public void setNfcCode(String nfcCode) {
         this.nfcCode = nfcCode;
     }
+
+    @Override
+    public String toString() {
+        return this.name + " " + this.teamDesc + " " + this.password;
+    }
 }

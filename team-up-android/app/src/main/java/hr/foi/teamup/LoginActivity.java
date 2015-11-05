@@ -1,11 +1,9 @@
 package hr.foi.teamup;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,7 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.model.Credentials;
+import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
@@ -118,15 +120,29 @@ public class LoginActivity extends Activity {
 
             if(response.getHttpCode() == 200) {
 
-                Log.i("hr.foi.teamup.debug", "LoginActivity -- valid user, proceeding to groupactivity");
-                Intent intent = new Intent(getApplicationContext(), GroupListActivity.class);
-                startActivity(intent);
-                return true;
+                Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
+                SessionManager manager = SessionManager.getInstance(getApplicationContext());
+                if(manager.createSession(person, "person")) {
+
+                    // TODO: test if session conversion works
+                    Person sessionPerson = (Person)manager.retrieveSession("person");
+                    Log.i("hr.foi.teamup.debug",
+                            "LoginActivity -- valid user, created session: " + sessionPerson.toString()
+                                    + ", proceeding to group activity");
+                    Intent intent = new Intent(getApplicationContext(), TeamActivity.class);
+                    startActivity(intent);
+                    return true;
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Internal application error, please try again", Toast.LENGTH_LONG).show();
+                    return false;
+                }
 
             } else  {
 
                 Log.i("hr.foi.teamup.debug", "LoginActivity -- invalid credentials sent");
-                errorWrongCredentials = Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT);
+                errorWrongCredentials = Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG);
                 errorWrongCredentials.show();
                 return false;
 
@@ -134,10 +150,17 @@ public class LoginActivity extends Activity {
         }
     };
 
+    // called when register is clicked
     View.OnClickListener onRegister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            // save service parameters for login to call later from registration activity
+            ServiceParams params = new ServiceParams("", "POST", null, loginHandler);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("params", params);
             Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
+            intent.putExtras(bundle);
+            // start activity
             startActivity(intent);
         }
     };

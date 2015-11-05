@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Person;
@@ -24,6 +25,7 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText username;
     EditText password;
     EditText confirmPassword;
+    ServiceParams loginParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,9 @@ public class RegistrationActivity extends AppCompatActivity {
         confirmPassword = (EditText) findViewById(R.id.confirmPasswordInput);
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
+
+        // TODO: check if this works
+        loginParams = this.getIntent().getExtras().getParcelable("params");
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -96,6 +101,7 @@ public class RegistrationActivity extends AppCompatActivity {
             if(checkValues(firstNameValue,lastNameValue,usernameValue,passwordValue,confirmPasswordValue)){
                 Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
                 Credentials credentials = new Credentials(usernameValue,passwordValue);
+                loginParams.setObject(credentials); // credentials to send later
                 Person person = new Person(0,firstNameValue,lastNameValue,credentials);
                 // TODO: change url
                 new ServiceAsyncTask().execute(new ServiceParams("url", "POST", person, registrationHandler));
@@ -107,10 +113,20 @@ public class RegistrationActivity extends AppCompatActivity {
     ServiceResponseHandler registrationHandler = new ServiceResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
-            // TODO: if everything went fine, initiate GroupListActivity through Intent (checks with logs)
-            Intent intent = new Intent(getApplicationContext(),GroupListActivity.class);
-            startActivity(intent);
-            return false;
+            if(response.getHttpCode() == 200) {
+                Log.i("hr.foi.teamup.debug", "RegistrationActivity -- successfully registered user, logging in now...");
+                // login
+                new ServiceAsyncTask().execute(loginParams);
+                return true;
+            } else {
+                Log.w("hr.foi.teamup.debug",
+                        "RegistrationActivity -- registration failed, server returned code " + response.getHttpCode());
+                // show fail
+                Toast.makeText(getApplicationContext(),
+                        "Registration failed, please try again (" + response.getHttpCode() + ")",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
     };
 }

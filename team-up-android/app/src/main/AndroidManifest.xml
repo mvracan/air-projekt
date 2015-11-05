@@ -17,7 +17,7 @@
         </activity>
         <activity android:name=".RegistrationActivity" >
         </activity>
-        <activity android:name=".GroupListActivity"
+        <activity android:name=".TeamActivity"
             android:label="Groups">
         </activity>
     </application>

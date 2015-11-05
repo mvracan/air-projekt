@@ -54,4 +54,9 @@ public class Person implements Serializable {
     public void setCredentials(Credentials credentials) {
         this.credentials = credentials;
     }
+
+    @Override
+    public String toString() {
+        return this.name + " " + this.surname;
+    }
 }

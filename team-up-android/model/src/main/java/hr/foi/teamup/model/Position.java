@@ -34,4 +34,9 @@ public class Position implements Serializable {
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public String toString() {
+        return this.latitude + " " + this.longitude;
+    }
 }

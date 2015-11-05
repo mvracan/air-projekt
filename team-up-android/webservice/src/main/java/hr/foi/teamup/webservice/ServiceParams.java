@@ -6,7 +6,7 @@ import java.io.Serializable;
  *
  * Created by Tomislav Turek on 23.10.15..
  */
-public class ServiceParams {
+public class ServiceParams implements Serializable {
 
     private String url;
     private String method;
