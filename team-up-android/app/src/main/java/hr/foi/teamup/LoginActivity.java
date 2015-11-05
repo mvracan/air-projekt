@@ -1,6 +1,7 @@
 package hr.foi.teamup;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
@@ -30,6 +32,7 @@ public class LoginActivity extends Activity {
     TextInputLayout passwordLayout;
     Button signIn;
     TextView register;
+    Toast errorWrongCredentials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,14 +115,22 @@ public class LoginActivity extends Activity {
     ServiceResponseHandler loginHandler = new ServiceResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
-            // TODO: add response checks with logs
-            //if(response.getHttpCode() == 200) {
-            Intent intent = new Intent(getApplicationContext(), GroupListActivity.class);
-            startActivity(intent);
-            return true;
-            //} else {
-            //    return false;
-            //}
+
+            if(response.getHttpCode() == 200) {
+
+                Log.i("hr.foi.teamup.debug", "LoginActivity -- valid user, proceeding to groupactivity");
+                Intent intent = new Intent(getApplicationContext(), GroupListActivity.class);
+                startActivity(intent);
+                return true;
+
+            } else  {
+
+                Log.i("hr.foi.teamup.debug", "LoginActivity -- invalid credentials sent");
+                errorWrongCredentials = Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT);
+                errorWrongCredentials.show();
+                return false;
+
+            }
         }
     };
 
