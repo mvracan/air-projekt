@@ -68,6 +68,9 @@ public class ServiceParams implements Serializable {
 
     private void readObject(java.io.ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
-        // TODO
+        url = (String) stream.readObject();
+        method = (String) stream.readObject();
+        object = (Serializable) stream.readObject();
+        handler = (ServiceResponseHandler) stream.readObject();
     }
 }
