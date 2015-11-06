@@ -21,7 +21,7 @@
         <activity android:name=".RegistrationActivity" >
         </activity>
         <activity android:name=".TeamActivity"
-            android:label="Groups">
+            android:label="Team Up">
         </activity>
     </application>
 
