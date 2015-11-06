@@ -25,7 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
 
     // design android
-    compile 'com.android.support:design:23.0.0'
+    compile 'com.android.support:design:23.0.1'
 
     // modules
     compile project (":webservice")
