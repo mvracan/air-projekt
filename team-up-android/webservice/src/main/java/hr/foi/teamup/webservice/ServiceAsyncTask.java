@@ -15,6 +15,7 @@ import java.net.URL;
 public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResponse> {
 
     ServiceParams sp;
+    static final String mainUrl = "http://teamup-puding.rhcloud.com";
 
     @Override
     protected ServiceResponse doInBackground(ServiceParams... params) {
@@ -23,7 +24,7 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
 
         Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Initiating service call to " + sp.getUrl());
         try {
-            URL url = new URL(sp.getUrl());
+            URL url = new URL(mainUrl+sp.getUrl());
             String method = sp.getMethod();
             Serializable object = sp.getObject();
             jsonResponse = ServiceCaller.call(url, method, object);

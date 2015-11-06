@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 
+import hr.foi.teamup.model.Person;
+
 /**
  *
  * Created by Tomislav Turek on 05.11.15..
@@ -48,8 +50,8 @@ public class SessionManager {
      * @param field field to retrieve object from
      * @return object stored in session
      */
-    public Serializable retrieveSession(String field) {
-        return new Gson().fromJson(sharedPreferences.getString(field, null), Serializable.class);
+    public <T extends Serializable> T retrieveSession(String field, Class<T> type) {
+        return type.cast(new Gson().fromJson(sharedPreferences.getString(field, null), type));
     }
 
     /**

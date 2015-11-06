@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
+
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Person;
@@ -107,7 +109,7 @@ public class LoginActivity extends Activity {
             if(checkInputs(usernameValue,passwordValue)) {
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
                 Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
-                ServiceParams params = new ServiceParams("", "POST", credentials, loginHandler);
+                ServiceParams params = new ServiceParams("/person/login", "POST", credentials, loginHandler);
                 new ServiceAsyncTask().execute(params);
             }
         }
@@ -117,7 +119,7 @@ public class LoginActivity extends Activity {
     ServiceResponseHandler loginHandler = new ServiceResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
-
+            Log.i("hr.foi.teamup.debug", "Got response: " + response.toString());
             if(response.getHttpCode() == 200) {
 
                 Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
@@ -125,7 +127,7 @@ public class LoginActivity extends Activity {
                 if(manager.createSession(person, "person")) {
 
                     // TODO: test if session conversion works
-                    Person sessionPerson = (Person)manager.retrieveSession("person");
+                    Person sessionPerson = manager.retrieveSession("person", Person.class);
                     Log.i("hr.foi.teamup.debug",
                             "LoginActivity -- valid user, created session: " + sessionPerson.toString()
                                     + ", proceeding to group activity");
@@ -155,11 +157,9 @@ public class LoginActivity extends Activity {
         @Override
         public void onClick(View v) {
             // save service parameters for login to call later from registration activity
-            ServiceParams params = new ServiceParams("", "POST", null, loginHandler);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("params", params);
+            ServiceParams params = new ServiceParams("/person/login", "POST", null, loginHandler);
             Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
-            intent.putExtras(bundle);
+            intent.putExtra("loginParams", params);
             // start activity
             startActivity(intent);
         }

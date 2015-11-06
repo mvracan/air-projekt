@@ -32,4 +32,9 @@ public class ServiceResponse {
     public void setJsonResponse(String jsonResponse) {
         this.jsonResponse = jsonResponse;
     }
+
+    @Override
+    public String toString() {
+        return this.httpCode + " " + this.jsonResponse;
+    }
 }

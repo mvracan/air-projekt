@@ -48,19 +48,20 @@ public class ServiceCaller {
 
         Log.i("hr.foi.teamup.debug", "ServiceCaller -- receiving response from service " + url.toString());
         // read
-        BufferedInputStream bis = (BufferedInputStream) connection.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(bis));
-        String line;
-        String json = null;
-        while((line = reader.readLine()) != null) {
-            json += line;
-        }
         int code = connection.getResponseCode();
+        StringBuilder json = new StringBuilder();
+        if(code == 200) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+        }
         connection.disconnect();
 
         Log.i("hr.foi.teamup.debug", "ServiceCaller -- received response: "
-                + json + " from " + url.toString());
-        return new ServiceResponse(code, json);
+                + json.toString() + " from " + url.toString());
+        return new ServiceResponse(code, json.toString());
     }
 
 }

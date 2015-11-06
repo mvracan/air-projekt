@@ -12,6 +12,7 @@ public class Person implements Serializable {
     String name;
     String surname;
     Credentials credentials;
+    Location location;
 
     public Person() {
     }
@@ -53,6 +54,22 @@ public class Person implements Serializable {
 
     public void setCredentials(Credentials credentials) {
         this.credentials = credentials;
+    }
+
+    public long getIdPerson() {
+        return idPerson;
+    }
+
+    public void setIdPerson(long idPerson) {
+        this.idPerson = idPerson;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override

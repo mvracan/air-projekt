@@ -103,8 +103,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 Credentials credentials = new Credentials(usernameValue,passwordValue);
                 loginParams.setObject(credentials); // credentials to send later
                 Person person = new Person(0,firstNameValue,lastNameValue,credentials);
-                // TODO: change url
-                new ServiceAsyncTask().execute(new ServiceParams("url", "POST", person, registrationHandler));
+                new ServiceAsyncTask().execute(new ServiceParams("/person/signup", "POST", person, registrationHandler));
             }
         }
     };
