@@ -11,4 +11,6 @@
     <string name="signin">Sign in</string>
     <string name="logoapp">logoapp</string>
     <string name="register">Register</string>
+    <string name="drawer_open">Open menu</string>
+    <string name="drawer_close">Close menu</string>
 </resources>
