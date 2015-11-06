@@ -1,5 +1,6 @@
 package hr.foi.teamup.webservice;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -55,5 +56,18 @@ public class ServiceParams implements Serializable {
     @Override
     public String toString() {
         return this.url + " " + this.method;
+    }
+
+    private void writeObject(java.io.ObjectOutputStream stream)
+            throws IOException {
+        stream.writeChars(url);
+        stream.writeChars(method);
+        stream.writeObject(object);
+        stream.writeObject(handler);
+    }
+
+    private void readObject(java.io.ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+        // TODO
     }
 }
