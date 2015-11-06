@@ -59,7 +59,7 @@ public class PersonController {
         String username = credentials.getUsername();
         String password = credentials.getPassword();
         
-        Person found = this.personRepository.findByCredentials(username);
+        Person found = this.personRepository.findByCredentialsUsername(username);
         if(found != null && found.getCredentials().getPassword().equals(password)) {
             Logger.getLogger("PersonController.java").log(Level.INFO,
                     "Successfully verified, returning " + found.toString());
