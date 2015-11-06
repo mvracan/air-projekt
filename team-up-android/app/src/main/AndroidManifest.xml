@@ -20,11 +20,11 @@
         </activity>
         <activity android:name=".RegistrationActivity" >
         </activity>
-        <activity
-            android:name=".TeamActivity"
-            android:label="Groups" >
-        </activity>
+
         <activity android:name=".UserProfileActivity" >
+        </activity>
+        <activity android:name=".TeamActivity"
+            android:label="Team Up">
         </activity>
     </application>
 
