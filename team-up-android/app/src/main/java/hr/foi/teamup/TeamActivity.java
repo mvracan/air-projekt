@@ -1,11 +1,15 @@
 package hr.foi.teamup;
 
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+
+import hr.foi.air.teamup.SessionManager;
 
 public class TeamActivity extends AppCompatActivity {
 
@@ -36,5 +40,24 @@ public class TeamActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onBackPressed(){
+        new AlertDialog.Builder(this).setMessage(R.string.signout_question)
+                .setPositiveButton(R.string.sign_out, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                SessionManager.getInstance(getApplicationContext()).destroyAll();
+                                finish();
+                                break;
+                        }
+                    }
+
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+
     }
 }

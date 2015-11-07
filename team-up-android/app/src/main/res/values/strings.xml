@@ -13,4 +13,9 @@
     <string name="register">Register</string>
     <string name="drawer_open">Open menu</string>
     <string name="drawer_close">Close menu</string>
+    <string name="signout_question">Sign out from application?</string>
+    <string name="cancel">Cancel</string>
+    <string name="sign_out">Sign out</string>
+    <string name="update_profile">Update your profile?</string>
+    <string name="update">Update</string>
 </resources>

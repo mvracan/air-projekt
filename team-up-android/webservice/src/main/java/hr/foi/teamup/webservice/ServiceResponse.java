@@ -1,10 +1,12 @@
 package hr.foi.teamup.webservice;
 
+import java.io.Serializable;
+
 /**
  *
  * Created by Maja Vracan on 26.10.2015..
  */
-public class ServiceResponse {
+public class ServiceResponse implements Serializable{
 
     int httpCode;
     String jsonResponse;

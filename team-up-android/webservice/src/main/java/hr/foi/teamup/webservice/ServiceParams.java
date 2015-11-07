@@ -1,5 +1,7 @@
 package hr.foi.teamup.webservice;
 
+import android.os.Parcelable;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -7,7 +9,7 @@ import java.io.Serializable;
  *
  * Created by Tomislav Turek on 23.10.15..
  */
-public class ServiceParams implements Serializable {
+public class ServiceParams implements Serializable{
 
     private String url;
     private String method;
@@ -58,19 +60,4 @@ public class ServiceParams implements Serializable {
         return this.url + " " + this.method;
     }
 
-    private void writeObject(java.io.ObjectOutputStream stream)
-            throws IOException {
-        stream.writeChars(url);
-        stream.writeChars(method);
-        stream.writeObject(object);
-        stream.writeObject(handler);
-    }
-
-    private void readObject(java.io.ObjectInputStream stream)
-            throws IOException, ClassNotFoundException {
-        url = (String) stream.readObject();
-        method = (String) stream.readObject();
-        object = (Serializable) stream.readObject();
-        handler = (ServiceResponseHandler) stream.readObject();
-    }
 }
