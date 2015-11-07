@@ -7,15 +7,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import hr.foi.air.teamup.SessionManager;
+import hr.foi.teamup.handlers.UpdateHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceParams;
-import hr.foi.teamup.webservice.ServiceResponse;
-import hr.foi.teamup.webservice.ServiceResponseHandler;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -53,6 +51,7 @@ public class UserProfileActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    // invoked when submit button is clicked
     View.OnClickListener onChange = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -75,6 +74,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 Log.i("hr.foi.teamup.debug", "UserProfileActivity --  calling web service ");
 
+                UpdateHandler updateHandler = new UpdateHandler(getApplicationContext(), user);
                 new ServiceAsyncTask().execute(new ServiceParams("/person/" + user.getidPerson(),
                         "PUT", user, updateHandler));
             }
@@ -83,6 +83,14 @@ public class UserProfileActivity extends AppCompatActivity {
 
     };
 
+    /**
+     * used to check values of user input
+     * @param firstNameValue user first name
+     * @param lastNameValue user last name
+     * @param passwordValue user password
+     * @param confirmPasswordValue user confirm password
+     * @return true if input valid, false otherwise
+     */
     private boolean checkValues(String firstNameValue, String lastNameValue,
                                 String passwordValue, String confirmPasswordValue){
         if(firstNameValue.length() < 3 || firstNameValue.length() > 45){
@@ -110,6 +118,7 @@ public class UserProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    /*
     ServiceResponseHandler updateHandler = new ServiceResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
@@ -133,5 +142,6 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
     };
+     */
 
 }

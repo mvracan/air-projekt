@@ -7,8 +7,6 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 
-import hr.foi.teamup.model.Person;
-
 /**
  *
  * Created by Tomislav Turek on 05.11.15..
@@ -30,6 +28,11 @@ public class SessionManager {
         editor.apply();
     }
 
+    /**
+     * gets session manager instance
+     * @param context current application context
+     * @return session manager instance
+     */
     public static SessionManager getInstance(Context context) {
         if(instance == null) instance = new SessionManager(context);
         return instance;

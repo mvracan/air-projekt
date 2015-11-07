@@ -1,8 +1,5 @@
 package hr.foi.teamup.webservice;
 
-import android.os.Parcelable;
-
-import java.io.IOException;
 import java.io.Serializable;
 
 /**

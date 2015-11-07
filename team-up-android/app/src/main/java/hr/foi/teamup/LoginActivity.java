@@ -13,19 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import java.io.Serializable;
-
-import hr.foi.air.teamup.SessionManager;
+import hr.foi.teamup.handlers.LoginHandler;
 import hr.foi.teamup.model.Credentials;
-import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceParams;
-import hr.foi.teamup.webservice.ServiceResponse;
-import hr.foi.teamup.webservice.ServiceResponseHandler;
 
 public class LoginActivity extends Activity {
 
@@ -36,7 +28,6 @@ public class LoginActivity extends Activity {
     TextInputLayout passwordLayout;
     Button signIn;
     TextView register;
-    Toast errorWrongCredentials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +58,7 @@ public class LoginActivity extends Activity {
      */
     private boolean checkInputs(String usernameText, String passwordText) {
         Log.i("hr.foi.teamup.debug", "LoginActivity -- initiating username and password input check");
-        if(usernameText.length() <5 ){
+        if(usernameText.length() < 5){
             Log.w("hr.foi.teamup.debug","LoginActivity -- username too short");
             username.setError("Username too short (min 5 characters)");
             return false;
@@ -109,12 +100,14 @@ public class LoginActivity extends Activity {
             if(checkInputs(usernameValue,passwordValue)) {
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
                 Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
+                LoginHandler loginHandler = new LoginHandler(getApplicationContext());
                 ServiceParams params = new ServiceParams("/person/login", "POST", credentials, loginHandler);
                 new ServiceAsyncTask().execute(params);
             }
         }
     };
 
+    /*
     // handler that is called when user login is finished
     ServiceResponseHandler loginHandler = new ServiceResponseHandler() {
         @Override
@@ -150,17 +143,13 @@ public class LoginActivity extends Activity {
             }
         }
     };
+    */
 
     // called when register is clicked
     View.OnClickListener onRegister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // save service parameters for login to call later from registration activity
             Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("loginHandler", loginHandler);
-            intent.putExtras(bundle);
-            // start activity
             startActivity(intent);
         }
     };

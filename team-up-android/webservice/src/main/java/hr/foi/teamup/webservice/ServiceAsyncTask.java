@@ -17,6 +17,11 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     ServiceParams sp;
     static final String mainUrl = "http://teamup-puding.rhcloud.com";
 
+    /**
+     * initiates calles to web service
+     * @param params parameters to use in service call
+     * @return service response (http code + json)
+     */
     @Override
     protected ServiceResponse doInBackground(ServiceParams... params) {
         sp = params[0];
@@ -37,6 +42,10 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
         return jsonResponse;
     }
 
+    /**
+     * calls handler sent through service parameters
+     * @param s service response (http code + json)
+     */
     @Override
     protected void onPostExecute(ServiceResponse s) {
         if(sp != null) {

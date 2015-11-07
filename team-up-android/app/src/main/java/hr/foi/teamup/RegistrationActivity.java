@@ -1,6 +1,5 @@
 package hr.foi.teamup;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,19 +7,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import java.io.Serializable;
 
-import hr.foi.air.teamup.SessionManager;
+import hr.foi.teamup.handlers.RegistrationHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceParams;
-import hr.foi.teamup.webservice.ServiceResponse;
-import hr.foi.teamup.webservice.ServiceResponseHandler;
 
 public class RegistrationActivity extends AppCompatActivity implements Serializable {
 
@@ -105,11 +99,13 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
                 Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
                 credentials = new Credentials(usernameValue,passwordValue);
                 Person person = new Person(0,firstNameValue,lastNameValue,credentials);
+                RegistrationHandler registrationHandler = new RegistrationHandler(getApplicationContext(), credentials);
                 new ServiceAsyncTask().execute(new ServiceParams("/person/signup", "POST", person, registrationHandler));
             }
         }
     };
 
+    /**
     // handler that is called when user registration is finished
     ServiceResponseHandler registrationHandler = new ServiceResponseHandler() {
         @Override
@@ -117,6 +113,7 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
             if(response.getHttpCode() == 200) {
                 Log.i("hr.foi.teamup.debug", "RegistrationActivity -- successfully registered user, logging in now...");
                 // login
+                LoginHandler loginHandler = new LoginHandler(getApplicationContext());
                 ServiceParams params = new ServiceParams("/person/login","POST",credentials,loginHandler);
                 new ServiceAsyncTask().execute(params);
                 return true;
@@ -132,6 +129,7 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
         }
     };
 
+    /*
     // handler that is called when user login is finished
     ServiceResponseHandler loginHandler = new ServiceResponseHandler() {
         @Override
@@ -166,4 +164,5 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
             }
         }
     };
+    */
 }
