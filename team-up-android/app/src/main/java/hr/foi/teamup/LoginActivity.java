@@ -126,7 +126,6 @@ public class LoginActivity extends Activity {
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
                 if(manager.createSession(person, "person")) {
 
-                    // TODO: test if session conversion works
                     Person sessionPerson = manager.retrieveSession("person", Person.class);
                     Log.i("hr.foi.teamup.debug",
                             "LoginActivity -- valid user, created session: " + sessionPerson.toString()

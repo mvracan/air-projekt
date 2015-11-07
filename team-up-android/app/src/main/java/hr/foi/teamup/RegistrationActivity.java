@@ -40,7 +40,6 @@ public class RegistrationActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
 
-        // TODO: check if this works
         loginParams = this.getIntent().getExtras().getParcelable("params");
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
