@@ -45,6 +45,7 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
 
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 

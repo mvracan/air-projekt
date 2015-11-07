@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
 import hr.foi.air.teamup.SessionManager;
 
@@ -43,7 +44,8 @@ public class TeamActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+
+    public void onBackPressed() {
         new AlertDialog.Builder(this).setMessage(R.string.signout_question)
                 .setPositiveButton(R.string.sign_out, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -58,6 +60,11 @@ public class TeamActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_team_activity, menu);
+        return super.onCreateOptionsMenu(menu);
 
     }
 }
