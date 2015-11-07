@@ -12,7 +12,7 @@ import java.net.URL;
  *
  * Created by Tomislav Turek on 23.10.15..
  */
-public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResponse> {
+public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResponse> implements  Serializable{
 
     ServiceParams sp;
     static final String mainUrl = "http://teamup-puding.rhcloud.com";

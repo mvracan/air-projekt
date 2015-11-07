@@ -11,4 +11,15 @@
     <string name="signin">Sign in</string>
     <string name="logoapp">logoapp</string>
     <string name="register">Register</string>
+    <string name="drawer_open">Open menu</string>
+    <string name="drawer_close">Close menu</string>
+<<<<<<< HEAD
+    <string name="signout_question">Sign out from application?</string>
+    <string name="cancel">Cancel</string>
+    <string name="sign_out">Sign out</string>
+    <string name="update_profile">Update your profile?</string>
+    <string name="update">Update</string>
+=======
+    <string name="map">Map</string>
+>>>>>>> 66ee1eb1d03b6ab88ef7662b0136bf6c8a460652
 </resources>

@@ -126,7 +126,6 @@ public class LoginActivity extends Activity {
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
                 if(manager.createSession(person, "person")) {
 
-                    // TODO: test if session conversion works
                     Person sessionPerson = manager.retrieveSession("person", Person.class);
                     Log.i("hr.foi.teamup.debug",
                             "LoginActivity -- valid user, created session: " + sessionPerson.toString()
@@ -157,9 +156,10 @@ public class LoginActivity extends Activity {
         @Override
         public void onClick(View v) {
             // save service parameters for login to call later from registration activity
-            ServiceParams params = new ServiceParams("/person/login", "POST", null, loginHandler);
             Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
-            intent.putExtra("loginParams", params);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("loginHandler", loginHandler);
+            intent.putExtras(bundle);
             // start activity
             startActivity(intent);
         }

@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.io.Serializable;
+
+import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
@@ -17,7 +22,7 @@ import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
 import hr.foi.teamup.webservice.ServiceResponseHandler;
 
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity implements Serializable {
 
     Button submit;
     EditText firstName;
@@ -25,7 +30,7 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText username;
     EditText password;
     EditText confirmPassword;
-    ServiceParams loginParams;
+    Credentials credentials;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +45,6 @@ public class RegistrationActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
 
-        // TODO: check if this works
-        loginParams = this.getIntent().getExtras().getParcelable("params");
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -100,8 +103,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             if(checkValues(firstNameValue,lastNameValue,usernameValue,passwordValue,confirmPasswordValue)){
                 Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
-                Credentials credentials = new Credentials(usernameValue,passwordValue);
-                loginParams.setObject(credentials); // credentials to send later
+                credentials = new Credentials(usernameValue,passwordValue);
                 Person person = new Person(0,firstNameValue,lastNameValue,credentials);
                 new ServiceAsyncTask().execute(new ServiceParams("/person/signup", "POST", person, registrationHandler));
             }
@@ -115,7 +117,8 @@ public class RegistrationActivity extends AppCompatActivity {
             if(response.getHttpCode() == 200) {
                 Log.i("hr.foi.teamup.debug", "RegistrationActivity -- successfully registered user, logging in now...");
                 // login
-                new ServiceAsyncTask().execute(loginParams);
+                ServiceParams params = new ServiceParams("/person/login","POST",credentials,loginHandler);
+                new ServiceAsyncTask().execute(params);
                 return true;
             } else {
                 Log.w("hr.foi.teamup.debug",
@@ -125,6 +128,41 @@ public class RegistrationActivity extends AppCompatActivity {
                         "Registration failed, please try again (" + response.getHttpCode() + ")",
                         Toast.LENGTH_LONG).show();
                 return false;
+            }
+        }
+    };
+
+    // handler that is called when user login is finished
+    ServiceResponseHandler loginHandler = new ServiceResponseHandler() {
+        @Override
+        public boolean handleResponse(ServiceResponse response) {
+            Log.i("hr.foi.teamup.debug", "Got response: " + response.toString());
+            if(response.getHttpCode() == 200) {
+
+                Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
+                SessionManager manager = SessionManager.getInstance(getApplicationContext());
+                if(manager.createSession(person, "person")) {
+
+                    Person sessionPerson = manager.retrieveSession("person", Person.class);
+                    Log.i("hr.foi.teamup.debug",
+                            "RegistrationActivity -- valid user, created session: " + sessionPerson.toString()
+                                    + ", proceeding to group activity");
+                    Intent intent = new Intent(getApplicationContext(), TeamActivity.class);
+                    startActivity(intent);
+                    return true;
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Internal application error, please try again", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+
+            } else  {
+
+                Log.i("hr.foi.teamup.debug", "LoginActivity -- invalid credentials sent");
+                Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+                return false;
+
             }
         }
     };
