@@ -11,13 +11,11 @@ public class ServiceParams implements Serializable{
     private String url;
     private String method;
     private Serializable object;
-    private ServiceResponseHandler handler;
 
-    public ServiceParams(String url, String method, Serializable object, ServiceResponseHandler handler) {
+    public ServiceParams(String url, String method, Serializable object) {
         this.url = url;
         this.method = method;
         this.object = object;
-        this.handler = handler;
     }
 
     public String getUrl() {
@@ -42,14 +40,6 @@ public class ServiceParams implements Serializable{
 
     public void setObject(Serializable object) {
         this.object = object;
-    }
-
-    public ServiceResponseHandler getHandler() {
-        return handler;
-    }
-
-    public void setHandler(ServiceResponseHandler handler) {
-        this.handler = handler;
     }
 
     @Override

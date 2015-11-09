@@ -36,6 +36,7 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        // binding
         firstName = (EditText) findViewById(R.id.firstNameInput);
         lastName = (EditText) findViewById(R.id.lastNameInput);
         username = (EditText) findViewById(R.id.usernameInput);
@@ -43,6 +44,8 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
         confirmPassword = (EditText) findViewById(R.id.confirmPasswordInput);
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
+
+        // for validation
         inputs = Arrays.asList(
                 new Input(firstName, Input.TEXT_MAIN_PATTERN, "First name can only contain letters (min 3, max 45)"),
                 new Input(lastName, Input.TEXT_MAIN_PATTERN, "Last name can only contain letters (min 3, max 45)"),
@@ -54,7 +57,9 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    // listener that triggers when submit is clicked
+    /**
+     * listener that triggers when submit is clicked
+     */
     View.OnClickListener onSubmit = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -71,7 +76,7 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
                 credentials = new Credentials(usernameValue,passwordValue);
                 Person person = new Person(0,firstNameValue,lastNameValue,credentials, new Location(0, 0));
                 RegistrationHandler registrationHandler = new RegistrationHandler(RegistrationActivity.this, credentials);
-                new ServiceAsyncTask().execute(new ServiceParams("/person/signup", "POST", person, registrationHandler));
+                new ServiceAsyncTask(registrationHandler).execute(new ServiceParams("/person/signup", "POST", person));
             }
         }
     };

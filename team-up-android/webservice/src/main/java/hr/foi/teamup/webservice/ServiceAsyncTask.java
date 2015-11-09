@@ -1,6 +1,7 @@
 package hr.foi.teamup.webservice;
 
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.util.Log;
 
 import java.io.IOException;
@@ -16,6 +17,20 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
 
     ServiceParams sp;
     static final String mainUrl = "http://teamup-puding.rhcloud.com";
+    ServiceResponseHandler handler;
+
+    public ServiceAsyncTask(ServiceResponseHandler handler) {
+        this.handler = handler;
+    }
+
+    /**
+     * starts the progress dialog
+     */
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        handler.onPreSend();
+    }
 
     /**
      * initiates calles to web service
@@ -25,6 +40,7 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     @Override
     protected ServiceResponse doInBackground(ServiceParams... params) {
         sp = params[0];
+        Looper.prepare();
         ServiceResponse jsonResponse = null;
 
         Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Initiating service call to " + sp.getUrl());
@@ -43,16 +59,17 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     }
 
     /**
-     * calls handler sent through service parameters
+     * calls handler sent through service parameters and stops the progress dialog
      * @param s service response (http code + json)
      */
     @Override
     protected void onPostExecute(ServiceResponse s) {
         if(sp != null) {
             Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Calling service response handler");
-            sp.getHandler().handleResponse(s);
+            handler.handleResponse(s);
         } else {
             Log.w("hr.foi.teamup.debug", "ServiceAsyncTask -- Could not call service response handler");
         }
+        handler.onPostSend();
     }
 }

@@ -27,10 +27,12 @@ public class LoginHandler extends ResponseHandler {
     @Override
     public boolean handleResponse(ServiceResponse response) {
         Log.i("hr.foi.teamup.debug", "LoginHandler -- Got response: " + response.toString());
-        this.loadingPrompt.hidePrompt();
+
         if(response.getHttpCode() == 200) {
 
+            // convert json to person object
             Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
+            // save person to session
             SessionManager manager = SessionManager.getInstance(this.context);
             if(manager.createSession(person, "person")) {
 
@@ -38,6 +40,7 @@ public class LoginHandler extends ResponseHandler {
                 Log.i("hr.foi.teamup.debug",
                         "LoginHandler -- valid user, created session: " + sessionPerson.toString()
                                 + ", proceeding to group activity");
+                // start main activity
                 Intent intent = new Intent(this.context, TeamActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 this.context.startActivity(intent);
@@ -50,7 +53,7 @@ public class LoginHandler extends ResponseHandler {
             }
 
         } else  {
-
+            // http code different from 200 OK
             Log.i("hr.foi.teamup.debug", "LoginHandler -- invalid credentials sent");
             Toast.makeText(this.context, "Invalid credentials", Toast.LENGTH_LONG).show();
             return false;

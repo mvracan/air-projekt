@@ -67,7 +67,9 @@ public class UserProfileActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    // invoked when submit button is clicked
+    /**
+     * invoked when submit button is clicked
+     */
     View.OnClickListener onChange = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -91,8 +93,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 Log.i("hr.foi.teamup.debug", "UserProfileActivity --  calling web service ");
 
                 UpdateHandler updateHandler = new UpdateHandler(UserProfileActivity.this, user);
-                new ServiceAsyncTask().execute(new ServiceParams("/person/" + user.getidPerson(),
-                        "PUT", user, updateHandler));
+                new ServiceAsyncTask(updateHandler).execute(new ServiceParams("/person/"
+                        + user.getidPerson(), "PUT", user));
             }
         }
 

@@ -25,9 +25,10 @@ public class UpdateHandler extends ResponseHandler {
         Person user = (Person) this.args[0];
         Log.i("hr.foi.teamup.debug", "UpdateHandler -- deserialized arguments: " + user.toString());
 
-        this.loadingPrompt.hidePrompt();
         if(response.getHttpCode() == 200) {
             Log.i("hr.foi.teamup.debug", "UpdateHandler -- successfully updated user");
+
+            // update session
             SessionManager manager= SessionManager.getInstance(this.context);
             manager.destroySession("person");
             manager.createSession(user, "person");

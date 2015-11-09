@@ -83,7 +83,9 @@ public class LoginActivity extends Activity {
         Log.i("hr.foi.teamup.debug", "LoginActivity -- login animation ended");
     }
 
-    // listener that is called when sign in button is clicked
+    /**
+     * listener that is called when sign in button is clicked
+     */
     View.OnClickListener onSignIn = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -97,13 +99,15 @@ public class LoginActivity extends Activity {
                 Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
 
                 LoginHandler loginHandler = new LoginHandler(LoginActivity.this);
-                ServiceParams params = new ServiceParams("/person/login", "POST", credentials, loginHandler);
-                new ServiceAsyncTask().execute(params);
+                ServiceParams params = new ServiceParams("/person/login", "POST", credentials);
+                new ServiceAsyncTask(loginHandler).execute(params);
             }
         }
     };
 
-    // called when register is clicked
+    /**
+     * called when register is clicked
+     */
     View.OnClickListener onRegister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

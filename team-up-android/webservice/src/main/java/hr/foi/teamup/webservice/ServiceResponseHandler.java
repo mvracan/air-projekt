@@ -8,6 +8,8 @@ import java.io.Serializable;
  */
 public interface ServiceResponseHandler extends Serializable {
 
+    void onPreSend();
     boolean handleResponse(ServiceResponse response);
+    void onPostSend();
 
 }

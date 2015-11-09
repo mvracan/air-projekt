@@ -26,13 +26,12 @@ public class RegistrationHandler extends ResponseHandler {
         Credentials credentials = (Credentials) this.args[0];
         Log.i("hr.foi.teamup.debug", "RegistrationHandler -- deserialized arguments: " + credentials.toString());
 
-        this.loadingPrompt.hidePrompt();
         if(response.getHttpCode() == 200) {
             Log.i("hr.foi.teamup.debug", "RegistrationHandler -- successfully registered user, logging in now...");
             // login
             LoginHandler loginHandler = new LoginHandler(this.context);
-            ServiceParams params = new ServiceParams("/person/login","POST",credentials,loginHandler);
-            new ServiceAsyncTask().execute(params);
+            ServiceParams params = new ServiceParams("/person/login","POST",credentials);
+            new ServiceAsyncTask(loginHandler).execute(params);
             return true;
         } else {
             Log.w("hr.foi.teamup.debug",
