@@ -65,6 +65,5 @@ public class TeamActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_team_activity, menu);
         return super.onCreateOptionsMenu(menu);
-
     }
 }

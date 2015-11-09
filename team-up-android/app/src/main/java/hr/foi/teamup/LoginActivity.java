@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.List;
+
+import hr.foi.air.teamup.Input;
 import hr.foi.teamup.handlers.LoginHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
@@ -28,6 +32,7 @@ public class LoginActivity extends Activity {
     TextInputLayout passwordLayout;
     Button signIn;
     TextView register;
+    List<Input> inputs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,33 +48,16 @@ public class LoginActivity extends Activity {
         passwordLayout=(TextInputLayout)findViewById(R.id.txtPasswordLayout);
         signIn.setOnClickListener(onSignIn);
         register.setOnClickListener(onRegister);
+        // for validation
+        inputs = Arrays.asList(
+                new Input(username, "[a-zA-Z]{5,45}", "Username can only contain letters (min 5, max 45)"),
+                new Input(password, "[a-zA-Z]{5,45}", "Password too short or too long (min 5, max 45)")
+        );
 
         if(savedInstanceState == null) {
             startAnimation();
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    /**
-     * checks if username and passwords are valid
-     * @param usernameText text from username edittext
-     * @param passwordText text from password edittext
-     * @return true if valid, false otherwise
-     */
-    private boolean checkInputs(String usernameText, String passwordText) {
-        Log.i("hr.foi.teamup.debug", "LoginActivity -- initiating username and password input check");
-        if(usernameText.length() < 5){
-            Log.w("hr.foi.teamup.debug","LoginActivity -- username too short");
-            username.setError("Username too short (min 5 characters)");
-            return false;
-        }
-        else if(passwordText.length() < 5){
-            Log.w("hr.foi.teamup.debug","LoginActivity -- password too short");
-            password.setError("Password too short (min 5 characters)");
-            return false;
-        }
-        Log.i("hr.foi.teamup.debug","LoginActivity -- username and password are valid");
-        return true;
     }
 
     /**
@@ -97,7 +85,7 @@ public class LoginActivity extends Activity {
             Log.i("hr.foi.teamup.debug", "LoginActivity -- initiated login");
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
-            if(checkInputs(usernameValue,passwordValue)) {
+            if(Input.validate(inputs)) {
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
                 Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
                 LoginHandler loginHandler = new LoginHandler(getApplicationContext());
@@ -106,44 +94,6 @@ public class LoginActivity extends Activity {
             }
         }
     };
-
-    /*
-    // handler that is called when user login is finished
-    ServiceResponseHandler loginHandler = new ServiceResponseHandler() {
-        @Override
-        public boolean handleResponse(ServiceResponse response) {
-            Log.i("hr.foi.teamup.debug", "Got response: " + response.toString());
-            if(response.getHttpCode() == 200) {
-
-                Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
-                SessionManager manager = SessionManager.getInstance(getApplicationContext());
-                if(manager.createSession(person, "person")) {
-
-                    Person sessionPerson = manager.retrieveSession("person", Person.class);
-                    Log.i("hr.foi.teamup.debug",
-                            "LoginActivity -- valid user, created session: " + sessionPerson.toString()
-                                    + ", proceeding to group activity");
-                    Intent intent = new Intent(getApplicationContext(), TeamActivity.class);
-                    startActivity(intent);
-                    return true;
-
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Internal application error, please try again", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-
-            } else  {
-
-                Log.i("hr.foi.teamup.debug", "LoginActivity -- invalid credentials sent");
-                errorWrongCredentials = Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG);
-                errorWrongCredentials.show();
-                return false;
-
-            }
-        }
-    };
-    */
 
     // called when register is clicked
     View.OnClickListener onRegister = new View.OnClickListener() {

@@ -39,6 +39,7 @@ public class LoginHandler extends ResponseHandler {
                         "LoginHandler -- valid user, created session: " + sessionPerson.toString()
                                 + ", proceeding to group activity");
                 Intent intent = new Intent(this.getContext(), TeamActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 this.getContext().startActivity(intent);
                 return true;
 

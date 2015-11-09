@@ -17,11 +17,12 @@ public class Person implements Serializable {
     public Person() {
     }
 
-    public Person(long idPerson, String name, String surname, Credentials credentials) {
+    public Person(long idPerson, String name, String surname, Credentials credentials, Location location) {
         this.idPerson = idPerson;
         this.name = name;
         this.surname = surname;
         this.credentials = credentials;
+        this.location = location;
     }
 
     public long getidPerson() {
