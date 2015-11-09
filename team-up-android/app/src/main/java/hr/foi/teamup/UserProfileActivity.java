@@ -35,29 +35,35 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        // session
         user= SessionManager.getInstance(getApplicationContext()).retrieveSession("person", Person.class);
 
+        // binding
         firstName = (EditText) findViewById(R.id.firstNameInput);
         username=(EditText) findViewById(R.id.usernameInput);
         username.setClickable(false);
         lastName = (EditText) findViewById(R.id.lastNameInput);
-
         password = (EditText) findViewById(R.id.passwordInput);
         confirmPassword = (EditText) findViewById(R.id.confirmPasswordInput);
         change = (Button) findViewById(R.id.submitButton);
 
+        // input fill
         firstName.setText(user.getName());
         lastName.setText(user.getSurname());
         username.setText(user.getCredentials().getUsername());
         password.setText(user.getCredentials().getPassword());
 
         change.setOnClickListener(onChange);
+
+        // input validation
         inputs = Arrays.asList(
-                new Input(firstName, "[A-Za-z]{3,45}", "First name can only contain letters (min 3, max 45)"),
-                new Input(lastName, "[A-Za-z]{3,45}", "Last name can only contain letters (min 3, max 45)"),
-                new Input(password, "[a-zA-Z]{5,45}", "Password too long or too short (min 5, max 45)")
+                new Input(firstName, Input.TEXT_MAIN_PATTERN, "First name can only contain letters (min 3, max 45)"),
+                new Input(lastName, Input.TEXT_MAIN_PATTERN, "Last name can only contain letters (min 3, max 45)"),
+                new Input(password, Input.PASSWORD_PATTERN, "Password too long or too short (min 5, max 45)"),
+                new Input(confirmPassword, Input.PASSWORD_PATTERN, "Passwords do not match")
         );
 
+        // hide keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
@@ -70,9 +76,9 @@ public class UserProfileActivity extends AppCompatActivity {
             String firstNameValue = firstName.getText().toString();
             String lastNameValue = lastName.getText().toString();
             String passwordValue = password.getText().toString();
-            String confirmPasswordValue = confirmPassword.getText().toString();
 
-            if (checkValues(passwordValue, confirmPasswordValue)) {
+            if (Input.validate(inputs)
+                    && inputs.get(inputs.size() - 2).equals(inputs.get(inputs.size() - 1))) {
 
                 Log.i("hr.foi.teamup.debug", "UserProfileActivity -- fetching user from session");
 
@@ -84,7 +90,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 Log.i("hr.foi.teamup.debug", "UserProfileActivity --  calling web service ");
 
-                UpdateHandler updateHandler = new UpdateHandler(getApplicationContext(), user);
+                UpdateHandler updateHandler = new UpdateHandler(UserProfileActivity.this, user);
                 new ServiceAsyncTask().execute(new ServiceParams("/person/" + user.getidPerson(),
                         "PUT", user, updateHandler));
             }
@@ -92,20 +98,5 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
     };
-
-    /**
-     * used to check values of user input
-     * @param passwordValue user password
-     * @param confirmPasswordValue user confirm password
-     * @return true if input valid, false otherwise
-     */
-    private boolean checkValues(String passwordValue, String confirmPasswordValue){
-        if(!confirmPasswordValue.equals(passwordValue)){
-            Log.w("hr.foi.teamup.debug","UserProfileActivity -- passwords do not match");
-            confirmPassword.setError("Passwords do not match");
-            return false;
-        }
-        return Input.validate(inputs);
-    }
 
 }

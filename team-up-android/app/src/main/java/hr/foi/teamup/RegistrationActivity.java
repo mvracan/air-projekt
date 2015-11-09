@@ -44,29 +44,14 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
         inputs = Arrays.asList(
-                new Input(firstName, "[A-Za-z]{3,45}", "First name can only contain letters (min 3, max 45)"),
-                new Input(lastName, "[A-Za-z]{3,45}", "Last name can only contain letters (min 3, max 45)"),
-                new Input(username, "[a-zA-Z]{5,45}", "Username can only contain letters (min 5, max 45"),
-                new Input(password, "[a-zA-Z]{5,45}", "Password too long or too short (min 5, max 45)")
+                new Input(firstName, Input.TEXT_MAIN_PATTERN, "First name can only contain letters (min 3, max 45)"),
+                new Input(lastName, Input.TEXT_MAIN_PATTERN, "Last name can only contain letters (min 3, max 45)"),
+                new Input(username, Input.TEXT_MAIN_PATTERN, "Username can only contain letters (min 5, max 45"),
+                new Input(password, Input.PASSWORD_PATTERN, "Password too long or too short (min 5, max 45)"),
+                new Input(confirmPassword, Input.PASSWORD_PATTERN, "Passwords do not match")
         );
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    /**
-     * Checks registration form input values
-     * @param passwordValue password value
-     * @param confirmPasswordValue confirmed password value
-     * @return false if there is an error else return true
-     */
-    private boolean checkValues(String passwordValue, String confirmPasswordValue){
-        if(!confirmPasswordValue.equals(passwordValue)){
-            Log.w("hr.foi.teamup.debug","RegistrationActivity -- passwords do not match");
-            confirmPassword.setError("Passwords do not match");
-            return false;
-        }
-        Log.i("hr.foi.teamup.debug","RegistrationActivity -- all fields are valid");
-        return Input.validate(inputs);
     }
 
     // listener that triggers when submit is clicked
@@ -79,13 +64,13 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
             String lastNameValue = lastName.getText().toString();
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
-            String confirmPasswordValue = confirmPassword.getText().toString();
 
-            if(checkValues(passwordValue,confirmPasswordValue)){
+            if(Input.validate(inputs)
+                    && inputs.get(inputs.size() - 2).equals(inputs.get(inputs.size() - 1))){
                 Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
                 credentials = new Credentials(usernameValue,passwordValue);
                 Person person = new Person(0,firstNameValue,lastNameValue,credentials, new Location(0, 0));
-                RegistrationHandler registrationHandler = new RegistrationHandler(getApplicationContext(), credentials);
+                RegistrationHandler registrationHandler = new RegistrationHandler(RegistrationActivity.this, credentials);
                 new ServiceAsyncTask().execute(new ServiceParams("/person/signup", "POST", person, registrationHandler));
             }
         }

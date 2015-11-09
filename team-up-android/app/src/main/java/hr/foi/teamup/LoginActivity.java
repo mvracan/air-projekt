@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import hr.foi.air.teamup.Input;
+import hr.foi.air.teamup.prompts.LoadingPrompt;
 import hr.foi.teamup.handlers.LoginHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
@@ -33,12 +34,14 @@ public class LoginActivity extends Activity {
     Button signIn;
     TextView register;
     List<Input> inputs;
+    LoadingPrompt loadingPrompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // binding
         logo=(ImageView)findViewById(R.id.imgvLogo);
         username=(EditText)findViewById(R.id.txtUsername);
         password=(EditText)findViewById(R.id.txtPassword);
@@ -48,10 +51,12 @@ public class LoginActivity extends Activity {
         passwordLayout=(TextInputLayout)findViewById(R.id.txtPasswordLayout);
         signIn.setOnClickListener(onSignIn);
         register.setOnClickListener(onRegister);
+        loadingPrompt = new LoadingPrompt(this);
+
         // for validation
         inputs = Arrays.asList(
-                new Input(username, "[a-zA-Z]{5,45}", "Username can only contain letters (min 5, max 45)"),
-                new Input(password, "[a-zA-Z]{5,45}", "Password too short or too long (min 5, max 45)")
+                new Input(username, Input.TEXT_MAIN_PATTERN, "Username can only contain letters (min 5, max 45)"),
+                new Input(password, Input.PASSWORD_PATTERN, "Password too short or too long (min 5, max 45)")
         );
 
         if(savedInstanceState == null) {
@@ -83,12 +88,15 @@ public class LoginActivity extends Activity {
         @Override
         public void onClick(View v) {
             Log.i("hr.foi.teamup.debug", "LoginActivity -- initiated login");
+
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
+
             if(Input.validate(inputs)) {
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
                 Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
-                LoginHandler loginHandler = new LoginHandler(getApplicationContext());
+
+                LoginHandler loginHandler = new LoginHandler(LoginActivity.this);
                 ServiceParams params = new ServiceParams("/person/login", "POST", credentials, loginHandler);
                 new ServiceAsyncTask().execute(params);
             }

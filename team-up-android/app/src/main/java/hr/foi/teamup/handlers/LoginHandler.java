@@ -12,7 +12,6 @@ import java.io.Serializable;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.model.Person;
-import hr.foi.teamup.webservice.ResponseHandler;
 import hr.foi.teamup.webservice.ServiceResponse;
 
 /**
@@ -28,23 +27,24 @@ public class LoginHandler extends ResponseHandler {
     @Override
     public boolean handleResponse(ServiceResponse response) {
         Log.i("hr.foi.teamup.debug", "LoginHandler -- Got response: " + response.toString());
+        this.loadingPrompt.hidePrompt();
         if(response.getHttpCode() == 200) {
 
             Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
-            SessionManager manager = SessionManager.getInstance(this.getContext());
+            SessionManager manager = SessionManager.getInstance(this.context);
             if(manager.createSession(person, "person")) {
 
                 Person sessionPerson = manager.retrieveSession("person", Person.class);
                 Log.i("hr.foi.teamup.debug",
                         "LoginHandler -- valid user, created session: " + sessionPerson.toString()
                                 + ", proceeding to group activity");
-                Intent intent = new Intent(this.getContext(), TeamActivity.class);
+                Intent intent = new Intent(this.context, TeamActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                this.getContext().startActivity(intent);
+                this.context.startActivity(intent);
                 return true;
 
             } else {
-                Toast.makeText(this.getContext(),
+                Toast.makeText(this.context,
                         "Internal application error, please try again", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -52,9 +52,8 @@ public class LoginHandler extends ResponseHandler {
         } else  {
 
             Log.i("hr.foi.teamup.debug", "LoginHandler -- invalid credentials sent");
-            Toast.makeText(this.getContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.context, "Invalid credentials", Toast.LENGTH_LONG).show();
             return false;
-
         }
     }
 }
