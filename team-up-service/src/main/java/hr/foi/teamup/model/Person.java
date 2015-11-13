@@ -6,7 +6,9 @@
 package hr.foi.teamup.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
@@ -26,6 +28,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="person")
+ @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="idPerson") 
 public class Person implements Serializable {
     
     @Id 
@@ -46,14 +49,14 @@ public class Person implements Serializable {
     @Embedded
     Location location;
     
+  
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Team> creatorOfGroups;
     
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "members")
-    @JsonBackReference
-    private  List<Team> memberOfGroups;
-
+    
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "members")
+    private  List<Team>  memberOfGroups;
+ 
     // String token
 
     public long getIdPerson() {

@@ -5,6 +5,7 @@
  */
 package hr.foi.teamup.controllers;
 import hr.foi.teamup.model.Credentials;
+import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.repositories.PersonRepository;
 import java.util.List;
@@ -115,6 +116,36 @@ public class PersonController {
         }
     }
     
+    @RequestMapping(value="/test")
+    public ResponseEntity testInsert(){
+        Credentials cred=new Credentials();
+        
+        cred.setPassword("111");
+        cred.setUsername("lalala");
+        Location a=new Location();
+        a.setLat(2.12121);
+        a.setLng(2.334);
+        
+        Person person=new Person();
+        person.setIdPerson(11);
+        person.setName("probni");
+        person.setSurname("probic");
+        person.setCredentials(cred);
+        person.setLocation(a);
+        
+        Logger.getLogger("PersonController.java").log(Level.INFO,
+                    "Going to save user");
+        this.personRepository.save(person);
+        Logger.getLogger("PersonController.java").log(Level.INFO,
+                    "Going to return users");
+        return new ResponseEntity(this.personRepository.findAll(), HttpStatus.OK);
+    }
+    
+     /**
+     * updates user with specified id
+     * @param id id of user
+     * @return person info with HTTP 200 on success or HTTP 404 on fail
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity modify(@RequestParam long id, @RequestBody Person person) {
         Logger.getLogger("PersonController.java").log(Level.INFO,
