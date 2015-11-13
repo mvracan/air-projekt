@@ -115,32 +115,7 @@ public class PersonController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
-    
-    @RequestMapping(value="/test")
-    public ResponseEntity testInsert(){
-        Credentials cred=new Credentials();
-        
-        cred.setPassword("111");
-        cred.setUsername("lalala");
-        Location a=new Location();
-        a.setLat(2.12121);
-        a.setLng(2.334);
-        
-        Person person=new Person();
-        person.setIdPerson(11);
-        person.setName("probni");
-        person.setSurname("probic");
-        person.setCredentials(cred);
-        person.setLocation(a);
-        
-        Logger.getLogger("PersonController.java").log(Level.INFO,
-                    "Going to save user");
-        this.personRepository.save(person);
-        Logger.getLogger("PersonController.java").log(Level.INFO,
-                    "Going to return users");
-        return new ResponseEntity(this.personRepository.findAll(), HttpStatus.OK);
-    }
-    
+   
      /**
      * updates user with specified id
      * @param id id of user
