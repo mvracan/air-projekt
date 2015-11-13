@@ -1,10 +1,12 @@
 package hr.foi.teamup.model;
 
+import java.io.Serializable;
+
 /**
  *
  * Created by Tomislav Turek on 31.10.15..
  */
-public class Team {
+public class Team implements Serializable {
 
     long idTeam;
     String name;
