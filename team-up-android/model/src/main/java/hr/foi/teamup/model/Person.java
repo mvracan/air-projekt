@@ -25,14 +25,6 @@ public class Person implements Serializable {
         this.location = location;
     }
 
-    public long getidPerson() {
-        return idPerson;
-    }
-
-    public void setidPerson(long idPerson) {
-        this.idPerson = idPerson;
-    }
-
     public String getName() {
         return name;
     }
