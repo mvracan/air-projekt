@@ -94,7 +94,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 UpdateHandler updateHandler = new UpdateHandler(UserProfileActivity.this, user);
                 new ServiceAsyncTask(updateHandler).execute(new ServiceParams("/person/"
-                        + user.getidPerson(), "PUT", user));
+                        + user.getIdPerson(), "PUT", user));
             }
         }
 
