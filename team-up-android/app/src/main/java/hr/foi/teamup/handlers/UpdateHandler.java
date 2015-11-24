@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 
+import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceResponse;
@@ -23,10 +24,10 @@ public class UpdateHandler extends ResponseHandler {
     @Override
     public boolean handleResponse(ServiceResponse response) {
         Person user = (Person) this.args[0];
-        Log.i("hr.foi.teamup.debug", "UpdateHandler -- deserialized arguments: " + user.toString());
+        Logger.log("UpdateHandler -- deserialized arguments: " + user.toString(), Log.DEBUG);
 
         if(response.getHttpCode() == 200) {
-            Log.i("hr.foi.teamup.debug", "UpdateHandler -- successfully updated user");
+            Logger.log("UpdateHandler -- successfully updated user");
 
             // update session
             SessionManager manager= SessionManager.getInstance(this.context);
@@ -37,8 +38,8 @@ public class UpdateHandler extends ResponseHandler {
             // finish()
             return true;
         } else {
-            Log.w("hr.foi.teamup.debug",
-                    "UpdateHandler -- update failed, server returned code " + response.getHttpCode());
+            Logger.log("UpdateHandler -- update failed, server returned code "
+                    + response.getHttpCode(), Log.WARN);
             // show fail
             Toast.makeText(this.context,
                     "Update failed, please try again ("+response.getHttpCode()+")",

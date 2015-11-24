@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import hr.foi.air.teamup.Input;
+import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.prompts.LoadingPrompt;
 import hr.foi.teamup.handlers.LoginHandler;
 import hr.foi.teamup.model.Credentials;
@@ -70,7 +71,7 @@ public class LoginActivity extends Activity {
      * starts login animations
      */
     private void startAnimation() {
-        Log.i("hr.foi.teamup.debug", "LoginActivity -- login animation started");
+        Logger.log("LoginActivity -- login animation started");
         Animation moveAnimation= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_logo);
         Animation fadeAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.show_login_form);
 
@@ -81,7 +82,7 @@ public class LoginActivity extends Activity {
         passwordLayout.startAnimation(fadeAnimation);
         signIn.startAnimation(fadeAnimation);
         register.startAnimation(fadeAnimation);
-        Log.i("hr.foi.teamup.debug", "LoginActivity -- login animation ended");
+        Logger.log("LoginActivity -- login animation ended");
     }
 
     /**
@@ -90,14 +91,15 @@ public class LoginActivity extends Activity {
     View.OnClickListener onSignIn = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.i("hr.foi.teamup.debug", "LoginActivity -- initiated login");
+            Logger.log("LoginActivity -- initiated login");
 
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
 
             if(Input.validate(inputs)) {
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
-                Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
+                Logger.log("LoginActivity -- sending credentials to service");
+
 
                 LoginHandler loginHandler = new LoginHandler(LoginActivity.this);
                 ServiceParams params = new ServiceParams(

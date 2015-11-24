@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import java.io.Serializable;
 
+import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
@@ -25,10 +26,10 @@ public class RegistrationHandler extends ResponseHandler {
     @Override
     public boolean handleResponse(ServiceResponse response) {
         Credentials credentials = (Credentials) this.args[0];
-        Log.i("hr.foi.teamup.debug", "RegistrationHandler -- deserialized arguments: " + credentials.toString());
+        Logger.log("RegistrationHandler -- deserialized arguments: " + credentials.toString(), Log.DEBUG);
 
         if(response.getHttpCode() == 200) {
-            Log.i("hr.foi.teamup.debug", "RegistrationHandler -- successfully registered user, logging in now...");
+            Logger.log("RegistrationHandler -- successfully registered user, logging in now...", Log.DEBUG);
             // login
             LoginHandler loginHandler = new LoginHandler(this.context);
             ServiceParams params = new ServiceParams(
@@ -37,8 +38,8 @@ public class RegistrationHandler extends ResponseHandler {
             new ServiceAsyncTask(loginHandler).execute(params);
             return true;
         } else {
-            Log.w("hr.foi.teamup.debug",
-                    "RegistrationHandler -- registration failed, server returned code " + response.getHttpCode());
+            Logger.log("RegistrationHandler -- registration failed, server returned code "
+                    + response.getHttpCode(), Log.WARN);
             // show fail
             Toast.makeText(this.context,
                     "Registration failed, please try again (" + response.getHttpCode() + ")",

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import hr.foi.air.teamup.Input;
+import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.handlers.RegistrationHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Location;
@@ -64,7 +65,7 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
     View.OnClickListener onSubmit = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.i("hr.foi.teamup.debug", "RegistrationActivity -- initiated user registration");
+            Logger.log("RegistrationActivity -- initiated user registration");
 
             String firstNameValue = firstName.getText().toString();
             String lastNameValue = lastName.getText().toString();
@@ -74,7 +75,7 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
             if(Input.validate(inputs)
                     && inputs.get(inputs.size() - 2).equals(inputs.get(inputs.size() - 1))){
 
-                Log.i("hr.foi.teamup.debug", "RegistrationActivity -- creating new user and sending info to service");
+                Logger.log("RegistrationActivity -- creating new user and sending info to service");
 
                 credentials = new Credentials(usernameValue,passwordValue);
                 Person person = new Person(0,firstNameValue,lastNameValue,credentials, new Location(0, 0));

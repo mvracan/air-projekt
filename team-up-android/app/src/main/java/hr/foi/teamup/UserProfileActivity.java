@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import hr.foi.air.teamup.Input;
+import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.handlers.UpdateHandler;
 import hr.foi.teamup.model.Credentials;
@@ -75,7 +76,7 @@ public class UserProfileActivity extends AppCompatActivity {
     View.OnClickListener onChange = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.i("hr.foi.teamup.debug", "UserProfileActivity -- initiated user update");
+            Logger.log("UserProfileActivity -- initiated user update");
 
             String firstNameValue = firstName.getText().toString();
             String lastNameValue = lastName.getText().toString();
@@ -84,15 +85,15 @@ public class UserProfileActivity extends AppCompatActivity {
             if (Input.validate(inputs)
                     && inputs.get(inputs.size() - 2).equals(inputs.get(inputs.size() - 1))) {
 
-                Log.i("hr.foi.teamup.debug", "UserProfileActivity -- fetching user from session");
+                Logger.log("UserProfileActivity -- fetching user from session");
 
-                Log.i("hr.foi.teamup.debug", "UserProfileActivity --  user fetched from session " + user.toString());
+                Logger.log("UserProfileActivity --  user fetched from session " + user.toString(), Log.DEBUG);
                 user.setName(firstNameValue);
                 user.setSurname(lastNameValue);
                 Credentials changedPassword = new Credentials(user.getCredentials().getUsername(), passwordValue);
                 user.setCredentials(changedPassword);
 
-                Log.i("hr.foi.teamup.debug", "UserProfileActivity --  calling web service ");
+                Logger.log("UserProfileActivity --  calling web service ");
 
                 UpdateHandler updateHandler = new UpdateHandler(UserProfileActivity.this, user);
                 new ServiceAsyncTask(updateHandler).execute(new ServiceParams(

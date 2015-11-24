@@ -75,12 +75,12 @@ public class Input {
         boolean valid = true;
         for (Input i: inputs) {
             if(!i.isValid()) {
-                Log.w("hr.foi.teamup.debug", "Input -- there are invalid inputs");
+                Logger.log("Input -- there are invalid inputs", Log.WARN);
                 valid = false;
                 i.setError();
             }
         }
-        Log.i("hr.foi.teamup.debug", "Input -- all fields are valid");
+        Logger.log("Input -- all fields are valid");
         return valid;
     }
 

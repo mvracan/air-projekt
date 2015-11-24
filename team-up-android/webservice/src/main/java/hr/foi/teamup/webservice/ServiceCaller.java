@@ -18,6 +18,7 @@ import java.net.URL;
  */
 public class ServiceCaller {
 
+    public static final String SERVICE_LOG_TAG = "hr.foi.teamup.debug";
     public static final String HTTP_GET = "GET";
     public static final String HTTP_POST = "POST";
     public static final String HTTP_PUT = "PUT";
@@ -32,7 +33,7 @@ public class ServiceCaller {
      * @throws IOException when connection cannot open
      */
     public static ServiceResponse call(URL url, String method, Serializable object) throws IOException {
-        Log.i("hr.foi.teamup.debug", "ServiceCaller -- initiating");
+        Log.i(SERVICE_LOG_TAG, "ServiceCaller -- initiating");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
@@ -40,17 +41,17 @@ public class ServiceCaller {
         connection.setRequestMethod(method);
         connection.connect();
 
-        Log.i("hr.foi.teamup.debug", "ServiceCaller -- successfully connected to service: " + url.toString());
+        Log.d(SERVICE_LOG_TAG, "ServiceCaller -- successfully connected to service: " + url.toString());
         if(object != null) {
             // write
-            Log.i("hr.foi.teamup.debug", "ServiceCaller -- sending object:"
+            Log.d(SERVICE_LOG_TAG, "ServiceCaller -- sending object:"
                     + object.toString() + " to " + url.toString());
             OutputStream os = connection.getOutputStream();
             os.write(new Gson().toJson(object).getBytes());
             os.close();
         }
 
-        Log.i("hr.foi.teamup.debug", "ServiceCaller -- receiving response from service " + url.toString());
+        Log.d(SERVICE_LOG_TAG, "ServiceCaller -- receiving response from service " + url.toString());
         // read
         int code = connection.getResponseCode();
         StringBuilder json = new StringBuilder();
@@ -63,7 +64,7 @@ public class ServiceCaller {
         }
         connection.disconnect();
 
-        Log.i("hr.foi.teamup.debug", "ServiceCaller -- received response: "
+        Log.d(SERVICE_LOG_TAG, "ServiceCaller -- received response: "
                 + json.toString() + " from " + url.toString());
         return new ServiceResponse(code, json.toString());
     }

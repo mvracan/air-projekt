@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 
+import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.model.Person;
@@ -26,7 +27,7 @@ public class LoginHandler extends ResponseHandler {
 
     @Override
     public boolean handleResponse(ServiceResponse response) {
-        Log.i("hr.foi.teamup.debug", "LoginHandler -- Got response: " + response.toString());
+        Logger.log("LoginHandler -- Got response: " + response.toString(), Log.DEBUG);
 
         if(response.getHttpCode() == 200) {
 
@@ -37,9 +38,8 @@ public class LoginHandler extends ResponseHandler {
             if(manager.createSession(person, SessionManager.PERSON_INFO_KEY)) {
 
                 Person sessionPerson = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
-                Log.i("hr.foi.teamup.debug",
-                        "LoginHandler -- valid user, created session: " + sessionPerson.toString()
-                                + ", proceeding to group activity");
+                Logger.log("LoginHandler -- valid user, created session: " + sessionPerson.toString()
+                                + ", proceeding to group activity", Log.DEBUG);
                 // start main activity
                 Intent intent = new Intent(this.context, TeamActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -54,7 +54,7 @@ public class LoginHandler extends ResponseHandler {
 
         } else  {
             // http code different from 200 OK
-            Log.i("hr.foi.teamup.debug", "LoginHandler -- invalid credentials sent");
+            Logger.log("LoginHandler -- invalid credentials sent", Log.WARN);
             Toast.makeText(this.context, "Invalid credentials", Toast.LENGTH_LONG).show();
             return false;
         }
