@@ -30,8 +30,8 @@ public class UpdateHandler extends ResponseHandler {
 
             // update session
             SessionManager manager= SessionManager.getInstance(this.context);
-            manager.destroySession("person");
-            manager.createSession(user, "person");
+            manager.destroySession(SessionManager.PERSON_INFO_KEY);
+            manager.createSession(user, SessionManager.PERSON_INFO_KEY);
             Toast.makeText(this.context,
                     "Update successful", Toast.LENGTH_LONG).show();
             // finish()

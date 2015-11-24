@@ -17,6 +17,7 @@ import hr.foi.teamup.handlers.UpdateHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
+import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -36,7 +37,8 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         // session
-        user= SessionManager.getInstance(getApplicationContext()).retrieveSession("person", Person.class);
+        user= SessionManager.getInstance(getApplicationContext())
+                .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
 
         // binding
         firstName = (EditText) findViewById(R.id.firstNameInput);
@@ -57,10 +59,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // input validation
         inputs = Arrays.asList(
-                new Input(firstName, Input.TEXT_MAIN_PATTERN, "First name can only contain letters (min 3, max 45)"),
-                new Input(lastName, Input.TEXT_MAIN_PATTERN, "Last name can only contain letters (min 3, max 45)"),
-                new Input(password, Input.PASSWORD_PATTERN, "Password too long or too short (min 5, max 45)"),
-                new Input(confirmPassword, Input.PASSWORD_PATTERN, "Passwords do not match")
+                new Input(firstName, Input.TEXT_MAIN_PATTERN, getString(R.string.first_name_error)),
+                new Input(lastName, Input.TEXT_MAIN_PATTERN, getString(R.string.last_name_error)),
+                new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error)),
+                new Input(confirmPassword, Input.PASSWORD_PATTERN, getString(R.string.confirm_password_error))
         );
 
         // hide keyboard
@@ -93,8 +95,9 @@ public class UserProfileActivity extends AppCompatActivity {
                 Log.i("hr.foi.teamup.debug", "UserProfileActivity --  calling web service ");
 
                 UpdateHandler updateHandler = new UpdateHandler(UserProfileActivity.this, user);
-                new ServiceAsyncTask(updateHandler).execute(new ServiceParams("/person/"
-                        + user.getIdPerson(), "PUT", user));
+                new ServiceAsyncTask(updateHandler).execute(new ServiceParams(
+                        getString(hr.foi.teamup.webservice.R.string.person_path) + user.getIdPerson(),
+                        ServiceCaller.HTTP_PUT, user));
             }
         }
 

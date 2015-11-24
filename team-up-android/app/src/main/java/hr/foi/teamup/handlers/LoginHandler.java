@@ -34,9 +34,9 @@ public class LoginHandler extends ResponseHandler {
             Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
             // save person to session
             SessionManager manager = SessionManager.getInstance(this.context);
-            if(manager.createSession(person, "person")) {
+            if(manager.createSession(person, SessionManager.PERSON_INFO_KEY)) {
 
-                Person sessionPerson = manager.retrieveSession("person", Person.class);
+                Person sessionPerson = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
                 Log.i("hr.foi.teamup.debug",
                         "LoginHandler -- valid user, created session: " + sessionPerson.toString()
                                 + ", proceeding to group activity");

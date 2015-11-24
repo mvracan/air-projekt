@@ -14,6 +14,8 @@ import java.io.Serializable;
 public class SessionManager {
 
     public static final String SHARED_PREFS_NAME = "hr.foi.air.teamup.session";
+    public static final String PERSON_INFO_KEY = "person";
+
     static SessionManager instance;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;

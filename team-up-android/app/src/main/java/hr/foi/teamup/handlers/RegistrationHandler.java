@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
+import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
 
@@ -30,7 +31,9 @@ public class RegistrationHandler extends ResponseHandler {
             Log.i("hr.foi.teamup.debug", "RegistrationHandler -- successfully registered user, logging in now...");
             // login
             LoginHandler loginHandler = new LoginHandler(this.context);
-            ServiceParams params = new ServiceParams("/person/login","POST",credentials);
+            ServiceParams params = new ServiceParams(
+                    context.getString(hr.foi.teamup.webservice.R.string.person_login_path),
+                    ServiceCaller.HTTP_POST, credentials);
             new ServiceAsyncTask(loginHandler).execute(params);
             return true;
         } else {

@@ -22,6 +22,7 @@ import hr.foi.air.teamup.prompts.LoadingPrompt;
 import hr.foi.teamup.handlers.LoginHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
+import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 
 public class LoginActivity extends Activity {
@@ -55,8 +56,8 @@ public class LoginActivity extends Activity {
 
         // for validation
         inputs = Arrays.asList(
-                new Input(username, Input.TEXT_MAIN_PATTERN, "Username can only contain letters (min 5, max 45)"),
-                new Input(password, Input.PASSWORD_PATTERN, "Password too short or too long (min 5, max 45)")
+                new Input(username, Input.TEXT_MAIN_PATTERN, getString(R.string.username_error)),
+                new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error))
         );
 
         if(savedInstanceState == null) {
@@ -99,7 +100,9 @@ public class LoginActivity extends Activity {
                 Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
 
                 LoginHandler loginHandler = new LoginHandler(LoginActivity.this);
-                ServiceParams params = new ServiceParams("/person/login", "POST", credentials);
+                ServiceParams params = new ServiceParams(
+                        getString(hr.foi.teamup.webservice.R.string.person_login_path),
+                        ServiceCaller.HTTP_POST, credentials);
                 new ServiceAsyncTask(loginHandler).execute(params);
             }
         }

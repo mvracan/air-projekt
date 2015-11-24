@@ -18,6 +18,11 @@ import java.net.URL;
  */
 public class ServiceCaller {
 
+    public static final String HTTP_GET = "GET";
+    public static final String HTTP_POST = "POST";
+    public static final String HTTP_PUT = "PUT";
+    public static final String HTTP_DELETE = "DELETE";
+
     /**
      * calls to url with desired method, use object param to send to url
      * @param url url to call
