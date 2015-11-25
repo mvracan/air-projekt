@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 
 import hr.foi.air.teamup.Input;
+import hr.foi.air.teamup.R;
 
 /**
  *
@@ -27,7 +28,7 @@ public class InputPrompt extends AlertPrompt {
 
         // dialog input
         Input input = new Input(new EditText(this.context), Input.TEXT_MAIN_PATTERN,
-                "Input should only contain letters (min 3, max 45)");
+                context.getString(R.string.input_error));
         this.builder.setView(input.getEditText());
     }
 }
