@@ -28,7 +28,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="person")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="idPerson") 
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="idPerson") 
 public class Person implements Serializable {
     
     @Id 
@@ -49,12 +49,13 @@ public class Person implements Serializable {
     @Embedded
     Location location;
     
-  
+    @JsonIgnore
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
     private List<Team> creatorOfGroups;
     
     
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "members")
+    @JsonBackReference
     private  List<Team>  memberOfGroups;
  
     // String token
