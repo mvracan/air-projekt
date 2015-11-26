@@ -55,7 +55,7 @@ public class Person implements Serializable {
     
     
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "members")
-    @JsonBackReference
+    @JsonIgnore
     private  List<Team>  memberOfGroups;
  
     // String token

@@ -60,7 +60,6 @@ public class Team implements Serializable {
 			@JoinColumn(name = "id_team", nullable = false, updatable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "id_person", 
 					nullable = false, updatable = false) })
-    @JsonManagedReference
     private List<Person> members;
 
     public long getIdTeam() {
