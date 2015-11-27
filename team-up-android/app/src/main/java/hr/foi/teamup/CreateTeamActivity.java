@@ -45,12 +45,12 @@ public class CreateTeamActivity extends AppCompatActivity implements Serializabl
         //name = (EditText) findViewById(R.id.teamName);
         //teamDesc = (EditText) findViewById(R.id.teamDesc);
         //radius = (EditText) findViewById(R.id.teamRadius);
-
+    /*
         password = (EditText) findViewById(R.id.passwordInput);
         confirmPassword = (EditText) findViewById(R.id.confirmPasswordInput);
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
-
+*/
         // for validation
         inputs = Arrays.asList(
                 new Input(name, Input.TEXT_MAIN_PATTERN, getString(R.string.team_name_error)),
