@@ -12,6 +12,8 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,10 +41,45 @@ public class TeamController {
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<List<Team>> retrieveAll() {
-        Logger.getLogger("GroupController.java").log(Logger.Level.INFO,
-                "GET on /group -- retrieving full list of groups");
+        Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                "GET on /team/ -- retrieving full list of groups");
         return new ResponseEntity(this.teamRepository.findAll(), HttpStatus.OK);
     }
     
+    @RequestMapping(value="/create", method=RequestMethod.POST)
+    public ResponseEntity<Team> createTeam(@RequestBody Team t){
+        Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                "POST on /team/create -- creating team " + t.toString());
+        
+        Team created = teamRepository.save(t);
+        if(created != null){
+            Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                "Successfully created team " + created.toString());
+            return new ResponseEntity(created,HttpStatus.OK);
+        }
+        else {
+            Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                "Failed to create team " + t.toString());
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
     
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteTeam (@PathVariable long id){
+        Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                "DELETE on /team/" + id);
+        Team found = teamRepository.findByIdTeam(id);
+        
+        if(found != null){
+            Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                    "Successfully found team " + found.toString());
+            teamRepository.delete(found);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        else{
+            Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                "No team found for " + id);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
 }

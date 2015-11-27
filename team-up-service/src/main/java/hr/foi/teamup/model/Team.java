@@ -30,7 +30,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="team")
- @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="idTeam") 
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="idTeam") 
 public class Team implements Serializable {
     
     @Id 
@@ -53,6 +53,7 @@ public class Team implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_creator")
     private Person creator;
+    
     
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "teammember",  joinColumns = { 
@@ -123,6 +124,11 @@ public class Team implements Serializable {
 
     public void setCreator(Person creator) {
         this.creator = creator;
+    }
+
+    @Override
+    public String toString() {
+        return this.name + " " + this.password;
     }
     
     

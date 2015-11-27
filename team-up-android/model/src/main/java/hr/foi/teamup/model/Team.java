@@ -1,6 +1,7 @@
 package hr.foi.teamup.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -14,6 +15,19 @@ public class Team implements Serializable {
     String password;
     double radius;
     String nfcCode;
+    Person creator;
+    List<Person> members;
+
+
+    public Team(String name, String teamDesc, String password, double radius, String nfcCode, Person creator) {
+        this.name = name;
+        this.teamDesc = teamDesc;
+        this.password = password;
+        this.radius = radius;
+        this.nfcCode = nfcCode;
+        this.creator = creator;
+
+    }
 
     public long getIdTeam() {
         return idTeam;
@@ -62,6 +76,14 @@ public class Team implements Serializable {
     public void setNfcCode(String nfcCode) {
         this.nfcCode = nfcCode;
     }
+
+    public Person getCreator() { return creator; }
+
+    public void setCreator(Person creator) { this.creator = creator; }
+
+    public List<Person> getMembers() { return members; }
+
+    public void setMembers(List<Person> members) { this.members = members; }
 
     @Override
     public String toString() {

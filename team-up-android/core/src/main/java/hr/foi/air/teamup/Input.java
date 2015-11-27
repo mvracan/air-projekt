@@ -19,6 +19,7 @@ public class Input {
 
     public static final String PASSWORD_PATTERN = "[a-zA-Z\\d!@#$%&*]{5,45}";
     public static final String TEXT_MAIN_PATTERN = "[A-Za-z]{3,45}";
+    public static final String RADIUS_PATTERN="^\\d+(\\.\\d{1,2})?$";
 
     /**
      * default constructor

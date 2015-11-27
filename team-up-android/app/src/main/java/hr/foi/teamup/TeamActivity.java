@@ -80,6 +80,10 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             Logger.log("Code clicked");
         } else if (menuItem.getItemId()==R.id.nfc){
             Logger.log("NFC clicked");
+        } else if (menuItem.getItemId()==R.id.history){
+            Logger.log("History clicked");
+        }else if (menuItem.getItemId()==R.id.new_group){
+            Logger.log("New group clicked");
         }
 
         return false;
