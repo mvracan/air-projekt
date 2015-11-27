@@ -125,6 +125,11 @@ public class Team implements Serializable {
     public void setCreator(Person creator) {
         this.creator = creator;
     }
+
+    @Override
+    public String toString() {
+        return this.name + " " + this.password;
+    }
     
     
     

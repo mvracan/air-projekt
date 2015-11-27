@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:checkableBehavior="single">
+    <item
+        android:id="@+id/profile"
+        android:title="@string/profile"/>
 
-        <item android:id="@+id/mama"
-            android:title="Bok" />
+    <item
+        android:id="@+id/history"
+        android:title="@string/history"/>
 
+    <item
+        android:id="@+id/new_group"
+        android:title="@string/new_group"/>
 
-    </group>
+    
+
+    <item android:id="@+id/group"
+        >
+        <menu>
+            <item android:id="@+id/code"
+                android:title="@string/code"/>
+            <item android:id="@+id/nfc"
+                android:title="@string/nfc" />
+        </menu>
+    </item>
+
 </menu>

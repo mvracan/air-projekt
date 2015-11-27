@@ -18,5 +18,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Table(name="team")
 public interface TeamRepository extends JpaRepository<Team, String> {
-
+    
+    public Team findByIdTeam( long idTeam);
 }
