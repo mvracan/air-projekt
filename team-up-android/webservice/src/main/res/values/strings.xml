@@ -4,6 +4,8 @@
     <string name="person_path">/person/</string>
     <string name="person_login_path">/person/login</string>
     <string name="person_signup_path">/person/signup</string>
+    <string name="team_path">/team/</string>
     <string name="team_create_path">/team/create</string>
+    <string name="team_history_path">/team/person/</string>
 
 </resources>
