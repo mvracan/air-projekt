@@ -19,4 +19,17 @@
     <string name="update_profile">Update your profile?</string>
     <string name="update">Update</string>
     <string name="map">Map</string>
+
+    <!-- validation -->
+    <string name="first_name_error">First name can only contain letters (min 3, max 45)</string>
+    <string name="last_name_error">Last name can only contain letters (min 3, max 45)</string>
+    <string name="username_error">Username can only contain letters (min 5, max 45)</string>
+    <string name="password_error">Password too short or too long (min 5, max 45)</string>
+    <string name="confirm_password_error">Passwords do not match</string>
+
+    <!-- menu -->
+    <string name="profile">Profile</string>
+    <string name="code">Code</string>
+    <string name="nfc">NFC</string>
+    <string name="group">Enter group by:</string>
 </resources>

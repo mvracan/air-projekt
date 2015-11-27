@@ -18,10 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import hr.foi.air.teamup.Input;
+import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.prompts.LoadingPrompt;
 import hr.foi.teamup.handlers.LoginHandler;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
+import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 
 public class LoginActivity extends Activity {
@@ -55,8 +57,8 @@ public class LoginActivity extends Activity {
 
         // for validation
         inputs = Arrays.asList(
-                new Input(username, Input.TEXT_MAIN_PATTERN, "Username can only contain letters (min 5, max 45)"),
-                new Input(password, Input.PASSWORD_PATTERN, "Password too short or too long (min 5, max 45)")
+                new Input(username, Input.TEXT_MAIN_PATTERN, getString(R.string.username_error)),
+                new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error))
         );
 
         if(savedInstanceState == null) {
@@ -69,7 +71,7 @@ public class LoginActivity extends Activity {
      * starts login animations
      */
     private void startAnimation() {
-        Log.i("hr.foi.teamup.debug", "LoginActivity -- login animation started");
+        Logger.log("LoginActivity -- login animation started");
         Animation moveAnimation= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_logo);
         Animation fadeAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.show_login_form);
 
@@ -80,7 +82,7 @@ public class LoginActivity extends Activity {
         passwordLayout.startAnimation(fadeAnimation);
         signIn.startAnimation(fadeAnimation);
         register.startAnimation(fadeAnimation);
-        Log.i("hr.foi.teamup.debug", "LoginActivity -- login animation ended");
+        Logger.log("LoginActivity -- login animation ended");
     }
 
     /**
@@ -89,17 +91,20 @@ public class LoginActivity extends Activity {
     View.OnClickListener onSignIn = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.i("hr.foi.teamup.debug", "LoginActivity -- initiated login");
+            Logger.log("LoginActivity -- initiated login");
 
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
 
             if(Input.validate(inputs)) {
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
-                Log.i("hr.foi.teamup.debug", "LoginActivity -- sending credentials to service");
+                Logger.log("LoginActivity -- sending credentials to service");
+
 
                 LoginHandler loginHandler = new LoginHandler(LoginActivity.this);
-                ServiceParams params = new ServiceParams("/person/login", "POST", credentials);
+                ServiceParams params = new ServiceParams(
+                        getString(hr.foi.teamup.webservice.R.string.person_login_path),
+                        ServiceCaller.HTTP_POST, credentials);
                 new ServiceAsyncTask(loginHandler).execute(params);
             }
         }

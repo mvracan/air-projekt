@@ -2,19 +2,23 @@ package hr.foi.teamup;
 
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 
+import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 
-public class TeamActivity extends AppCompatActivity {
+public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,9 @@ public class TeamActivity extends AppCompatActivity {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar,
                 R.string.drawer_open,  R.string.drawer_close);
         mDrawer.setDrawerListener(mDrawerToggle);
+
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -62,5 +69,19 @@ public class TeamActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_team_activity, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+        if (menuItem.getItemId()==R.id.profile){
+            Logger.log("Profile clicked");
+        } else if (menuItem.getItemId()==R.id.code){
+            Logger.log("Code clicked");
+        } else if (menuItem.getItemId()==R.id.nfc){
+            Logger.log("NFC clicked");
+        }
+
+        return false;
     }
 }

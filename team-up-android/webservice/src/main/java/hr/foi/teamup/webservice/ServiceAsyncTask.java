@@ -43,16 +43,16 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
         Looper.prepare();
         ServiceResponse jsonResponse = null;
 
-        Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Initiating service call to " + sp.getUrl());
+        Log.d(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Initiating service call to " + sp.getUrl());
         try {
             URL url = new URL(mainUrl+sp.getUrl());
             String method = sp.getMethod();
             Serializable object = sp.getObject();
             jsonResponse = ServiceCaller.call(url, method, object);
         } catch (MalformedURLException e) {
-            Log.e("hr.foi.teamup.debug", "ServiceAsyncTask -- failed to create URL from string " + sp.getUrl());
+            Log.e(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- failed to create URL from string " + sp.getUrl());
         } catch (IOException e) {
-            Log.e("hr.foi.teamup.debug", "ServiceAsyncTask -- cannot open connection to " + sp.getUrl());
+            Log.e(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- cannot open connection to " + sp.getUrl());
         }
 
         return jsonResponse;
@@ -65,10 +65,10 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     @Override
     protected void onPostExecute(ServiceResponse s) {
         if(sp != null) {
-            Log.i("hr.foi.teamup.debug", "ServiceAsyncTask -- Calling service response handler");
+            Log.i(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Calling service response handler");
             handler.handleResponse(s);
         } else {
-            Log.w("hr.foi.teamup.debug", "ServiceAsyncTask -- Could not call service response handler");
+            Log.w(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Could not call service response handler");
         }
         handler.onPostSend();
     }
