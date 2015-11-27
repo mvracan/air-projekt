@@ -1,6 +1,7 @@
 package hr.foi.teamup.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -13,6 +14,9 @@ public class Person implements Serializable {
     String surname;
     Credentials credentials;
     Location location;
+
+    private List<Team> creatorOfGroups;
+    private List<Team> memberOfGroups;
 
     public Person() {
     }
@@ -51,6 +55,22 @@ public class Person implements Serializable {
 
     public long getIdPerson() {
         return idPerson;
+    }
+
+    public List<Team> getCreatorOfGroups() {
+        return creatorOfGroups;
+    }
+
+    public void setCreatorOfGroups(List<Team> creatorOfGroups) {
+        this.creatorOfGroups = creatorOfGroups;
+    }
+
+    public List<Team> getMemberOfGroups() {
+        return memberOfGroups;
+    }
+
+    public void setMemberOfGroups(List<Team> memberOfGroups) {
+        this.memberOfGroups = memberOfGroups;
     }
 
     public void setIdPerson(long idPerson) {

@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -32,6 +33,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
 
@@ -136,6 +138,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             exchangeFragments(new TeamHistoryFragment());
         } else if (menuItem.getItemId()==R.id.new_group){
             Logger.log("New group clicked");
+            Intent intent = new Intent(getApplicationContext(), CreateTeamActivity.class);
+            startActivity(intent);
         }
 
         mDrawer.closeDrawers();
