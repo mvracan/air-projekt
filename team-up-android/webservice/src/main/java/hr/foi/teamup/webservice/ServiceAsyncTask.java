@@ -18,9 +18,14 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     ServiceParams sp;
     static final String mainUrl = "http://teamup-puding.rhcloud.com";
     ServiceResponseHandler handler;
+    SimpleResponseHandler simpleHandler;
 
     public ServiceAsyncTask(ServiceResponseHandler handler) {
         this.handler = handler;
+    }
+
+    public ServiceAsyncTask(SimpleResponseHandler handler) {
+        this.simpleHandler = handler;
     }
 
     /**
@@ -29,7 +34,7 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        handler.onPreSend();
+        if(handler != null) handler.onPreSend();
     }
 
     /**
@@ -40,7 +45,6 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     @Override
     protected ServiceResponse doInBackground(ServiceParams... params) {
         sp = params[0];
-        Looper.prepare();
         ServiceResponse jsonResponse = null;
 
         Log.d(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Initiating service call to " + sp.getUrl());
@@ -66,10 +70,14 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     protected void onPostExecute(ServiceResponse s) {
         if(sp != null) {
             Log.i(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Calling service response handler");
-            handler.handleResponse(s);
+            if(handler != null) {
+                handler.handleResponse(s);
+                handler.onPostSend();
+            } else {
+                simpleHandler.handleResponse(s);
+            }
         } else {
             Log.w(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Could not call service response handler");
         }
-        handler.onPostSend();
     }
 }

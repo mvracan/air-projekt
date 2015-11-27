@@ -13,9 +13,8 @@
     <string name="register">Register</string>
     <string name="drawer_open">Open menu</string>
     <string name="drawer_close">Close menu</string>
-    <string name="signout_question">Sign out from application?</string>
+    <string name="log_out_question">Log out from application?</string>
     <string name="cancel">Cancel</string>
-    <string name="sign_out">Sign out</string>
     <string name="update_profile">Update your profile?</string>
     <string name="update">Update</string>
     <string name="map">Map</string>
@@ -34,6 +33,7 @@
     <string name="group">Enter group by:</string>
     <string name="new_group">New group</string>
     <string name="history">History</string>
+    <string name="log_out">Log out</string>
 
     <!-- Create team -->
     <string name="team_name">Team name</string>

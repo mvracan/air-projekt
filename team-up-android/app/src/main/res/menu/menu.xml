@@ -6,18 +6,20 @@
         android:id="@+id/profile"
         android:title="@string/profile"/>
 
-    <item
-        android:id="@+id/history"
-        android:title="@string/history"/>
+    <group
+        android:id="@+id/teams">
+        <item
+            android:id="@+id/history"
+            android:title="@string/history"/>
 
-    <item
-        android:id="@+id/new_group"
-        android:title="@string/new_group"/>
+        <item
+            android:id="@+id/new_group"
+            android:title="@string/new_group"/>
+    </group>
 
-    
 
     <item android:id="@+id/group"
-        >
+        android:title="@string/group">
         <menu>
             <item android:id="@+id/code"
                 android:title="@string/code"/>
