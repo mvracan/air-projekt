@@ -26,6 +26,8 @@
         </activity>
         <activity android:name=".TeamActivity">
         </activity>
+        <activity android:name=".CreateTeamActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -97,6 +97,7 @@ public class LoginActivity extends Activity {
             String passwordValue = password.getText().toString();
 
             if(Input.validate(inputs)) {
+
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
                 Logger.log("LoginActivity -- sending credentials to service");
 

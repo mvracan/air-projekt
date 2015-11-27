@@ -30,34 +30,31 @@ public class CreateTeamActivity extends AppCompatActivity implements Serializabl
     Button submit;
     EditText name;
     EditText teamDesc;
-    EditText password;
-    EditText confirmPassword;
+
     EditText radius;
     List<Input> inputs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
 
-        //TODO create design
-        // binding
-        //name = (EditText) findViewById(R.id.teamName);
-        //teamDesc = (EditText) findViewById(R.id.teamDesc);
-        //radius = (EditText) findViewById(R.id.teamRadius);
-    /*
-        password = (EditText) findViewById(R.id.passwordInput);
-        confirmPassword = (EditText) findViewById(R.id.confirmPasswordInput);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_team);
+
+
+        name = (EditText) findViewById(R.id.teamName);
+        teamDesc = (EditText) findViewById(R.id.teamDesc);
+        radius = (EditText) findViewById(R.id.teamRadius);
+
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
-*/
-        // for validation
+
+
         inputs = Arrays.asList(
                 new Input(name, Input.TEXT_MAIN_PATTERN, getString(R.string.team_name_error)),
                 new Input(teamDesc, Input.TEXT_MAIN_PATTERN, getString(R.string.team_desc_error)),
-                new Input(radius, Input.RADIUS_PATTERN,getString(R.string.team_radius_error)),
-                new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error)),
-                new Input(confirmPassword, Input.PASSWORD_PATTERN, getString(R.string.confirm_password_error))
+                new Input(radius, Input.RADIUS_PATTERN,getString(R.string.team_radius_error))
+                //new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error)),
+                //new Input(confirmPassword, Input.PASSWORD_PATTERN, getString(R.string.confirm_password_error))
         );
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -81,7 +78,7 @@ public class CreateTeamActivity extends AppCompatActivity implements Serializabl
 
                 Team team =new Team(name.getText().toString(),
                         teamDesc.getText().toString(),
-                        password.getText().toString(),
+                        uuid.toString(),
                         Double.parseDouble( radius.getText().toString()),
                         uuid.toString(),
                         creator);

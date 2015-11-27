@@ -35,8 +35,18 @@
     <string name="new_group">New group</string>
     <string name="history">History</string>
 
+    <!-- Create team -->
+    <string name="team_name">Team name</string>
+    <string name="team_desc">Description</string>
+    <string name="team_radius">Radius</string>
+    <string name="team_back">Back</string>
+    <string name="create_team">Create</string>
+
+
     <string name="team_name_error">Team name can only contain letters (min 3, max 45)</string>
     <string name="team_desc_error">Team description  can only contain letters (min 3, max 45)</string>
     <string name="team_radius_error">Radius not valid (must be defined with . and in format of single or
         double precision number</string>
+
+
 </resources>
