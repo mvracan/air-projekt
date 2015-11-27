@@ -40,7 +40,7 @@ public class Team implements Serializable {
     
     @Column(name="team_title")
     private String name;
-    @Column(name="desc")
+    @Column(name="description")
     private String teamDesc;
     @Column(name="password")
     private String password;

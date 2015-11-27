@@ -19,13 +19,17 @@ public class Team implements Serializable {
     List<Person> members;
 
 
-    public Team(String name, String teamDesc, String password, double radius, String nfcCode, Person creator) {
+    public Team(long IdTeam, String name, String teamDesc, String password, double radius, String nfcCode,
+                Person creator,
+                List<Person> members) {
+        this.idTeam= idTeam;
         this.name = name;
         this.teamDesc = teamDesc;
         this.password = password;
         this.radius = radius;
         this.nfcCode = nfcCode;
         this.creator = creator;
+        this.members = members;
 
     }
 

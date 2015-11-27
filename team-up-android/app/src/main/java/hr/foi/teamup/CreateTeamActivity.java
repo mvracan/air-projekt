@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -48,13 +49,12 @@ public class CreateTeamActivity extends AppCompatActivity implements Serializabl
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
 
+        Logger.log("Radius : " +radius);
 
         inputs = Arrays.asList(
                 new Input(name, Input.TEXT_MAIN_PATTERN, getString(R.string.team_name_error)),
                 new Input(teamDesc, Input.TEXT_MAIN_PATTERN, getString(R.string.team_desc_error)),
                 new Input(radius, Input.RADIUS_PATTERN,getString(R.string.team_radius_error))
-                //new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error)),
-                //new Input(confirmPassword, Input.PASSWORD_PATTERN, getString(R.string.confirm_password_error))
         );
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -65,9 +65,9 @@ public class CreateTeamActivity extends AppCompatActivity implements Serializabl
         public void onClick(View v) {
             Logger.log("CreateTeamActivity -- initiated creation of group");
 
+            Logger.log("Radius : " +radius.getText().toString());
 
-            if(Input.validate(inputs)
-                    && inputs.get(inputs.size() - 2).equals(inputs.get(inputs.size() - 1))){
+            if(Input.validate(inputs)){
 
                 Logger.log("CreateTeamActivity -- creating new group and sending object to service");
 
@@ -76,12 +76,19 @@ public class CreateTeamActivity extends AppCompatActivity implements Serializabl
 
                 UUID uuid = UUID.randomUUID();
 
-                Team team =new Team(name.getText().toString(),
+                List<Person> members= new ArrayList<Person>();
+                members.add(creator);
+
+                Team team =new Team(
+                        0,
+                        name.getText().toString(),
                         teamDesc.getText().toString(),
                         uuid.toString(),
                         Double.parseDouble( radius.getText().toString()),
                         uuid.toString(),
-                        creator);
+                        creator,
+                        members);
+
 
 
                 TeamCreateHandler teamCreateHandler = new TeamCreateHandler(CreateTeamActivity.this, team);
