@@ -50,12 +50,12 @@ public class Team implements Serializable {
     private String nfcCode;
     
     
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinColumn(name = "id_creator")
     private Person creator;
     
     
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE})
 	@JoinTable(name = "teammember",  joinColumns = { 
 			@JoinColumn(name = "id_team", nullable = false, updatable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "id_person", 
