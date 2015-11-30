@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -19,9 +18,11 @@ import java.util.List;
 
 import hr.foi.air.teamup.Input;
 import hr.foi.air.teamup.Logger;
+import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.LoadingPrompt;
 import hr.foi.teamup.handlers.LoginHandler;
 import hr.foi.teamup.model.Credentials;
+import hr.foi.teamup.model.Person;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
@@ -61,6 +62,13 @@ public class LoginActivity extends Activity {
                 new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error))
         );
 
+        // if user is logged in, start main activity
+        if(SessionManager.getInstance(this)
+                .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class) != null) {
+            startActivity(new Intent(this, TeamActivity.class));
+        }
+
+        // animation only on first run
         if(savedInstanceState == null) {
             startAnimation();
         }
@@ -71,7 +79,7 @@ public class LoginActivity extends Activity {
      * starts login animations
      */
     private void startAnimation() {
-        Logger.log("LoginActivity -- login animation started");
+        Logger.log("Login animation started", getClass().getName());
         Animation moveAnimation= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_logo);
         Animation fadeAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.show_login_form);
 
@@ -82,7 +90,7 @@ public class LoginActivity extends Activity {
         passwordLayout.startAnimation(fadeAnimation);
         signIn.startAnimation(fadeAnimation);
         register.startAnimation(fadeAnimation);
-        Logger.log("LoginActivity -- login animation ended");
+        Logger.log("Login animation ended", getClass().getName());
     }
 
     /**
@@ -91,7 +99,7 @@ public class LoginActivity extends Activity {
     View.OnClickListener onSignIn = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Logger.log("LoginActivity -- initiated login");
+            Logger.log("Initiated login", getClass().getName());
 
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
@@ -99,7 +107,7 @@ public class LoginActivity extends Activity {
             if(Input.validate(inputs)) {
 
                 Credentials credentials = new Credentials(usernameValue, passwordValue);
-                Logger.log("LoginActivity -- sending credentials to service");
+                Logger.log("Sending credentials to service", getClass().getName());
 
 
                 LoginHandler loginHandler = new LoginHandler(LoginActivity.this);
@@ -117,8 +125,7 @@ public class LoginActivity extends Activity {
     View.OnClickListener onRegister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(getApplicationContext(), RegistrationActivity.class));
         }
     };
 }

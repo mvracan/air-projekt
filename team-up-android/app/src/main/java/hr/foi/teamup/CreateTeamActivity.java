@@ -24,6 +24,7 @@ import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 
 /**
+ *
  * Created by paz on 26.11.15..
  */
 public class CreateTeamActivity extends AppCompatActivity implements Serializable {
@@ -76,7 +77,7 @@ public class CreateTeamActivity extends AppCompatActivity implements Serializabl
 
                 UUID uuid = UUID.randomUUID();
 
-                List<Person> members= new ArrayList<Person>();
+                List<Person> members= new ArrayList<>();
                 members.add(creator);
 
                 Team team =new Team(
