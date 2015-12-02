@@ -26,6 +26,8 @@ dependencies {
 
     // design android
     compile 'com.android.support:design:23.0.1'
+    // stomp client
+    compile 'org.projectodd.stilts:stilts-stomp-client:0.1.40'
 
     // modules
     compile project (":webservice")
