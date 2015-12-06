@@ -16,11 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import org.projectodd.stilts.stomp.client.StompClient;
-
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.AlertPrompt;
+import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +51,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 signOut();
             }
         });
+
+        // set current team for the first time
+        if(savedInstanceState == null) {
+            exchangeFragments(new TeamFragment(), "currentteam");
+        }
     }
 
     @Override
