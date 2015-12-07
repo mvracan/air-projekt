@@ -32,7 +32,7 @@ public class AlertPrompt implements Prompt {
      */
     public void prepare(int title, DialogInterface.OnClickListener positive, int positiveMessage,
                         DialogInterface.OnClickListener negative, int negativeMessage) {
-        this.builder.setTitle(title)
+        this.builder.setMessage(title)
                 .setPositiveButton(positiveMessage, positive)
                 .setNegativeButton(negativeMessage, negative);
     }

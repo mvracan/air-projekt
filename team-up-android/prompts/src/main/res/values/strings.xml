@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">prompts</string>
+    <string name="please_wait">Please wait</string>
+    <string name="input_error">Input should only contain letters (min 3, max 45)</string>
+</resources>

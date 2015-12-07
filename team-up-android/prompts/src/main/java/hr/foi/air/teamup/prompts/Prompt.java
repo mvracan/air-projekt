@@ -6,6 +6,6 @@ package hr.foi.air.teamup.prompts;
  */
 public interface Prompt {
 
-    public void showPrompt();
+    void showPrompt();
 
 }
