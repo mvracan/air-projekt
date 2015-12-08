@@ -2,14 +2,11 @@ package hr.foi.teamup.adapters;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import hr.foi.air.teamup.Logger;
@@ -20,15 +17,10 @@ import hr.foi.teamup.model.Person;
  * used to list persons in teams
  * Created by Tomislav Turek on 06.12.15..
  */
-public class PersonAdapter extends ArrayAdapter<Person> {
-
-    LayoutInflater inflater;
-    ArrayList<Person> items;
+public class PersonAdapter extends BaseAdapter<Person> {
 
     public PersonAdapter(Context context, int resource, ArrayList<Person> items) {
         super(context, resource, items);
-        this.items = items;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public static class ViewHolder {
@@ -45,7 +37,7 @@ public class PersonAdapter extends ArrayAdapter<Person> {
         try {
             if (convertView == null) {
                 // TODO: check if works (parent was null before)
-                vi = inflater.inflate(R.layout.list_item_members, parent);
+                vi = getInflater().inflate(R.layout.list_item_members, parent);
                 holder = new ViewHolder();
                 holder.status = (ImageView) vi.findViewById(R.id.status);
                 holder.personName = (TextView) vi.findViewById(R.id.itemName);
@@ -57,7 +49,7 @@ public class PersonAdapter extends ArrayAdapter<Person> {
                 holder = (ViewHolder) vi.getTag();
             }
 
-            Person current = items.get(position);
+            Person current = getItems().get(position);
             holder.personName.setText(current.getName());
             holder.personUsername.setText(current.getCredentials().getUsername());
             holder.personSurname.setText(current.getSurname());

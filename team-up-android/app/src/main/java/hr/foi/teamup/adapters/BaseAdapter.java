@@ -11,15 +11,15 @@ import java.util.ArrayList;
  *
  * Created by Tomislav Turek on 06.12.15..
  */
-public abstract class BaseAdapter extends ArrayAdapter<Serializable> {
+public abstract class BaseAdapter<T extends Serializable> extends ArrayAdapter<T> {
 
-    LayoutInflater inflater;
-    ArrayList<Serializable> items;
+    private LayoutInflater inflater;
+    private ArrayList<T> items;
 
-    public BaseAdapter(Context context, int resource, ArrayList<Serializable> items) {
+    public BaseAdapter(Context context, int resource, ArrayList<T> items) {
         super(context, resource);
         this.items = items;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -28,12 +28,12 @@ public abstract class BaseAdapter extends ArrayAdapter<Serializable> {
     }
 
     @Override
-    public Serializable getItem(int position) {
+    public T getItem(int position) {
         return items.get(position);
     }
 
     @Override
-    public int getPosition(Serializable item) {
+    public int getPosition(T item) {
         for(int i = 0; i < items.size(); i++) {
             if(items.get(i) == item) {
                 return i;
@@ -51,7 +51,7 @@ public abstract class BaseAdapter extends ArrayAdapter<Serializable> {
         return inflater;
     }
 
-    public ArrayList<Serializable> getItems() {
+    public ArrayList<T> getItems() {
         return items;
     }
 }

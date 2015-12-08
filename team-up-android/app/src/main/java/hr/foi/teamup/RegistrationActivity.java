@@ -29,6 +29,8 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
     EditText username;
     EditText password;
     EditText confirmPassword;
+    Input passwordInput;
+    Input confirmPasswordInput;
     Credentials credentials;
     List<Input> inputs;
 
@@ -46,13 +48,18 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
 
+        // password inputs
+        passwordInput = new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error));
+        confirmPasswordInput = new Input(confirmPassword,
+                Input.PASSWORD_PATTERN, getString(R.string.confirm_password_error));
+
         // for validation
         inputs = Arrays.asList(
                 new Input(firstName, Input.TEXT_MAIN_PATTERN, getString(R.string.first_name_error)),
                 new Input(lastName, Input.TEXT_MAIN_PATTERN, getString(R.string.last_name_error)),
                 new Input(username, Input.TEXT_MAIN_PATTERN, getString(R.string.username_error)),
-                new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error)),
-                new Input(confirmPassword, Input.PASSWORD_PATTERN, getString(R.string.confirm_password_error))
+                passwordInput,
+                confirmPasswordInput
         );
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -71,8 +78,9 @@ public class RegistrationActivity extends AppCompatActivity implements Serializa
             String usernameValue = username.getText().toString();
             String passwordValue = password.getText().toString();
 
-            if(Input.validate(inputs)
-                    && inputs.get(inputs.size() - 2).equals(inputs.get(inputs.size() - 1))){
+
+
+            if(Input.validate(inputs) && passwordInput.equals(confirmPasswordInput)){
 
                 Logger.log("RegistrationActivity -- creating new user and sending info to service");
 
