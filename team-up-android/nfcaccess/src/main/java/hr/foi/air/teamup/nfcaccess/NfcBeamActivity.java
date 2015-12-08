@@ -9,6 +9,8 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Parcelable;
 
+import hr.foi.air.teamup.TeamJoinerCallback;
+
 /**
  * abstract activity to extend when nfc needs to be used
  * Created by Tomislav Turek on 07.12.15..
@@ -18,19 +20,21 @@ public abstract class NfcBeamActivity extends Activity implements NfcAdapter.Cre
     private NfcAdapter adapter;
     private String message;
     private static final String NFC_MIME_TYPE = "text/plain";
-    private NfcBeamCallback callback;
+    private TeamJoinerCallback callback;
 
     /**
      * gets called after intent is set to handle it
      */
     @Override
     protected void onResume() {
+
         super.onResume();
         Intent intent = getIntent();
         if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
             Parcelable[] raw = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefMessage ndefMessage = (NdefMessage) raw[0];
-            callback.onBeamMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
+            callback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
+
         }
     }
 
@@ -57,11 +61,13 @@ public abstract class NfcBeamActivity extends Activity implements NfcAdapter.Cre
      * starts the nfc adapter, should be called in onCreate
      * @throws NfcNotAvailableException thrown if the phone does not support nfc
      */
-    protected void startNfcAdapter() throws NfcNotAvailableException {
+    protected void startNfcAdapter() throws NfcNotAvailableException, NfcNotEnabledException {
         if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
             throw new NfcNotAvailableException("Nfc adapter is not available on this phone");
         }
-        adapter = NfcAdapter.getDefaultAdapter(this);
+        if((adapter = NfcAdapter.getDefaultAdapter(this))==null){
+            throw new NfcNotEnabledException("Nfc adapter is not enabled on this phone");
+        }
     }
 
     /**
@@ -70,7 +76,7 @@ public abstract class NfcBeamActivity extends Activity implements NfcAdapter.Cre
      * @param callback callback object that handles beam response
      * @throws NfcNotAvailableException
      */
-    protected void startNfcBeam(NfcBeamCallback callback) throws NfcNotAvailableException {
+    protected void startNfcBeam(TeamJoinerCallback callback) throws NfcNotAvailableException {
         startNfcBeam(null, callback);
     }
 
@@ -79,7 +85,9 @@ public abstract class NfcBeamActivity extends Activity implements NfcAdapter.Cre
      * @param message message to beam to the phone, null if in reader mode
      * @throws NfcNotAvailableException thrown if adapter was not initialized
      */
-    protected void startNfcBeam(String message, NfcBeamCallback callback) throws NfcNotAvailableException {
+    protected void startNfcBeam(String message, TeamJoinerCallback callback) throws NfcNotAvailableException {
+
+
         if(adapter == null) {
             throw new NfcNotAvailableException("Nfc adapter is not available or isn't working," +
                     " use startNfcAdapter before beaming");

@@ -21,5 +21,6 @@ public class NfcNotAvailableException extends Exception {
     public NfcNotAvailableException(Throwable throwable) {
         super(throwable);
     }
+
 }
 
