@@ -51,6 +51,7 @@
     <string name="team_desc_error">Team description  can only contain letters (min 3, max 45)</string>
     <string name="team_radius_error">Radius not valid (must be defined with . and in format of single or
         double precision number</string>
+    <string name="title_activity_stomp_proba">StompProba</string>
 
 
 </resources>

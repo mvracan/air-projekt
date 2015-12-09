@@ -4,10 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -23,12 +25,16 @@
         </activity>
         <activity android:name=".RegistrationActivity" >
         </activity>
-
         <activity android:name=".UserProfileActivity" >
         </activity>
-        <activity android:name=".TeamActivity">
+        <activity android:name=".TeamActivity" >
         </activity>
-        <activity android:name=".CreateTeamActivity">
+        <activity android:name=".CreateTeamActivity" >
+        </activity>
+        <activity
+            android:name=".StompProba"
+            android:label="@string/title_activity_stomp_proba"
+            android:theme="@style/AppTheme" >
         </activity>
     </application>
 

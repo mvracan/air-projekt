@@ -33,4 +33,5 @@
     <dimen name="panic_button_bottom_step">20dp</dimen>
 
     <integer name="ems_registration">10</integer>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
