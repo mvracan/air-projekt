@@ -10,8 +10,8 @@ import android.content.DialogInterface;
  */
 public class AlertPrompt implements Prompt {
 
-    Context context;
-    AlertDialog.Builder builder;
+    private Context context;
+    private AlertDialog.Builder builder;
 
     /**
      * default constructor
@@ -40,5 +40,13 @@ public class AlertPrompt implements Prompt {
     @Override
     public void showPrompt() {
         this.builder.create().show();
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public AlertDialog.Builder getBuilder() {
+        return builder;
     }
 }

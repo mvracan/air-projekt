@@ -25,15 +25,15 @@ public class RegistrationHandler extends ResponseHandler {
 
     @Override
     public boolean handleResponse(ServiceResponse response) {
-        Credentials credentials = (Credentials) this.args[0];
+        Credentials credentials = (Credentials) getArgs()[0];
         Logger.log("Deserialized arguments: " + credentials.toString(), getClass().getName(), Log.DEBUG);
 
         if(response.getHttpCode() == 200) {
             Logger.log("Successfully registered user, logging in now...", getClass().getName(), Log.DEBUG);
             // login
-            LoginHandler loginHandler = new LoginHandler(this.context);
+            LoginHandler loginHandler = new LoginHandler(getContext());
             ServiceParams params = new ServiceParams(
-                    context.getString(hr.foi.teamup.webservice.R.string.person_login_path),
+                    getContext().getString(hr.foi.teamup.webservice.R.string.person_login_path),
                     ServiceCaller.HTTP_POST, credentials);
             new ServiceAsyncTask(loginHandler).execute(params);
             return true;
@@ -41,7 +41,7 @@ public class RegistrationHandler extends ResponseHandler {
             Logger.log("Registration failed, server returned code "
                     + response.getHttpCode(), getClass().getName(), Log.WARN);
             // show fail
-            Toast.makeText(this.context,
+            Toast.makeText(getContext(),
                     "Registration failed, please try again (" + response.getHttpCode() + ")",
                     Toast.LENGTH_LONG).show();
             return false;

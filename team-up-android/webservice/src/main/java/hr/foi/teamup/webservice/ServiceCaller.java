@@ -18,7 +18,7 @@ import java.net.URL;
  */
 public class ServiceCaller {
 
-    public static final String SERVICE_LOG_TAG = "hr.foi.teamup.debug";
+    protected static final String SERVICE_LOG_TAG = "hr.foi.teamup.debug";
     public static final String HTTP_GET = "GET";
     public static final String HTTP_POST = "POST";
     public static final String HTTP_PUT = "PUT";
@@ -32,7 +32,7 @@ public class ServiceCaller {
      * @return response in json format
      * @throws IOException when connection cannot open
      */
-    public static ServiceResponse call(URL url, String method, Serializable object) throws IOException {
+    protected static ServiceResponse call(URL url, String method, Serializable object) throws IOException {
         Log.i(SERVICE_LOG_TAG, "ServiceCaller -- initiating");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
