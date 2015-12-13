@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
+import com.google.gson.Gson;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -21,7 +23,10 @@ import java.util.Map;
 
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.handlers.CookieHandler;
+import hr.foi.teamup.model.ChatMessage;
 import hr.foi.teamup.model.Credentials;
+import hr.foi.teamup.model.Location;
+import hr.foi.teamup.model.Person;
 import hr.foi.teamup.stomp.ListenerSubscription;
 import hr.foi.teamup.stomp.ListenerWSNetwork;
 import hr.foi.teamup.stomp.Stomp;
@@ -43,6 +48,7 @@ public class StompActivity extends AppCompatActivity {
     Button send;
     String cookie;
     Map<String,String> headersSetup = new HashMap<String,String>();
+    SessionManager manager;
 
 
     @Override
@@ -93,17 +99,44 @@ public class StompActivity extends AppCompatActivity {
                 client.connect();
 
 
-                client.send("app/activeUsers", null, null);
+               // client.send("app/activeUsers", null, null);
 
                 Log.i("connect - headers ", client.getHeaders().get("Cookie"));
 
+                /*
                 client.subscribe(new Subscription("/topic/active", new ListenerSubscription() {
                     @Override
                     public void onMessage(Map<String, String> headers, final String message) {
 
                         Log.i("la", "la");
 
-                       Log.i("poeuka",message);
+                        Log.i("poeuka", message);
+
+                    }
+
+                    @Override
+                    public void onPreSend() {
+
+                    }
+
+                    @Override
+                    public void onPostSend() {
+
+                    }
+                }));
+                */
+
+
+                client.subscribe(new Subscription("/user/queue/messages", new ListenerSubscription() {
+                    @Override
+                    public void onMessage(Map<String, String> headers, final String message) {
+
+                        Log.i("la", "la");
+
+                        Log.i("la", message);
+
+
+
 
                     }
 
@@ -118,9 +151,7 @@ public class StompActivity extends AppCompatActivity {
                     }
                 }));
 
-
-
-                client.subscribe(new Subscription("/user/queue/messages", new ListenerSubscription() {
+                client.subscribe(new Subscription("/topic/group/1", new ListenerSubscription() {
                     @Override
                     public void onMessage(Map<String, String> headers, final String message) {
 
@@ -129,7 +160,7 @@ public class StompActivity extends AppCompatActivity {
                         Log.i("la", message);
 
 
-                        viewText.setText(message);
+
 
                     }
 
@@ -195,9 +226,20 @@ public class StompActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            Log.i("sending my information"," lalal");
+            Log.i("sending my information", " lalal");
 
-            client.send("/app/activeUsers", null, null);
+            //client.send("/app/activeUsers", null, null);
+            
+            ChatMessage message = new ChatMessage();
+
+            Credentials cred=new Credentials("a","a");
+            Location loc=new Location(1,1);
+
+            Person test= new Person(1,"a","a",cred,loc);
+            message.setMessage(test);
+
+
+            client.send("/app/group/1",null, new Gson().toJson(message));
 
         }
 
