@@ -63,6 +63,24 @@
                 android:text="@string/submit"
                 android:layout_gravity="bottom"
                 android:id="@+id/submitButton" />
+            <!-- Connect button -->
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/buttonstyle"
+                android:textColor="@color/white"
+                android:text="connect"
+                android:layout_gravity="bottom"
+                android:id="@+id/pingButton" />
+            <!-- Send button -->
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/buttonstyle"
+                android:textColor="@color/white"
+                android:text="send"
+                android:layout_gravity="bottom"
+                android:id="@+id/sendButton" />
         </LinearLayout>
     </ScrollView>
 

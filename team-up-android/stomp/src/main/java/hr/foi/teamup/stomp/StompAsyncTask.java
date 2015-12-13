@@ -1,7 +1,6 @@
-package hr.foi.air.teamup;
+package hr.foi.teamup.stomp;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;

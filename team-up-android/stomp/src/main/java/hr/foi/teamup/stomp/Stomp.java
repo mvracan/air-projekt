@@ -1,11 +1,10 @@
-package hr.foi.air.teamup;
+package hr.foi.teamup.stomp;
 
 /**
  * Created by paz on 08.12.15..
  */
 
-import java.io.IOException;
-import java.util.HashMap;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import android.util.Log;
 
 import de.roderick.weberknecht.WebSocket;
 import de.roderick.weberknecht.WebSocketEventHandler;
@@ -67,6 +65,10 @@ public class Stomp {
 
     private ListenerWSNetwork networkListener;
 
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
     /**
      * Constructor of a stomp object. Only url used to set up a connection with a server can be instantiate
      *
@@ -76,10 +78,11 @@ public class Stomp {
 
     public Stomp(String url, Map<String,String> headersSetup, ListenerWSNetwork stompStates){
         try {
+            Log.i("LAL", headersSetup.get("Cookie"));
             this.websocket = new WebSocket(new URI(url), null, headersSetup);
             this.counter = 0;
 
-            this.headers = new HashMap<String, String>();
+            this.headers = headersSetup;
             this.maxWebSocketFrameSize = 16 * 1024;
             this.connection = NOT_AGAIN_CONNECTED;
             this.networkListener = stompStates;
@@ -109,7 +112,7 @@ public class Stomp {
                         Stomp.this.connection = CONNECTED;
                         Stomp.this.networkListener.onState(CONNECTED);
 
-                        Log.d(TAG, "connected to server : " + frame.getHeaders().get("server"));
+                        Log.d(TAG, "connected to server : " + frame.getHeaders().get("user-name"));
                         isMessageConnected = true;
 
                     } else if(frame.getCommand().equals(COMMAND_MESSAGE)){
@@ -252,6 +255,8 @@ public class Stomp {
      *      body of a message
      */
     public void send(String destination, Map<String,String> headers, String body){
+
+
         if(this.connection == CONNECTED){
             if(headers == null)
                 headers = new HashMap<String, String>();
@@ -259,9 +264,14 @@ public class Stomp {
             if(body == null)
                 body = "";
 
+
+
             headers.put(SUBSCRIPTION_DESTINATION, destination);
 
             transmit(COMMAND_SEND, headers, body);
+        }
+        else{
+            Log.i("destination nisam spojen ", destination);
         }
     }
 

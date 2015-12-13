@@ -10,12 +10,46 @@ public class ServiceParams {
 
     private String url;
     private String method;
+    private String type;
     private Serializable object;
+    private String urlEncoded;
 
     public ServiceParams(String url, String method, Serializable object) {
         this.url = url;
         this.method = method;
         this.object = object;
+    }
+
+
+    public ServiceParams(String url, String method, String type, Serializable object) {
+        this.url = url;
+        this.method = method;
+        this.type = type;
+        this.object = object;
+    }
+
+    public ServiceParams(String url, String method, String type, Serializable object, String urlEncoded) {
+        this.url = url;
+        this.method = method;
+        this.type = type;
+        this.object = object;
+        this.urlEncoded = urlEncoded;
+    }
+
+    public String getUrlEncoded() {
+        return urlEncoded;
+    }
+
+    public void setUrlEncoded(String urlEncoded) {
+        this.urlEncoded = urlEncoded;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getUrl() {

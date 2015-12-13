@@ -1,4 +1,4 @@
-package hr.foi.air.teamup;
+package hr.foi.teamup.stomp;
 
 import org.junit.Test;
 

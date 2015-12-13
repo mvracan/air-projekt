@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "hr.foi.teamup"
@@ -25,11 +26,14 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     // design android
     compile 'com.android.support:design:23.0.1'
-    // stomp client
-    compile 'org.projectodd.stilts:stilts-stomp-client:0.1.40'
+
+
+
     // modules
     compile project(':webservice')
     compile project(':model')
     compile project(':core')
     compile project(':prompts')
+
+    compile project(':stomp')
 }

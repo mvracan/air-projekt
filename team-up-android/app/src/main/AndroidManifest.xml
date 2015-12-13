@@ -16,7 +16,7 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".LoginActivity" >
+        <activity android:name=".StompActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,10 +31,7 @@
         </activity>
         <activity android:name=".CreateTeamActivity" >
         </activity>
-        <activity
-            android:name=".StompProba"
-            android:label="@string/title_activity_stomp_proba"
-            android:theme="@style/AppTheme" >
+        <activity android:name=".LoginActivity">
         </activity>
     </application>
 

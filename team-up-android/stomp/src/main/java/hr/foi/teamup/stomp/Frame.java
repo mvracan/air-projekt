@@ -1,4 +1,4 @@
-package hr.foi.air.teamup;
+package hr.foi.teamup.stomp;
 
 /**
  * Created by paz on 08.12.15..

@@ -15,7 +15,7 @@ import java.net.URL;
 public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResponse> {
 
     ServiceParams sp;
-    static final String mainUrl = "http://teamup-puding.rhcloud.com";
+    static final String mainUrl = "http://46.101.115.78:8080";
     SimpleResponseHandler handler;
 
     public ServiceAsyncTask(SimpleResponseHandler handler) {
@@ -47,7 +47,8 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
             URL url = new URL(mainUrl+sp.getUrl());
             String method = sp.getMethod();
             Serializable object = sp.getObject();
-            jsonResponse = ServiceCaller.call(url, method, object);
+            String type = sp.getType();
+            jsonResponse = ServiceCaller.call(url, method, object, type, sp.getUrlEncoded());
         } catch (MalformedURLException e) {
             Log.e(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- failed to create URL from string " + sp.getUrl());
         } catch (IOException e) {
