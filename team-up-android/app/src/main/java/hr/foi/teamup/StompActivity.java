@@ -23,6 +23,7 @@ import java.util.Map;
 
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.handlers.CookieHandler;
+import hr.foi.teamup.handlers.StompMessageHandler;
 import hr.foi.teamup.model.ChatMessage;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Location;
@@ -31,6 +32,7 @@ import hr.foi.teamup.stomp.ListenerSubscription;
 import hr.foi.teamup.stomp.ListenerWSNetwork;
 import hr.foi.teamup.stomp.Stomp;
 import hr.foi.teamup.stomp.Subscription;
+import hr.foi.teamup.stomp.TeamConnection;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
@@ -47,8 +49,9 @@ public class StompActivity extends AppCompatActivity {
     Button ping;
     Button send;
     String cookie;
-    Map<String,String> headersSetup = new HashMap<String,String>();
+    TeamConnection socket;
     SessionManager manager;
+    HashMap <String, ListenerSubscription> subscriptionsChannels = new HashMap<>();
 
 
     @Override
@@ -80,110 +83,15 @@ public class StompActivity extends AppCompatActivity {
 
 
     private void joinGroup(){
-        Thread thread= new Thread(new Runnable(){
-            @Override
-            public void run(){
 
+        subscriptionsChannels.put("/user/queue/messages",new StompMessageHandler());
+        subscriptionsChannels.put("/topic/group/1",new StompMessageHandler());
 
-                headersSetup.put("Cookie", cookie);
-                Log.i("connect", "going to connect to stomp with cookie" + cookie);
-                Log.i("connect", "going to connect to stomp");
+        socket= new TeamConnection(
+        subscriptionsChannels, cookie);
 
-                client = new Stomp(websocketConnection + "/chat", headersSetup, new ListenerWSNetwork() {
-                    @Override
-                    public void onState(int state) {
-                        Log.i("State :", new Integer(state).toString());
-                    }
-                });
+        socket.start();
 
-                client.connect();
-
-
-               // client.send("app/activeUsers", null, null);
-
-                Log.i("connect - headers ", client.getHeaders().get("Cookie"));
-
-                /*
-                client.subscribe(new Subscription("/topic/active", new ListenerSubscription() {
-                    @Override
-                    public void onMessage(Map<String, String> headers, final String message) {
-
-                        Log.i("la", "la");
-
-                        Log.i("poeuka", message);
-
-                    }
-
-                    @Override
-                    public void onPreSend() {
-
-                    }
-
-                    @Override
-                    public void onPostSend() {
-
-                    }
-                }));
-                */
-
-
-                client.subscribe(new Subscription("/user/queue/messages", new ListenerSubscription() {
-                    @Override
-                    public void onMessage(Map<String, String> headers, final String message) {
-
-                        Log.i("la", "la");
-
-                        Log.i("la", message);
-
-
-
-
-                    }
-
-                    @Override
-                    public void onPreSend() {
-
-                    }
-
-                    @Override
-                    public void onPostSend() {
-
-                    }
-                }));
-
-                client.subscribe(new Subscription("/topic/group/1", new ListenerSubscription() {
-                    @Override
-                    public void onMessage(Map<String, String> headers, final String message) {
-
-                        Log.i("la", "la");
-
-                        Log.i("la", message);
-
-
-
-
-                    }
-
-                    @Override
-                    public void onPreSend() {
-
-                    }
-
-                    @Override
-                    public void onPostSend() {
-
-                    }
-                }));
-
-
-            //client.send(websocketConnection+"/app/activeUsers", null ,null);
-
-            }
-        });
-
-
-
-    thread.start();
 
     }
     View.OnClickListener onSubmit = new View.OnClickListener() {
@@ -209,7 +117,7 @@ public class StompActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Log.i("here","here");
-            SessionManager manager = SessionManager.getInstance(getApplicationContext());
+            manager = SessionManager.getInstance(getApplicationContext());
             cookie= manager.retrieveSession(SessionManager.COOKIE, String.class);
 
             if(cookie!=null) {
@@ -239,7 +147,7 @@ public class StompActivity extends AppCompatActivity {
             message.setMessage(test);
 
 
-            client.send("/app/group/1",null, new Gson().toJson(message));
+            socket.send("/app/group/1",message);
 
         }
 
