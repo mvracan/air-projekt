@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/paz/Documents/teamup/team-up/team-up-android/app/build/intermediates/exploded-aar/team-up-android/stomp/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5e6787cef7c3693d3bdc395853c2683e48015cd1">
+        <dex dex="/home/paz/Documents/teamup/team-up/team-up-android/app/build/intermediates/pre-dexed/debug/classes-59dda349e32686d86c4232be237d11767dda144b.jar" />
+    </item>
+
+</items>

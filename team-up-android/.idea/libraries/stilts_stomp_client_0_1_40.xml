@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="stilts-stomp-client-0.1.40">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectodd.stilts/stilts-stomp-client/0.1.40/58dd8e5e1f74b1a27006edc86b364230600cc20f/stilts-stomp-client-0.1.40.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectodd.stilts/stilts-stomp-client/0.1.40/29ac8c0b29f2849ffed09ffbd1b534619dbdf743/stilts-stomp-client-0.1.40-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

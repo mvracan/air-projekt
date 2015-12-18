@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="@dimen/image_logo_width"
+        android:layout_height="@dimen/image_logo_height"
+        android:id="@+id/applogo"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/image_logo_space_large_top"
+        android:src="@drawable/logo"
+        android:alpha="0.6"
+        android:contentDescription="@string/logoapp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/empty_message"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/empty_message_top_space" />
+</LinearLayout><!-- From: file:/home/paz/Documents/teamup/team-up/team-up-android/app/src/main/res/layout/layout_empty_data.xml -->
