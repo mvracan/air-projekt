@@ -37,14 +37,14 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
     
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/queue", "/topic","/group" );
+    config.enableSimpleBroker("/queue", "/topic","/team" );
     config.setApplicationDestinationPrefixes("/app");
     
   }
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/chat", "/activeUsers" ,"/group");
+    registry.addEndpoint("/chat" ,"/team");
     
   }
   
