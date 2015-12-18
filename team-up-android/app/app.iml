@@ -100,8 +100,8 @@
     <orderEntry type="library" exported="" name="support-annotations-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="design-23.0.1" level="project" />
-    <orderEntry type="library" exported="" name="stilts-stomp-common-0.1.40" level="project" />
     <orderEntry type="library" exported="" name="stilts-stomp-api-0.1.40" level="project" />
+    <orderEntry type="library" exported="" name="stilts-stomp-common-0.1.40" level="project" />
     <orderEntry type="library" exported="" name="jboss-logging-3.0.0.CR1" level="project" />
     <orderEntry type="module" module-name="prompts" exported="" />
     <orderEntry type="module" module-name="webservice" exported="" />
