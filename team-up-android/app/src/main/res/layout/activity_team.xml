@@ -48,10 +48,10 @@
         android:layout_width="wrap_content"
         android:layout_gravity="start"
         android:background="?attr/colorPrimary"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/menu"
         android:paddingLeft="@dimen/navigation_padding_left"
         android:paddingRight="@dimen/navigation_padding_right">
+        <!--app:itemTextColor="@color/white"
+        app:menu="@menu/menu">
         <Button
             android:background="@drawable/nav_drawer_buttonstyle"
             android:textColor="@color/colorPrimaryDark"
@@ -64,7 +64,7 @@
             android:layout_marginLeft="@dimen/log_out_button_margin_start"
             android:layout_marginEnd="@dimen/log_out_button_margin_end"
             android:layout_marginRight="@dimen/log_out_button_margin_end"
-            android:layout_marginBottom="@dimen/log_out_button_margin_bottom" />
+            android:layout_marginBottom="@dimen/log_out_button_margin_bottom" />-->
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

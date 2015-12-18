@@ -19,6 +19,7 @@ import android.widget.Button;
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.AlertPrompt;
+import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 
@@ -43,14 +44,14 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Button logOut = (Button) findViewById(R.id.log_out_button);
-        logOut.setOnClickListener(new View.OnClickListener() {
+        //Button logOut = (Button) findViewById(R.id.log_out_button);
+        /*logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Logger.log("Logging out user...");
                 signOut();
             }
-        });
+        });*/
 
         // set current team for the first time
         if(savedInstanceState == null) {
@@ -132,9 +133,15 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         if (menuItem.getItemId()==R.id.profile){
             Logger.log("Profile clicked");
         } else if (menuItem.getItemId()==R.id.code){
-            Logger.log("Code clicked");
+            InputPrompt prompt = new InputPrompt(this);
+            prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Logger.log("Stisnul je da");
+                }
+            },R.string.join, null, R.string.cancel);
         } else if (menuItem.getItemId()==R.id.nfc){
-            Logger.log("NFC clicked");
+            startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId()==R.id.history){
             exchangeFragments(new TeamHistoryFragment(), "teamhistory");
         } else if (menuItem.getItemId()==R.id.new_group){

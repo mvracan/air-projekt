@@ -25,11 +25,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     // design android
     compile 'com.android.support:design:23.0.1'
-    // stomp client
-    compile 'org.projectodd.stilts:stilts-stomp-client:0.1.40'
     // modules
     compile project(':webservice')
     compile project(':model')
     compile project(':core')
     compile project(':prompts')
+    compile project(':nfc')
+    compile project(':stomp')
 }

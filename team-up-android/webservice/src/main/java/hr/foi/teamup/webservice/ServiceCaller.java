@@ -18,10 +18,13 @@ import java.net.URL;
  */
 public class ServiceCaller {
 
-    protected static final String SERVICE_LOG_TAG = "hr.foi.teamup.debug";
+    public static final String SERVICE_LOG_TAG = "hr.foi.teamup.debug";
     public static final String HTTP_GET = "GET";
     public static final String HTTP_POST = "POST";
     public static final String HTTP_PUT = "PUT";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String APPLICATION_JSON = "application/json";
+    public static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String HTTP_DELETE = "DELETE";
 
     /**
@@ -32,12 +35,12 @@ public class ServiceCaller {
      * @return response in json format
      * @throws IOException when connection cannot open
      */
-    protected static ServiceResponse call(URL url, String method, Serializable object) throws IOException {
+    public static ServiceResponse call(URL url, String method, Serializable object, String type, String urlEncoded) throws IOException {
         Log.i(SERVICE_LOG_TAG, "ServiceCaller -- initiating");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty(CONTENT_TYPE, type);
         connection.setRequestMethod(method);
         connection.connect();
 
@@ -49,6 +52,12 @@ public class ServiceCaller {
             OutputStream os = connection.getOutputStream();
             os.write(new Gson().toJson(object).getBytes());
             os.close();
+        }else{
+
+            OutputStream os = connection.getOutputStream();
+            os.write(urlEncoded.getBytes());
+            os.close();
+
         }
 
         Log.d(SERVICE_LOG_TAG, "ServiceCaller -- receiving response from service " + url.toString());
@@ -62,11 +71,16 @@ public class ServiceCaller {
                 json.append(line);
             }
         }
+        String cookie = "";
+        if(code == 202){
+            cookie = connection.getHeaderField("Set-Cookie");
+            cookie = cookie.substring(0, cookie.indexOf(';'));
+            Log.d(SERVICE_LOG_TAG, "Gettomg cookie" + cookie);
+        }
         connection.disconnect();
 
         Log.d(SERVICE_LOG_TAG, "ServiceCaller -- received response: "
                 + json.toString() + " from " + url.toString());
-        return new ServiceResponse(code, json.toString());
+        return new ServiceResponse(cookie, json.toString(),code);
     }
-
 }

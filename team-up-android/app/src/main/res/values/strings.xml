@@ -52,5 +52,9 @@
     <string name="team_radius_error">Radius not valid (must be defined with . and in format of single or
         double precision number</string>
 
+    <!-- Prompt-->
+    <string name="join_group">Enter code to access team</string>
+    <string name="join">Join</string>
+
 
 </resources>
