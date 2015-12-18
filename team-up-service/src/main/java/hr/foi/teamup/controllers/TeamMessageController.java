@@ -28,12 +28,12 @@ public class TeamMessageController {
     
     }
     
-    @MessageMapping("/group/{id}")
+    @MessageMapping("/team/{id}")
     public void sendToGroup( 
             @Payload TeamMessage teamMessage,
             @DestinationVariable long id) throws Exception {
         
-        template.convertAndSend("/topic/group/" + id, teamMessage);
+        template.convertAndSend("/topic/team/" + id, teamMessage);
     
     } 
 }

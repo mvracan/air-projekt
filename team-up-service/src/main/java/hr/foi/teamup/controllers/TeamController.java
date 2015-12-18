@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 /**
  *
  * @author paz
@@ -46,6 +48,8 @@ public class TeamController {
     public ResponseEntity<List<Team>> retrieveAll() {
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
                 "GET on /team/ -- retrieving full list of groups");
+        
+        
         return new ResponseEntity(this.teamRepository.findAll(), HttpStatus.OK);
     }
     

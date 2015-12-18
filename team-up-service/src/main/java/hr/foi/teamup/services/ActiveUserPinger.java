@@ -42,7 +42,7 @@ public class ActiveUserPinger {
     
     for(Team t: Teams){
         
-    template.convertAndSend("/topic/group/" + t.getIdTeam() , t.getMembers());
+    template.convertAndSend("/topic/team/" + t.getIdTeam() , t.getMembers());
      
     }
     

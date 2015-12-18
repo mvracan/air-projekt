@@ -39,10 +39,16 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
+    
     private Object SimpMessageHeaderAccessor;
     private TeamRepository teamRepository;
     private PersonRepository personRepository;
+
+    public WebSocketConfig() {
+        
+    }
   
+    
     @Autowired
     WebSocketConfig(TeamRepository teamRepository, PersonRepository personRepository){
         this.teamRepository = teamRepository;
