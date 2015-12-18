@@ -10,7 +10,6 @@ import android.content.Context;
 public class LoadingPrompt extends AlertPrompt {
 
     ProgressDialog progressDialog;
-    private String PLEASE_WAIT_MESSAGE = "Please wait";
 
     public LoadingPrompt(Context context) {
         super(context);
@@ -22,8 +21,8 @@ public class LoadingPrompt extends AlertPrompt {
     @Override
     public void showPrompt() {
         if (progressDialog == null || !progressDialog.isShowing()) {
-            progressDialog = ProgressDialog.show(this.context, null,
-                    PLEASE_WAIT_MESSAGE, true, false);
+            progressDialog = ProgressDialog.show(getContext(), null,
+                    getContext().getString(R.string.please_wait), true, false);
         }
     }
 

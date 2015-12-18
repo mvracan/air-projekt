@@ -25,6 +25,6 @@ public class InputPrompt extends AlertPrompt {
 
         // dialog input
         // TODO: check if EditText works and refactor
-        this.builder.setView(new EditText(this.context));
+        this.getBuilder().setView(new EditText(getContext()));
     }
 }

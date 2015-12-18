@@ -61,6 +61,9 @@ public class Team implements Serializable {
 			inverseJoinColumns = { @JoinColumn(name = "id_person", 
 					nullable = false, updatable = false) })
     private List<Person> members;
+    
+    @Column(name="active")
+    private long active;
 
     public long getIdTeam() {
         return idTeam;
@@ -130,6 +133,15 @@ public class Team implements Serializable {
     public String toString() {
         return this.name + " " + this.password;
     }
+    
+    public long getActive() {
+        return active;
+    }
+
+    public void setActive(long active) {
+        this.active = active;
+    }
+        
     
     
     
