@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">TeamUp</string>
+
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="submit">Submit</string>
+
+    <string name="signin">Sign in</string>
+    <string name="logoapp">logoapp</string>
+    <string name="register">Register</string>
+    <string name="drawer_open">Open menu</string>
+    <string name="drawer_close">Close menu</string>
+    <string name="log_out_question">Log out from application?</string>
+    <string name="cancel">Cancel</string>
+    <string name="update_profile">Update your profile?</string>
+    <string name="update">Update</string>
+    <string name="map">Map</string>
+    <string name="user_status">Status</string>
+
+    <!-- validation -->
+    <string name="first_name_error">First name can only contain letters (min 3, max 45)</string>
+    <string name="last_name_error">Last name can only contain letters (min 3, max 45)</string>
+    <string name="username_error">Username can only contain letters (min 5, max 45)</string>
+    <string name="password_error">Password too short or too long (min 5, max 45)</string>
+    <string name="confirm_password_error">Passwords do not match</string>
+
+    <!-- menu -->
+    <string name="profile">Profile</string>
+    <string name="code">Code</string>
+    <string name="nfc">NFC</string>
+    <string name="group">Enter group by:</string>
+    <string name="new_group">New group</string>
+    <string name="history">History</string>
+    <string name="log_out">Log out</string>
+
+    <!-- Create team -->
+    <string name="team_name">Team name</string>
+    <string name="team_desc">Description</string>
+    <string name="team_radius">Radius</string>
+    <string name="team_back">Back</string>
+    <string name="create_team">Create</string>
+
+    <!-- empty messages -->
+    <string name="empty_history">There are no teams in history</string>
+
+
+    <string name="team_name_error">Team name can only contain letters (min 3, max 45)</string>
+    <string name="team_desc_error">Team description  can only contain letters (min 3, max 45)</string>
+    <string name="team_radius_error">Radius not valid (must be defined with . and in format of single or
+        double precision number</string>
+    <string name="title_activity_stomp_proba">StompProba</string>
+
+
+</resources>
