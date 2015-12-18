@@ -5,6 +5,7 @@
  */
 package hr.foi.teamup.configurations;
 
+import hr.foi.teamup.services.PersonDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

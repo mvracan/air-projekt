@@ -5,6 +5,8 @@
  */
 package hr.foi.teamup.configurations;
 
+import hr.foi.teamup.repositories.TeamRepository;
+import hr.foi.teamup.services.ActiveUserPinger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +34,7 @@ public class TeamSchedulingConfigurer implements SchedulingConfigurer {
    */
   @Bean
   @Autowired
-  public ActiveUserPinger activeUserPinger(SimpMessagingTemplate template, ActiveUserService activeUserService) {
+  public ActiveUserPinger activeUserPinger(SimpMessagingTemplate template, TeamRepository activeUserService) {
     return new ActiveUserPinger(template, activeUserService);
   }
 

@@ -5,6 +5,7 @@
  */
 package hr.foi.teamup.controllers;
 
+import hr.foi.teamup.model.TeamMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;

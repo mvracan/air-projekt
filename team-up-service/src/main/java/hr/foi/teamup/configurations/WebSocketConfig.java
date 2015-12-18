@@ -5,53 +5,65 @@
  */
 package hr.foi.teamup.configurations;
 
-import ch.qos.logback.classic.pattern.MessageConverter;
 import java.security.Principal;
 import java.util.List;
 import org.jboss.logging.Logger;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 /**
  *
- * @author maja
+ * @author paz
  */
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
-  private Object SimpMessageHeaderAccessor;
+public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
+    private Object SimpMessageHeaderAccessor;
   
     
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
     config.enableSimpleBroker("/queue", "/topic","/group" );
     config.setApplicationDestinationPrefixes("/app");
+    
   }
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/chat", "/activeUsers" ,"/group");
+    
   }
   
   @Override
   public void configureClientInboundChannel(ChannelRegistration channelRegistration) {
-     // channelRegistration.setInterceptors(new MyInboundChannelInterceptor());
+    
   }
 
   @Override
   public void configureClientOutboundChannel(ChannelRegistration channelRegistration) {
-      //channelRegistration.setInterceptors(new MyOutboundChannelInterceptor());
+      
   }
-  
-  @Override
+
+    /**
+     *
+     * @param converters
+     * @return
+     */
+    @Override
   public boolean configureMessageConverters(List<MessageConverter> converters) {
       /*
       converters.add((MessageConverter) new FormHttpMessageConverter());
@@ -61,10 +73,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     return true;
   }
   
- @Bean
-  public ActiveUserService activeUserService() {
-    return new ActiveUserService();
-  }
+
   
   @EventListener
  	private void handleSessionConnected(SessionConnectEvent event) {
@@ -82,11 +91,23 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
   @EventListener
   public void handleSubscribeEvent(SessionSubscribeEvent sessionSubscribeEvent){
       
+      Message message= sessionSubscribeEvent.getMessage();
+      StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+      
+      String dest = accessor.getDestination();
+      
+      StompCommand command = accessor.getCommand();
+      
+      
       Principal a =  sessionSubscribeEvent.getUser();
       String username = a.getName();
       
        Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
-                "Subscription for session for " + username);
-      
+                "Subscription for session for " + username + " command :" + command.name() +
+                        " destination : " + dest);
+       
+       //TODO parse destination string if topic is group and add person to team repository
+       //TODO add unsubscribe event
   }
+
 }
