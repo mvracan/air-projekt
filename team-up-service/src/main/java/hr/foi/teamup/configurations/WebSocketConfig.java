@@ -5,9 +5,16 @@
  */
 package hr.foi.teamup.configurations;
 
+import hr.foi.teamup.model.Person;
+import hr.foi.teamup.model.Team;
+import hr.foi.teamup.repositories.PersonRepository;
+import hr.foi.teamup.repositories.TeamRepository;
 import java.security.Principal;
 import java.util.List;
 import org.jboss.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -33,18 +40,26 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
     private Object SimpMessageHeaderAccessor;
+    private TeamRepository teamRepository;
+    private PersonRepository personRepository;
+  
+    @Autowired
+    WebSocketConfig(TeamRepository teamRepository, PersonRepository personRepository){
+        this.teamRepository = teamRepository;
+        this.personRepository=personRepository;
+    }
   
     
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/queue", "/topic","/team" );
+    config.enableSimpleBroker("/queue", "/topic" );
     config.setApplicationDestinationPrefixes("/app");
     
   }
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/chat" ,"/team");
+    registry.addEndpoint( "/team");
     
   }
   
@@ -102,12 +117,29 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
       Principal a =  sessionSubscribeEvent.getUser();
       String username = a.getName();
       
+      String regex="^\\/topic\\/group\\/(\\d)+$";
+      Pattern pat= Pattern.compile(regex);
+      
+      
+      if(pat.matcher(dest).matches()){
+          
+           Person foundPerson = this.personRepository.findByCredentialsUsername(username);
+           String  idTeam = dest.split("/")[2];
+           
+           Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
+                "ID : " + idTeam);
+           
+           Team team = this.teamRepository.findOne(idTeam);
+           team.getMembers().add(foundPerson);
+           
+          
+      }
+      
        Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
                 "Subscription for session for " + username + " command :" + command.name() +
                         " destination : " + dest);
        
-       //TODO parse destination string if topic is group and add person to team repository
-       //TODO add unsubscribe event
+       
   }
 
 }
