@@ -1,7 +1,6 @@
 package hr.foi.teamup.webservice;
 
 import android.os.AsyncTask;
-import android.os.Looper;
 import android.util.Log;
 
 import java.io.IOException;
@@ -17,15 +16,10 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
 
     ServiceParams sp;
     static final String mainUrl = "http://teamup-puding.rhcloud.com";
-    ServiceResponseHandler handler;
-    SimpleResponseHandler simpleHandler;
-
-    public ServiceAsyncTask(ServiceResponseHandler handler) {
-        this.handler = handler;
-    }
+    SimpleResponseHandler handler;
 
     public ServiceAsyncTask(SimpleResponseHandler handler) {
-        this.simpleHandler = handler;
+        this.handler = handler;
     }
 
     /**
@@ -34,7 +28,8 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if(handler != null) handler.onPreSend();
+        if(handler instanceof ServiceResponseHandler)
+            ((ServiceResponseHandler)handler).onPreSend();
     }
 
     /**
@@ -70,12 +65,9 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     protected void onPostExecute(ServiceResponse s) {
         if(sp != null) {
             Log.i(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Calling service response handler");
-            if(handler != null) {
-                handler.handleResponse(s);
-                handler.onPostSend();
-            } else {
-                simpleHandler.handleResponse(s);
-            }
+            handler.handleResponse(s);
+            if(handler instanceof ServiceResponseHandler)
+                ((ServiceResponseHandler)handler).onPostSend();
         } else {
             Log.w(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Could not call service response handler");
         }

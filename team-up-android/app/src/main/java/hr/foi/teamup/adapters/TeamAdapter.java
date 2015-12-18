@@ -1,44 +1,25 @@
 package hr.foi.teamup.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.R;
 import hr.foi.teamup.model.Team;
 
 /**
+ * used to list teams in team history
  * Created by maja on 27.11.15..
  */
-public class TeamAdapter extends ArrayAdapter<Team> {
+public class TeamAdapter extends BaseAdapter<Team> {
 
-    LayoutInflater inflater;
-    ArrayList<Team> teams;
-
-    public TeamAdapter(Context context, int resource, ArrayList<Team> teams) {
-        super(context, resource);
-        this.teams = teams;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    @Override
-    public int getCount() {
-        return teams.size();
-    }
-
-    @Override
-    public Team getItem(int position) {
-        return teams.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public TeamAdapter(Context context, int resource, ArrayList<Team> items) {
+        super(context, resource, items);
     }
 
     public static class ViewHolder {
@@ -52,7 +33,8 @@ public class TeamAdapter extends ArrayAdapter<Team> {
         final ViewHolder holder;
         try {
             if (convertView == null) {
-                vi = inflater.inflate(R.layout.list_item_team_history, null);
+                // TODO: check if works (parent was null before)
+                vi = getInflater().inflate(R.layout.list_item_team_history, parent);
                 holder = new ViewHolder();
                 holder.teamCode = (TextView) vi.findViewById(R.id.team_code);
                 holder.teamName = (TextView) vi.findViewById(R.id.team_name);
@@ -62,10 +44,12 @@ public class TeamAdapter extends ArrayAdapter<Team> {
                 holder = (ViewHolder) vi.getTag();
             }
 
-            holder.teamName.setText(teams.get(position).getName());
-            holder.teamCode.setText(teams.get(position).getNfcCode());
+            Team current = getItems().get(position);
+            holder.teamName.setText(current.getName());
+            holder.teamCode.setText(current.getNfcCode());
 
         } catch (Exception e) {
+            Logger.log("Failed to fill view with team names", getClass().getName(), Log.ERROR);
         }
         return vi;
     }

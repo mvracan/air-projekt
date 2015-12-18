@@ -29,6 +29,8 @@ public class UserProfileActivity extends AppCompatActivity {
     EditText username;
     EditText password;
     EditText confirmPassword;
+    Input passwordInput;
+    Input confirmPasswordInput;
     Person user;
     List<Input> inputs;
 
@@ -58,6 +60,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
         change.setOnClickListener(onChange);
 
+        // password inputs
+        passwordInput = new Input(password, Input.PASSWORD_PATTERN, getString(R.string.password_error));
+        confirmPasswordInput = new Input(confirmPassword,
+                Input.PASSWORD_PATTERN, getString(R.string.confirm_password_error));
+
         // input validation
         inputs = Arrays.asList(
                 new Input(firstName, Input.TEXT_MAIN_PATTERN, getString(R.string.first_name_error)),
@@ -76,24 +83,23 @@ public class UserProfileActivity extends AppCompatActivity {
     View.OnClickListener onChange = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Logger.log("UserProfileActivity -- initiated user update");
+            Logger.log("Initiated user update", getClass().getName());
 
             String firstNameValue = firstName.getText().toString();
             String lastNameValue = lastName.getText().toString();
             String passwordValue = password.getText().toString();
 
-            if (Input.validate(inputs)
-                    && inputs.get(inputs.size() - 2).equals(inputs.get(inputs.size() - 1))) {
+            if (Input.validate(inputs) && passwordInput.equals(confirmPasswordInput)) {
 
-                Logger.log("UserProfileActivity -- fetching user from session");
+                Logger.log("Fetching user from session", getClass().getName());
 
-                Logger.log("UserProfileActivity --  user fetched from session " + user.toString(), Log.DEBUG);
+                Logger.log("User fetched from session " + user.toString(), getClass().getName(), Log.DEBUG);
                 user.setName(firstNameValue);
                 user.setSurname(lastNameValue);
                 Credentials changedPassword = new Credentials(user.getCredentials().getUsername(), passwordValue);
                 user.setCredentials(changedPassword);
 
-                Logger.log("UserProfileActivity --  calling web service ");
+                Logger.log("Calling web service", getClass().getName());
 
                 UpdateHandler updateHandler = new UpdateHandler(UserProfileActivity.this, user);
                 new ServiceAsyncTask(updateHandler).execute(new ServiceParams(

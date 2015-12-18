@@ -3,8 +3,6 @@ package hr.foi.air.teamup.prompts;
 import android.app.ProgressDialog;
 import android.content.Context;
 
-import hr.foi.air.teamup.R;
-
 /**
  *
  * Created by Tomislav Turek on 09.11.15..
@@ -12,6 +10,7 @@ import hr.foi.air.teamup.R;
 public class LoadingPrompt extends AlertPrompt {
 
     ProgressDialog progressDialog;
+    private String PLEASE_WAIT_MESSAGE = "Please wait";
 
     public LoadingPrompt(Context context) {
         super(context);
@@ -24,7 +23,7 @@ public class LoadingPrompt extends AlertPrompt {
     public void showPrompt() {
         if (progressDialog == null || !progressDialog.isShowing()) {
             progressDialog = ProgressDialog.show(this.context, null,
-                    context.getString(R.string.please_wait), true, false);
+                    PLEASE_WAIT_MESSAGE, true, false);
         }
     }
 

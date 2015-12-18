@@ -18,15 +18,15 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="@dimen/image_logo_height"
+                android:layout_height="@dimen/image_logo_width"
                 android:id="@+id/imgvLogo"
                 android:background="@drawable/logo"
                 android:contentDescription="@string/logoapp"
                 android:clickable="false"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="16dp" />
+                android:layout_marginBottom="@dimen/image_logo_space_bottom"
+                android:layout_marginTop="@dimen/image_logo_space_top" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_height="match_parent"
@@ -47,14 +47,14 @@
                 android:layout_height="match_parent"
                 android:layout_width="fill_parent"
                 android:id="@+id/txtPasswordLayout"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="@dimen/input_space">
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:hint="@string/password"
-                    android:ems="10"
+                    android:ems="@integer/ems_registration"
                     android:id="@+id/txtPassword" />
 
             </android.support.design.widget.TextInputLayout>
@@ -63,8 +63,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnSignIn"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
                 android:background="@drawable/buttonstyle"
                 android:textColor="@color/white"
                 android:text="@string/signin" />
@@ -73,12 +71,11 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtRegister"
-                android:layout_marginBottom="54dp"
                 android:text="@string/register"
                 android:layout_gravity="center_horizontal"
                 android:textAlignment="center"
-                android:textSize="16dp"
-                android:layout_marginTop="50dp" />
+                android:textSize="@dimen/register_text_size"
+                android:layout_marginTop="@dimen/register_button_space_top" />
 
         </LinearLayout>
     </ScrollView>

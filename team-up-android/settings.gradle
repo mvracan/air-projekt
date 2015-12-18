@@ -1,1 +1,1 @@
-include ':app', ':webservice', ':model', ':core'
+include ':app', ':webservice', ':model', ':core', ':prompts', ':codeaccess', ':nfcaccess'

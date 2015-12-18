@@ -1,18 +1,16 @@
 package hr.foi.teamup;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.method.CharacterPickerDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +19,13 @@ import android.widget.Button;
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.AlertPrompt;
+import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
-import hr.foi.teamup.model.Person;
 
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
-    private NavigationView navigationView;
     private DrawerLayout mDrawer;
-    private Button logOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +40,10 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 R.string.drawer_open,  R.string.drawer_close);
         mDrawer.setDrawerListener(mDrawerToggle);
 
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        logOut = (Button) findViewById(R.id.log_out_button);
+        Button logOut = (Button) findViewById(R.id.log_out_button);
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,6 +51,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 signOut();
             }
         });
+
+        // set current team for the first time
+        if(savedInstanceState == null) {
+            exchangeFragments(new TeamFragment(), "currentteam");
+        }
     }
 
     @Override
@@ -117,11 +118,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void exchangeFragments(Fragment fragment) {
+    private void exchangeFragments(Fragment fragment, String name) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_frame, fragment);
         getFragmentManager().popBackStack();
-        transaction.addToBackStack("teamhistory");
+        transaction.addToBackStack(name);
         transaction.commit();
     }
 
@@ -135,11 +136,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         } else if (menuItem.getItemId()==R.id.nfc){
             Logger.log("NFC clicked");
         } else if (menuItem.getItemId()==R.id.history){
-            exchangeFragments(new TeamHistoryFragment());
+            exchangeFragments(new TeamHistoryFragment(), "teamhistory");
         } else if (menuItem.getItemId()==R.id.new_group){
-            Logger.log("New group clicked");
-            Intent intent = new Intent(getApplicationContext(), CreateTeamActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
         }
 
         mDrawer.closeDrawers();

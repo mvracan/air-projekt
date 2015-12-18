@@ -24,10 +24,10 @@ public class UpdateHandler extends ResponseHandler {
     @Override
     public boolean handleResponse(ServiceResponse response) {
         Person user = (Person) this.args[0];
-        Logger.log("UpdateHandler -- deserialized arguments: " + user.toString(), Log.DEBUG);
+        Logger.log("Deserialized arguments: " + user.toString(), getClass().getName(), Log.DEBUG);
 
         if(response.getHttpCode() == 200) {
-            Logger.log("UpdateHandler -- successfully updated user");
+            Logger.log("Successfully updated user", getClass().getName());
 
             // update session
             SessionManager manager= SessionManager.getInstance(this.context);
@@ -38,8 +38,8 @@ public class UpdateHandler extends ResponseHandler {
             // finish()
             return true;
         } else {
-            Logger.log("UpdateHandler -- update failed, server returned code "
-                    + response.getHttpCode(), Log.WARN);
+            Logger.log("Update failed, server returned code "
+                    + response.getHttpCode(), getClass().getName(), Log.WARN);
             // show fail
             Toast.makeText(this.context,
                     "Update failed, please try again ("+response.getHttpCode()+")",

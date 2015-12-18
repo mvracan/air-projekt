@@ -39,6 +39,36 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>4.0.3.RELEASE</version>
+        </dependency>
+        
+        <!-- spring messaging -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+        
+        <!-- spring websocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        
+        <!-- cache -->
+         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>16.0</version>
+        </dependency>
+        
         <!-- mysql -->
          <dependency>
             <groupId>mysql</groupId>
@@ -50,7 +80,7 @@
 		<artifactId>hibernate-c3p0</artifactId>
 		<version>4.3.6.Final</version>
 	</dependency>
-
+        
     </dependencies>
     
     <!-- project properties -->

@@ -5,7 +5,9 @@
  */
 package hr.foi.teamup.controllers;
 
+import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
+import hr.foi.teamup.repositories.PersonRepository;
 import hr.foi.teamup.repositories.TeamRepository;
 import java.util.List;
 import org.jboss.logging.Logger;
@@ -27,12 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
     
     TeamRepository teamRepository;
-     
+    PersonRepository personRepository;
+    
     @Autowired
-    public TeamController(TeamRepository groupRepository) {
+    public TeamController(TeamRepository groupRepository, PersonRepository personRepository) {
          
         this.teamRepository = groupRepository;
-        
+        this.personRepository = personRepository;
     }
      
      /**
@@ -81,5 +84,15 @@ public class TeamController {
                 "No team found for " + id);
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+    
+    @RequestMapping(value="/{idTeam}/person/{idPerson}", method=RequestMethod.POST)
+    public ResponseEntity addPeopleToTeam (@PathVariable long idTeam,@PathVariable long idPerson){
+        Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "POST on /team/" + idTeam 
+        + "/person/" + idPerson);
+        Team foundTeam=teamRepository.findByIdTeam(idTeam);
+        Person foundPerson=personRepository.findByIdPerson(idPerson);
+        
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

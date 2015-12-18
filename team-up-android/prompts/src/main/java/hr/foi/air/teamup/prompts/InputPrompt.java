@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.EditText;
 
-import hr.foi.air.teamup.Input;
-import hr.foi.air.teamup.R;
-
 /**
  *
  * Created by Tomislav Turek on 09.11.15..
@@ -27,8 +24,7 @@ public class InputPrompt extends AlertPrompt {
         super.prepare(title, positive, positiveMessage, negative, negativeMessage);
 
         // dialog input
-        Input input = new Input(new EditText(this.context), Input.TEXT_MAIN_PATTERN,
-                context.getString(R.string.input_error));
-        this.builder.setView(input.getEditText());
+        // TODO: check if EditText works and refactor
+        this.builder.setView(new EditText(this.context));
     }
 }
