@@ -12,7 +12,7 @@ package hr.foi.teamup.model;
 public class TeamMessage {
     
     String sender;
-    String reciever;
+    String receiver;
     
     Person message;
 
@@ -24,14 +24,15 @@ public class TeamMessage {
         this.sender = sender;
     }
 
-    public String getReciever() {
-        return reciever;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setReciever(String reciever) {
-        this.reciever = reciever;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
+   
     public Person getMessage() {
         return message;
     }

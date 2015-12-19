@@ -41,18 +41,19 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
     
     private Object SimpMessageHeaderAccessor;
-    private TeamRepository teamRepository;
+    @Autowired
+    private TeamRepository teamRepository ;
+    @Autowired
     private PersonRepository personRepository;
 
     public WebSocketConfig() {
         
     }
-  
-    
+
     @Autowired
     WebSocketConfig(TeamRepository teamRepository, PersonRepository personRepository){
         this.teamRepository = teamRepository;
-        this.personRepository=personRepository;
+        this.personRepository = personRepository;
     }
   
     
@@ -123,27 +124,46 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
       Principal a =  sessionSubscribeEvent.getUser();
       String username = a.getName();
       
-      String regex="^\\/topic\\/group\\/(\\d)+$";
+       Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
+                "username : " + username);
+      
+      
+      String regex="^\\/topic\\/team\\/(\\d)+$";
       Pattern pat= Pattern.compile(regex);
       
       
       if(pat.matcher(dest).matches()){
           
-           Person foundPerson = this.personRepository.findByCredentialsUsername(username);
-           String  idTeam = dest.split("/")[2];
+          Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
+                "ITUSAM JEBEM TI" + dest);
+          String  idTeam=null;
+          String[] parts = dest.split("/");
+          for(int i=0;i<parts.length;i++){
+               Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
+                parts[i] +" : "+ i);
+                idTeam=parts[i];
+          }
+          Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
+                "ITUSAM JEBEM TI 2" + idTeam);
+              
+          
            
+           Team foundTeam=teamRepository.findByIdTeam(Long.parseLong(idTeam));
+           Person foundPerson=personRepository.findByCredentialsUsername(username);
            Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
-                "ID : " + idTeam);
+                "ITUSAM JEBEM TI 2 -" + foundPerson.getIdPerson());
            
-           Team team = this.teamRepository.findOne(idTeam);
-           team.getMembers().add(foundPerson);
+           foundTeam.getMembers().add(foundPerson);
+           this.teamRepository.save(foundTeam);
+           
+     
+            Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
+                "ITUSAM JEBEM TI 2" + foundPerson.getIdPerson());
            
           
       }
       
-       Logger.getLogger("WebSocketConfig.java").log(Logger.Level.INFO,
-                "Subscription for session for " + username + " command :" + command.name() +
-                        " destination : " + dest);
+      
        
        
   }

@@ -62,7 +62,7 @@ public class Person implements Serializable {
     @JsonIgnore
     private  List<Team>  memberOfGroups;
     
-     @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "person_role", joinColumns = { @JoinColumn(name = "id_person") },
             inverseJoinColumns = { @JoinColumn(name = "id_role") })
     Set<Role> roles = new HashSet<>();

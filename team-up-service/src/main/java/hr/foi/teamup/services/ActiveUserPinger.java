@@ -38,14 +38,14 @@ public class ActiveUserPinger {
     
   
     
-    List<Team> Teams = this.teamRepository.findByActive(1);
+    /*List<Team> Teams = this.teamRepository.findByActive(1);
     
     for(Team t: Teams){
         
     template.convertAndSend("/topic/team/" + t.getIdTeam() , t.getMembers());
      
     }
-    
+    */
   }
     
 }

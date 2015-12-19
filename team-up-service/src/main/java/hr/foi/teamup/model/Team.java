@@ -55,7 +55,7 @@ public class Team implements Serializable {
     private Person creator;
     
     
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "teammember",  joinColumns = { 
 			@JoinColumn(name = "id_team", nullable = false, updatable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "id_person", 

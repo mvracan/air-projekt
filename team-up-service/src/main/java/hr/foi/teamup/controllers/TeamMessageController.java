@@ -6,6 +6,7 @@
 package hr.foi.teamup.controllers;
 
 import hr.foi.teamup.model.TeamMessage;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -32,6 +33,9 @@ public class TeamMessageController {
     public void sendToGroup( 
             @Payload TeamMessage teamMessage,
             @DestinationVariable long id) throws Exception {
+        
+         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Sending back" + teamMessage.getMessage().getName());
         
         template.convertAndSend("/topic/team/" + id, teamMessage);
     

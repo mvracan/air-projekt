@@ -96,6 +96,8 @@ public class TeamController {
         + "/person/" + idPerson);
         Team foundTeam=teamRepository.findByIdTeam(idTeam);
         Person foundPerson=personRepository.findByIdPerson(idPerson);
+        foundTeam.getMembers().add(foundPerson);
+        this.teamRepository.save(foundTeam);
         
         return new ResponseEntity(HttpStatus.OK);
     }
