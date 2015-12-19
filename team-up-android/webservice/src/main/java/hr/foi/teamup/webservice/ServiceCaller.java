@@ -52,7 +52,7 @@ public class ServiceCaller {
             OutputStream os = connection.getOutputStream();
             os.write(new Gson().toJson(object).getBytes());
             os.close();
-        }else{
+        } else if(urlEncoded != null){
 
             OutputStream os = connection.getOutputStream();
             os.write(urlEncoded.getBytes());

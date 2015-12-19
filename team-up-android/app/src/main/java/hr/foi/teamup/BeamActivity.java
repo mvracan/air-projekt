@@ -36,7 +36,7 @@ public class BeamActivity extends NfcBeamActivity {
     TeamConnection socket;
     String cookie;
     String USER_CHANNEL_PATH = "/user/queue/messages";
-    String GROUP_PATH = "/topic/team/";
+    String GROUP_PATH = "/topic/team/1";
 
 
     @Override
@@ -44,19 +44,19 @@ public class BeamActivity extends NfcBeamActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beam);
 
+        subscriptionChannels = new HashMap<>();
         Team t = SessionManager.getInstance(this).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
 
         try {
             startNfcAdapter();
-            startNfcBeam(t.getNfcCode(), callback);
+            startNfcBeam("asdf", callback);
         } catch (NfcNotAvailableException e) {
             e.printStackTrace();
         } catch (NfcNotEnabledException e) {
             e.printStackTrace();
         }
         onSubmit.onClick(null);
-        onPing.onClick(null);
-        onSend.onClick(null);
+
     }
 
     private void joinGroup(){
@@ -70,7 +70,7 @@ public class BeamActivity extends NfcBeamActivity {
     ListenerSubscription subscription=new ListenerSubscription() {
         @Override
         public void onMessage(Map<String, String> headers, String body) {
-
+            Logger.log(body);
         }
 
         @Override
@@ -87,7 +87,7 @@ public class BeamActivity extends NfcBeamActivity {
     TeamJoinerCallback callback = new TeamJoinerCallback() {
         @Override
         public void onMessageReceived(String message) {
-
+            Logger.log(message);
         }
     };
 
@@ -118,11 +118,14 @@ public class BeamActivity extends NfcBeamActivity {
                 Log.i("COOKIE ", response.getCookie());
 
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
-                manager.createSession(response.getCookie(),SessionManager.COOKIE_KEY);
+                manager.createSession(response.getCookie(), SessionManager.COOKIE_KEY);
 
-                Intent intent = new Intent(getApplicationContext(), BeamActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(intent);
+                //Intent intent = new Intent(getApplicationContext(), BeamActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //getApplicationContext().startActivity(intent);
+
+                onPing.onClick(null);
+
 
                 return true;
 
@@ -148,7 +151,7 @@ public class BeamActivity extends NfcBeamActivity {
                 Log.i("no cookie", "nocokkie");
             }
 
-
+            onSend.onClick(null);
         }
 
     };
@@ -166,10 +169,14 @@ public class BeamActivity extends NfcBeamActivity {
             Location loc=new Location(1,1);
 
             Person test= new Person(1,"a","a",cred,loc);
-            message.setPerson(test);
+            message.setMessage(test);
 
-
-            socket.send("/app/group/1",message);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            socket.send("/app/team/1",message);
 
         }
 

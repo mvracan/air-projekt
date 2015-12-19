@@ -33,10 +33,10 @@
                 app:layout_anchorGravity="bottom|right"
                 android:layout_gravity="end|bottom"
                 android:scaleType="center"
-                android:layout_marginRight="@dimen/panic_button_right_step"
+                android:layout_marginRight="20dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="@dimen/panic_button_bottom_step"/>
+                android:layout_marginBottom="20dp"/>
 
         </FrameLayout>
 
@@ -48,10 +48,15 @@
         android:layout_width="wrap_content"
         android:layout_gravity="start"
         android:background="?attr/colorPrimary"
+
         android:paddingLeft="@dimen/navigation_padding_left"
         android:paddingRight="@dimen/navigation_padding_right">
 
         <app:itemTextColor = "@color/"
+
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        app:itemTextColor="@color/white"
         app:menu="@menu/menu">
         <Button
             android:background="@drawable/nav_drawer_buttonstyle"

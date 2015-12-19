@@ -44,14 +44,14 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Button logOut = (Button) findViewById(R.id.log_out_button);
-        /*logOut.setOnClickListener(new View.OnClickListener() {
+        Button logOut = (Button) findViewById(R.id.log_out_button);
+        logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Logger.log("Logging out user...");
                 signOut();
             }
-        });*/
+        });
 
         // set current team for the first time
         if(savedInstanceState == null) {
@@ -140,6 +140,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     Logger.log("Stisnul je da");
                 }
             },R.string.join, null, R.string.cancel);
+            prompt.showPrompt();
         } else if (menuItem.getItemId()==R.id.nfc){
             startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId()==R.id.history){

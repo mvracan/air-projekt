@@ -10,7 +10,7 @@ public class TeamMessage implements Serializable {
 
     String sender;
     String receiver;
-    Person person;
+    Person message;
 
     public String getSender() {
         return sender;
@@ -28,11 +28,11 @@ public class TeamMessage implements Serializable {
         this.receiver = receiver;
     }
 
-    public Person getPerson() {
-        return person;
+    public Person getMessage() {
+        return message;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setMessage(Person message) {
+        this.message = message;
     }
 }

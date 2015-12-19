@@ -5,10 +5,13 @@ package hr.foi.teamup.stomp;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import hr.foi.teamup.model.TeamMessage;
 
 /**
  *
@@ -54,9 +57,11 @@ public class TeamConnection extends Thread implements Runnable {
 
     }
 
-    public <T extends Serializable> void send(String dest, T message){
+    public <T> void send(String dest, T message){
 
-        this.client.send(dest,null, new Gson().toJson(message));
+        String m = new Gson().toJson(message);
+        Log.i("Stomp message", m);
+        this.client.send(dest,null, m);
 
     }
 
