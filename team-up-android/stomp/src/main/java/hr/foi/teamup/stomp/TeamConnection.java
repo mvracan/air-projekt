@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import hr.foi.teamup.model.TeamMessage;
+
 /**
  *
  * Created by paz on 14.12.15..
@@ -57,7 +59,9 @@ public class TeamConnection extends Thread implements Runnable {
 
     public <T> void send(String dest, T message){
 
-        this.client.send(dest,null, new Gson().toJson(message));
+        String m = new Gson().toJson(message);
+        Log.i("Stomp message", m);
+        this.client.send(dest,null, m);
 
     }
 

@@ -70,7 +70,7 @@ public class BeamActivity extends NfcBeamActivity {
     ListenerSubscription subscription=new ListenerSubscription() {
         @Override
         public void onMessage(Map<String, String> headers, String body) {
-
+            Logger.log(body);
         }
 
         @Override
@@ -87,7 +87,7 @@ public class BeamActivity extends NfcBeamActivity {
     TeamJoinerCallback callback = new TeamJoinerCallback() {
         @Override
         public void onMessageReceived(String message) {
-
+            Logger.log(message);
         }
     };
 
@@ -169,10 +169,14 @@ public class BeamActivity extends NfcBeamActivity {
             Location loc=new Location(1,1);
 
             Person test= new Person(1,"a","a",cred,loc);
-            message.setPerson(test);
+            message.setMessage(test);
 
-
-            socket.send("/app/group/1",message);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            socket.send("/app/team/1",message);
 
         }
 
