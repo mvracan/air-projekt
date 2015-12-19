@@ -40,10 +40,10 @@ public class Person implements Serializable {
     @Column(name = "id_person")
     long idPerson;
     
-    @Column(name="firstname")
+    @Column(name="name")
     String name;
     
-    @Column(name="lastname")
+    @Column(name="surname")
     String surname;
    
     
