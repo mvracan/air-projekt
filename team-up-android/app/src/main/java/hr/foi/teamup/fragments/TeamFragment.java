@@ -37,9 +37,9 @@ public class TeamFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_team_current, container, false);
 
-        ServiceParams params = new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path),
+        /*ServiceParams params = new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path),
                 ServiceCaller.HTTP_GET, null);
-        new ServiceAsyncTask(currentTeamHandler).execute(params);
+        new ServiceAsyncTask(currentTeamHandler).execute(params);*/
 
         users = (ListView)v.findViewById(R.id.current_team_list);
         return v;
