@@ -18,6 +18,7 @@
     <string name="update_profile">Update your profile?</string>
     <string name="update">Update</string>
     <string name="map">Map</string>
+    <string name="user_status">Status</string>
 
     <!-- validation -->
     <string name="first_name_error">First name can only contain letters (min 3, max 45)</string>
@@ -50,6 +51,10 @@
     <string name="team_desc_error">Team description  can only contain letters (min 3, max 45)</string>
     <string name="team_radius_error">Radius not valid (must be defined with . and in format of single or
         double precision number</string>
+
+    <!-- Prompt-->
+    <string name="join_group">Enter code to access team</string>
+    <string name="join">Join</string>
 
 
 </resources>

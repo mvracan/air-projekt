@@ -23,14 +23,14 @@ public class TeamCreateHandler extends ResponseHandler {
 
     @Override
     public boolean handleResponse(ServiceResponse response) {
-        Team team = (Team) this.args[0];
+        Team team = (Team) getArgs()[0];
         Logger.log("Deserialized arguments: " + team.toString(), getClass().getName(), Log.DEBUG);
 
         if(response.getHttpCode() == 200) {
             Logger.log("Successfully created team", getClass().getName(), Log.DEBUG);
             // login
 
-            SessionManager manager= SessionManager.getInstance(this.context);
+            SessionManager manager= SessionManager.getInstance(getContext());
             manager.createSession(team, SessionManager.TEAM_INFO_KEY);
 
             //TODO switch to teamactivity
@@ -40,7 +40,7 @@ public class TeamCreateHandler extends ResponseHandler {
             Logger.log("Creating team failed " + response.getHttpCode(),
                     getClass().getName(), Log.WARN);
             // show fail
-            Toast.makeText(this.context,
+            Toast.makeText(getContext(),
                     "Team creation failed, please try again (" + response.getHttpCode() + ")",
                     Toast.LENGTH_LONG).show();
             return false;

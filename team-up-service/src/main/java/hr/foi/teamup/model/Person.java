@@ -10,7 +10,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -18,6 +20,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -36,10 +40,10 @@ public class Person implements Serializable {
     @Column(name = "id_person")
     long idPerson;
     
-    @Column(name="firstname")
+    @Column(name="name")
     String name;
     
-    @Column(name="lastname")
+    @Column(name="surname")
     String surname;
    
     
@@ -57,6 +61,31 @@ public class Person implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "members")
     @JsonIgnore
     private  List<Team>  memberOfGroups;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "person_role", joinColumns = { @JoinColumn(name = "id_person") },
+            inverseJoinColumns = { @JoinColumn(name = "id_role") })
+    Set<Role> roles = new HashSet<>();
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+       public Person() {
+    }
+
+    public Person(Person person) {
+        super();
+        this.idPerson = person.getIdPerson();
+        this.name = person.getName();
+        this.surname = person.getSurname();
+        this.credentials = person.getCredentials();
+    }
+
  
     // String token
 

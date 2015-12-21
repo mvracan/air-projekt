@@ -55,12 +55,15 @@ public class Team implements Serializable {
     private Person creator;
     
     
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "teammember",  joinColumns = { 
 			@JoinColumn(name = "id_team", nullable = false, updatable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "id_person", 
 					nullable = false, updatable = false) })
     private List<Person> members;
+    
+    @Column(name="active")
+    private long active;
 
     public long getIdTeam() {
         return idTeam;
@@ -130,6 +133,15 @@ public class Team implements Serializable {
     public String toString() {
         return this.name + " " + this.password;
     }
+    
+    public long getActive() {
+        return active;
+    }
+
+    public void setActive(long active) {
+        this.active = active;
+    }
+        
     
     
     

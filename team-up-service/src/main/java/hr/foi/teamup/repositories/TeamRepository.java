@@ -7,6 +7,7 @@ package hr.foi.teamup.repositories;
 
 
 import hr.foi.teamup.model.Team;
+import java.util.List;
 import javax.persistence.Table;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,4 +21,5 @@ import org.springframework.stereotype.Repository;
 public interface TeamRepository extends JpaRepository<Team, String> {
     
     public Team findByIdTeam( long idTeam);
+    public List<Team> findByActive(long active);
 }

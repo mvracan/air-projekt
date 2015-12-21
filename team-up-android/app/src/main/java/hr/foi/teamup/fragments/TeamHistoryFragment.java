@@ -29,7 +29,7 @@ import hr.foi.teamup.webservice.ServiceResponse;
 import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 /**
- *
+ * fragment with teams list that were joined earlier (history)
  * Created by maja on 27.11.15..
  */
 public class TeamHistoryFragment extends Fragment {

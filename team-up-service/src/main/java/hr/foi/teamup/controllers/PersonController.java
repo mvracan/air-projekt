@@ -7,8 +7,11 @@ package hr.foi.teamup.controllers;
 import hr.foi.teamup.model.Credentials;
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
+import hr.foi.teamup.model.Role;
 import hr.foi.teamup.repositories.PersonRepository;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,8 +83,19 @@ public class PersonController {
      */
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public ResponseEntity<Person> signup(@RequestBody Person person) {
+        
         Logger.getLogger("PersonController.java").log(Level.INFO,
                 "POST on /person/signup -- " + person.toString());
+        Role role = new Role();
+        role.setId(2);
+        role.setName("ROLE_USER");
+        HashSet<Role> roles = new HashSet<>();
+        
+       
+        
+        
+        roles.add(role);
+        person.setRoles(roles);
         
         Person signed = this.personRepository.save(person);
         if(signed != null) {

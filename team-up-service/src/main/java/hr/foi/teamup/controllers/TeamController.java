@@ -5,7 +5,9 @@
  */
 package hr.foi.teamup.controllers;
 
+import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
+import hr.foi.teamup.repositories.PersonRepository;
 import hr.foi.teamup.repositories.TeamRepository;
 import java.util.List;
 import org.jboss.logging.Logger;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 /**
  *
  * @author paz
@@ -27,12 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
     
     TeamRepository teamRepository;
-     
+    PersonRepository personRepository;
+    
     @Autowired
-    public TeamController(TeamRepository groupRepository) {
+    public TeamController(TeamRepository groupRepository, PersonRepository personRepository) {
          
         this.teamRepository = groupRepository;
-        
+        this.personRepository = personRepository;
     }
      
      /**
@@ -43,6 +48,8 @@ public class TeamController {
     public ResponseEntity<List<Team>> retrieveAll() {
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
                 "GET on /team/ -- retrieving full list of groups");
+        
+        
         return new ResponseEntity(this.teamRepository.findAll(), HttpStatus.OK);
     }
     
@@ -81,5 +88,17 @@ public class TeamController {
                 "No team found for " + id);
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+    
+    @RequestMapping(value="/{idTeam}/person/{idPerson}", method=RequestMethod.POST)
+    public ResponseEntity addPeopleToTeam (@PathVariable long idTeam,@PathVariable long idPerson){
+        Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "POST on /team/" + idTeam 
+        + "/person/" + idPerson);
+        Team foundTeam=teamRepository.findByIdTeam(idTeam);
+        Person foundPerson=personRepository.findByIdPerson(idPerson);
+        foundTeam.getMembers().add(foundPerson);
+        this.teamRepository.save(foundTeam);
+        
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

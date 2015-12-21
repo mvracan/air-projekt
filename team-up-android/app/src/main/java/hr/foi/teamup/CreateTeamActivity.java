@@ -7,7 +7,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,11 +22,7 @@ import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 
-/**
- *
- * Created by paz on 26.11.15..
- */
-public class CreateTeamActivity extends AppCompatActivity implements Serializable {
+public class CreateTeamActivity extends AppCompatActivity {
 
     Button submit;
     EditText name;

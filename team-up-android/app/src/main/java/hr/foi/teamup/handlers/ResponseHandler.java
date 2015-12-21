@@ -13,9 +13,9 @@ import hr.foi.teamup.webservice.ServiceResponseHandler;
  */
 public abstract class ResponseHandler implements ServiceResponseHandler {
 
-    Context context;
-    Object[] args;
-    LoadingPrompt loadingPrompt;
+    private Context context;
+    private Object[] args;
+    private LoadingPrompt loadingPrompt;
 
     public ResponseHandler(Context context, Serializable... args) {
         this.context = context;
@@ -31,5 +31,13 @@ public abstract class ResponseHandler implements ServiceResponseHandler {
     @Override
     public void onPostSend() {
         loadingPrompt.hidePrompt();
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public Object[] getArgs() {
+        return args;
     }
 }

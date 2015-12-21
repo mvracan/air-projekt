@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class ServiceResponse {
 
     int httpCode;
+    String cookie;
     String jsonResponse;
 
     public ServiceResponse() {
@@ -17,6 +18,20 @@ public class ServiceResponse {
     public ServiceResponse(int httpCode, String jsonResponse) {
         this.httpCode = httpCode;
         this.jsonResponse = jsonResponse;
+    }
+
+    public ServiceResponse(String cookie, String jsonResponse, int httpCode) {
+        this.cookie = cookie;
+        this.jsonResponse = jsonResponse;
+        this.httpCode = httpCode;
+    }
+
+    public String getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
     }
 
     public int getHttpCode() {

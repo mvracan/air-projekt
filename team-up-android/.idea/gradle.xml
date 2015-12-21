@@ -13,7 +13,11 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/model" />
+            <option value="$PROJECT_DIR$/nfc" />
+            <option value="$PROJECT_DIR$/prompts" />
+            <option value="$PROJECT_DIR$/stomp" />
             <option value="$PROJECT_DIR$/webservice" />
+            <option value="$PROJECT_DIR$/websocket" />
           </set>
         </option>
       </GradleProjectSettings>

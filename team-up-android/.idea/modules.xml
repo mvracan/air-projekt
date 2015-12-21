@@ -5,8 +5,12 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/model/model.iml" filepath="$PROJECT_DIR$/model/model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nfc/nfc.iml" filepath="$PROJECT_DIR$/nfc/nfc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/prompts/prompts.iml" filepath="$PROJECT_DIR$/prompts/prompts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/stomp/stomp.iml" filepath="$PROJECT_DIR$/stomp/stomp.iml" />
       <module fileurl="file://$PROJECT_DIR$/team-up-android.iml" filepath="$PROJECT_DIR$/team-up-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/webservice/webservice.iml" filepath="$PROJECT_DIR$/webservice/webservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/websocket/websocket.iml" filepath="$PROJECT_DIR$/websocket/websocket.iml" />
     </modules>
   </component>
 </project>

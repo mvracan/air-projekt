@@ -16,11 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import org.projectodd.stilts.stomp.client.StompClient;
-
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.AlertPrompt;
+import hr.foi.air.teamup.prompts.InputPrompt;
+import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +52,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 signOut();
             }
         });
+
+        // set current team for the first time
+        if(savedInstanceState == null) {
+            exchangeFragments(new TeamFragment(), "currentteam");
+        }
     }
 
     @Override
@@ -128,9 +133,16 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         if (menuItem.getItemId()==R.id.profile){
             Logger.log("Profile clicked");
         } else if (menuItem.getItemId()==R.id.code){
-            Logger.log("Code clicked");
+            InputPrompt prompt = new InputPrompt(this);
+            prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Logger.log("Stisnul je da");
+                }
+            },R.string.join, null, R.string.cancel);
+            prompt.showPrompt();
         } else if (menuItem.getItemId()==R.id.nfc){
-            Logger.log("NFC clicked");
+            startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId()==R.id.history){
             exchangeFragments(new TeamHistoryFragment(), "teamhistory");
         } else if (menuItem.getItemId()==R.id.new_group){

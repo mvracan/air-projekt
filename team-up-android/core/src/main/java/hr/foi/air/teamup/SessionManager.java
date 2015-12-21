@@ -16,6 +16,7 @@ public class SessionManager {
     public static final String SHARED_PREFS_NAME = "hr.foi.air.teamup.session";
     public static final String PERSON_INFO_KEY = "person";
     public static final String TEAM_INFO_KEY= "team";
+    public static final String COOKIE_KEY="cookie";
 
     static SessionManager instance;
     SharedPreferences sharedPreferences;
