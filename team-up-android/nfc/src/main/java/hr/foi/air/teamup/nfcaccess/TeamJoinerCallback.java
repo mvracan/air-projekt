@@ -1,4 +1,4 @@
-package hr.foi.air.teamup;
+package hr.foi.air.teamup.nfcaccess;
 
 /**
  *
