@@ -1,6 +1,5 @@
 package hr.foi.air.teamup.nfcaccess;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
@@ -9,8 +8,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-
-import hr.foi.air.teamup.TeamJoinerCallback;
 
 /**
  * abstract activity to extend when nfc needs to be used

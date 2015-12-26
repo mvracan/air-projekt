@@ -56,5 +56,8 @@
     <string name="join_group">Enter code to access team</string>
     <string name="join">Join</string>
 
+    <!-- NFC Beam -->
+    <string name="beam"> Beam up! </string>
+
 
 </resources>

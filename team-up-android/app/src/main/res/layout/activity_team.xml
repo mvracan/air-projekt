@@ -50,14 +50,13 @@
         android:background="?attr/colorPrimary"
 
         android:paddingLeft="@dimen/navigation_padding_left"
-        android:paddingRight="@dimen/navigation_padding_right">
-
-        <app:itemTextColor = "@color/"
-
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingRight="@dimen/navigation_padding_right"
         app:itemTextColor="@color/white"
-        app:menu="@menu/menu">
+        app:menu="@menu/menu"
+       >
+
+
+
         <Button
             android:background="@drawable/nav_drawer_buttonstyle"
             android:textColor="@color/colorPrimaryDark"

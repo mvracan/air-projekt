@@ -7,6 +7,5 @@ import java.util.Map;
 
 public interface ListenerSubscription {
     public void onMessage(Map<String, String> headers, String body);
-    void onPreSend();
-    void onPostSend();
+
 }

@@ -1,19 +1,18 @@
 package hr.foi.teamup;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.net.CookieHandler;
 import java.util.HashMap;
 import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
-import hr.foi.air.teamup.TeamJoinerCallback;
+import hr.foi.air.teamup.nfcaccess.TeamJoinerCallback;
 import hr.foi.air.teamup.nfcaccess.NfcBeamActivity;
 import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
@@ -36,36 +35,95 @@ public class BeamActivity extends NfcBeamActivity {
     TeamConnection socket;
     String cookie;
     String USER_CHANNEL_PATH = "/user/queue/messages";
-    String GROUP_PATH = "/topic/team/1";
+    String GROUP_PATH = "/topic/team/";
+    String IMG_PATH="@drawable/";
+    String TEAM_ID;
+    ImageView image;
+    SessionManager manager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_beam);
+
+        image = (ImageView)findViewById(R.id.imageView);
+
+        if(image==null)
+            Logger.log("Null je");
+
+        if(SessionManager.getInstance(this).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class) != null)
+            image = setImage(image, true);
+        else
+            image = setImage(image, false);
+
+
+
+
+    }
+
+    public ImageView setImage(ImageView img,boolean isIn){
+        int imageResource;
+        if(isIn){
+            imageResource = getResources().getIdentifier(IMG_PATH+"send", null, getPackageName());
+            Logger.log("in : "+Integer.toString(imageResource));
+        }
+        else{
+            imageResource = getResources().getIdentifier(IMG_PATH+"receive", null, getPackageName());
+            Logger.log("out : "+ Integer.toString(imageResource));
+        }
+
+        img.setImageResource(imageResource);
+
+        return img;
+    }
+
+    public void onBeam(View view) {
+
+
+            Logger.log("Here");
+
+
 
         subscriptionChannels = new HashMap<>();
         Team t = SessionManager.getInstance(this).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
 
-        try {
-            startNfcAdapter();
-            startNfcBeam("asdf", callback);
-        } catch (NfcNotAvailableException e) {
-            e.printStackTrace();
-        } catch (NfcNotEnabledException e) {
-            e.printStackTrace();
+        if(t!=null) {
+            try {
+                Logger.log("Sending team");
+                startNfcAdapter();
+                startNfcBeam(Long.toString(t.getIdTeam()), callback);
+            } catch (NfcNotAvailableException e) {
+                e.printStackTrace();
+            } catch (NfcNotEnabledException e) {
+                e.printStackTrace();
+            }
+        }else{
+
+            this.onResume();
+
         }
-        onSubmit.onClick(null);
 
     }
 
     private void joinGroup(){
-        subscriptionChannels.put(USER_CHANNEL_PATH,subscription);
-        subscriptionChannels.put(GROUP_PATH,subscription);
 
-        socket = new TeamConnection(subscriptionChannels,cookie);
-        socket.start();
+        manager = SessionManager.getInstance(getApplicationContext());
+        cookie= manager.retrieveSession(SessionManager.COOKIE_KEY, String.class);
+
+        if(cookie != null) {
+            subscriptionChannels.put(USER_CHANNEL_PATH, subscription);
+            subscriptionChannels.put(GROUP_PATH, subscription);
+
+            socket = new TeamConnection(subscriptionChannels, cookie);
+            socket.start();
+        }
+
     }
+
+
 
     ListenerSubscription subscription=new ListenerSubscription() {
         @Override
@@ -73,40 +131,28 @@ public class BeamActivity extends NfcBeamActivity {
             Logger.log(body);
         }
 
-        @Override
-        public void onPreSend() {
 
-        }
-
-        @Override
-        public void onPostSend() {
-
-        }
     };
 
     TeamJoinerCallback callback = new TeamJoinerCallback() {
         @Override
         public void onMessageReceived(String message) {
             Logger.log(message);
-        }
-    };
 
-    View.OnClickListener onSubmit = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+            TEAM_ID=message;
 
-            Credentials credentials = new Credentials( "lpalaic" , "palaic" );
-
+            Person client= manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
 
             new ServiceAsyncTask(handler).execute(new ServiceParams(
                     "/login",
-                    ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded" ,null,"username=lpalaic&password=palaic"));
-
+                    ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded", null, "username=" + client.getCredentials().getUsername() +
+                    "&password=" + client.getCredentials().getPassword()));
 
 
         }
-
     };
+
+
 
     SimpleResponseHandler handler = new SimpleResponseHandler() {
         @Override
@@ -124,8 +170,14 @@ public class BeamActivity extends NfcBeamActivity {
                 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 //getApplicationContext().startActivity(intent);
 
-                onPing.onClick(null);
+                if(cookie!=null) {
 
+                    joinGroup();
+                    Ping();
+
+                }else {
+                    Log.i("no cookie", "nocokkie");
+                }
 
                 return true;
 
@@ -138,49 +190,20 @@ public class BeamActivity extends NfcBeamActivity {
         }
     };
 
-    View.OnClickListener onPing = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.i("here","here");
-            SessionManager manager = SessionManager.getInstance(getApplicationContext());
-            cookie= manager.retrieveSession(SessionManager.COOKIE_KEY, String.class);
+    public void Ping(){
 
-            if(cookie!=null) {
-                joinGroup();
-            }else {
-                Log.i("no cookie", "nocokkie");
-            }
+        TeamMessage message = new TeamMessage();
 
-            onSend.onClick(null);
+        Person test= manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+        message.setMessage(test);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        socket.send("/app/team/"+TEAM_ID,message);
 
-    };
-    View.OnClickListener onSend = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            Log.i("sending my information", " lalal");
-
-            //client.send("/app/activeUsers", null, null);
-
-            TeamMessage message = new TeamMessage();
-
-            Credentials cred=new Credentials("a","a");
-            Location loc=new Location(1,1);
-
-            Person test= new Person(1,"a","a",cred,loc);
-            message.setMessage(test);
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            socket.send("/app/team/1",message);
-
-        }
-
-    };
-
+    }
 
 }

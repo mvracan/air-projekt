@@ -22,6 +22,11 @@ import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
+import hr.foi.teamup.handlers.ActiveTeamHandler;
+import hr.foi.teamup.model.Person;
+import hr.foi.teamup.webservice.ServiceAsyncTask;
+import hr.foi.teamup.webservice.ServiceCaller;
+import hr.foi.teamup.webservice.ServiceParams;
 
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,8 +60,30 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         // set current team for the first time
         if(savedInstanceState == null) {
+            Logger.log("First time");
             exchangeFragments(new TeamFragment(), "currentteam");
         }
+
+        getActiveTeam();
+
+
+    }
+
+
+    protected void getActiveTeam(){
+
+        SessionManager manager=SessionManager.getInstance(getApplicationContext());
+
+        ActiveTeamHandler activeTeamHandler = new ActiveTeamHandler(TeamActivity.this);
+        Person user = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+
+        ServiceParams params = new ServiceParams(
+                getString(hr.foi.teamup.webservice.R.string.team_history_path)+user.getIdPerson(),
+                ServiceCaller.HTTP_POST, null
+                );
+
+        new ServiceAsyncTask(activeTeamHandler).execute(params);
+
     }
 
     @Override
