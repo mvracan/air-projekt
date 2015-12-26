@@ -27,7 +27,9 @@
         <activity android:name=".UserProfileActivity"></activity>
         <activity android:name=".TeamActivity"></activity>
         <activity android:name=".CreateTeamActivity"></activity>
-        <activity android:name=".BeamActivity"></activity>
+        <activity android:name=".BeamActivity">
+
+        </activity>
     </application>
 
 </manifest>

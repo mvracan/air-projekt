@@ -1,13 +1,18 @@
 package hr.foi.air.teamup.nfcaccess;
 
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
+import android.nfc.tech.NfcF;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+
+import hr.foi.air.teamup.Logger;
 
 /**
  * abstract activity to extend when nfc needs to be used
@@ -19,6 +24,11 @@ public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAd
     private String message;
     private static final String NFC_MIME_TYPE = "text/plain";
     private TeamJoinerCallback callback;
+    public PendingIntent mPendingIntent;
+    public IntentFilter[] mFilters;
+    public String[][] mTechLists;
+
+
 
     /**
      * gets called after intent is set to handle it
@@ -27,10 +37,33 @@ public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAd
     protected void onResume() {
 
         super.onResume();
+        mPendingIntent = PendingIntent.getActivity(this, 0,
+                new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+        // Setup an intent filter for all MIME based dispatches
+        IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+
+        try {
+            ndef.addDataType("*/*");
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            throw new RuntimeException("fail", e);
+        }
+        mFilters = new IntentFilter[] {
+                ndef,
+        };
+
+        // Setup a tech list for all NfcF tags
+        mTechLists = new String[][] { new String[] { NfcF.class.getName() } };
+        adapter.enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
+
         Intent intent = getIntent();
+
         if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            Logger.log("SReceiving team");
             Parcelable[] raw = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefMessage ndefMessage = (NdefMessage) raw[0];
+            Logger.log("Receiving team with id : " + new String(ndefMessage.getRecords()[0].getPayload()));
+
             callback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
 
         }
@@ -89,6 +122,7 @@ public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAd
             throw new NfcNotAvailableException("Nfc adapter is not available or isn't working," +
                     " use startNfcAdapter before beaming");
         } else {
+            Logger.log("Sending message" + message);
             this.message = message;
             this.callback = callback;
             adapter.setNdefPushMessageCallback(this, this);
