@@ -22,4 +22,5 @@ public interface TeamRepository extends JpaRepository<Team, String> {
     
     public Team findByIdTeam( long idTeam);
     public List<Team> findByActive(long active);
+    public Team findByActiveAndMembers_IdPerson(long active,long id);
 }
