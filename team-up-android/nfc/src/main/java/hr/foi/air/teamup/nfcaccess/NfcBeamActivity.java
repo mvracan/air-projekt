@@ -21,14 +21,16 @@ import hr.foi.air.teamup.Logger;
 public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAdapter.CreateNdefMessageCallback {
 
     private NfcAdapter adapter;
-    private String message;
+    protected String message;
     private static final String NFC_MIME_TYPE = "text/plain";
-    private TeamJoinerCallback callback;
-    public PendingIntent mPendingIntent;
-    public IntentFilter[] mFilters;
-    public String[][] mTechLists;
+    protected PendingIntent mPendingIntent;
+    protected TeamJoinerCallback callback;
+    protected IntentFilter[] mFilters;
+    protected String[][] mTechLists;
 
-
+    public void setCallback(TeamJoinerCallback callback) {
+        this.callback = callback;
+    }
 
     /**
      * gets called after intent is set to handle it
@@ -65,7 +67,6 @@ public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAd
             Logger.log("Receiving team with id : " + new String(ndefMessage.getRecords()[0].getPayload()));
 
             callback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
-
         }
     }
 

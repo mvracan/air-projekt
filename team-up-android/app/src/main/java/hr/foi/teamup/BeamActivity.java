@@ -38,7 +38,6 @@ public class BeamActivity extends NfcBeamActivity {
 
     HashMap<String,ListenerSubscription> subscriptionChannels;
     TeamConnection socket;
-
     String cookie;
     String USER_CHANNEL_PATH = "/user/queue/messages";
     String GROUP_PATH = "/topic/team/";
@@ -46,30 +45,29 @@ public class BeamActivity extends NfcBeamActivity {
     String TEAM_ID;
     ImageView image;
     SessionManager manager;
-    TeamJoinerCallback callback;
-    //TODO IMPLEMENT CALLBACK
-    
+
+    TeamJoinerCallback callback=new TeamJoinerCallback() {
+        @Override
+        public void onMessageReceived(String message) {
+            Logger.log(message);
+
+            TEAM_ID=message;
+
+            Person client= SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+
+            new ServiceAsyncTask(handler).execute(new ServiceParams(
+                    "/login",
+                    ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded", null, "username=" + client.getCredentials().getUsername() +
+                    "&password=" + client.getCredentials().getPassword()));
+
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        this. callback = new TeamJoinerCallback() {
-            @Override
-            public void onMessageReceived(String message) {
-                Logger.log(message);
-
-                TEAM_ID=message;
-
-                Person client= manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
-
-                new ServiceAsyncTask(handler).execute(new ServiceParams(
-                        "/login",
-                        ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded", null, "username=" + client.getCredentials().getUsername() +
-                        "&password=" + client.getCredentials().getPassword()));
-
-
-            }
-        };
-
+        super.setCallback(callback);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_beam);
@@ -117,21 +115,23 @@ public class BeamActivity extends NfcBeamActivity {
         return img;
     }
 
-
     private void joinGroup(){
 
+        subscriptionChannels = new HashMap<>();
         manager = SessionManager.getInstance(getApplicationContext());
         cookie= manager.retrieveSession(SessionManager.COOKIE_KEY, String.class);
 
         if(cookie != null) {
             subscriptionChannels.put(USER_CHANNEL_PATH, subscription);
-            subscriptionChannels.put(GROUP_PATH, subscription);
+            subscriptionChannels.put(GROUP_PATH + TEAM_ID, subscription);
 
             socket = new TeamConnection(subscriptionChannels, cookie);
             socket.start();
+
         }
 
     }
+
 
 
     ListenerSubscription subscription=new ListenerSubscription() {
@@ -154,6 +154,7 @@ public class BeamActivity extends NfcBeamActivity {
 
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
                 manager.createSession(response.getCookie(), SessionManager.COOKIE_KEY);
+                cookie= response.getCookie();
 
                 //Intent intent = new Intent(getApplicationContext(), BeamActivity.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
