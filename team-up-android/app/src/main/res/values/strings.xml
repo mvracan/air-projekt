@@ -7,6 +7,8 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="submit">Submit</string>
+    <string name="username_input">lpalaic</string>
+    <string name="password_input">palaic</string>
 
     <string name="signin">Sign in</string>
     <string name="logoapp">logoapp</string>
