@@ -20,7 +20,11 @@ public abstract class NfcForegroundDispatcher extends NfcActivity {
     protected PendingIntent mPendingIntent;
     protected IntentFilter[] mFilters;
     protected String[][] mTechLists;
-    protected NfcBeamMessageCallback callback;
+    protected NfcBeamMessageCallback nfcDispatchCallback;
+
+    public void setNfcDispatchCallback(NfcBeamMessageCallback callback) {
+        this.nfcDispatchCallback = callback;
+    }
 
     @Override
     protected void onResume() {
@@ -52,7 +56,7 @@ public abstract class NfcForegroundDispatcher extends NfcActivity {
             NdefMessage ndefMessage = (NdefMessage) raw[0];
             Logger.log("Receiving team with id : " + new String(ndefMessage.getRecords()[0].getPayload()));
 
-            callback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
+            nfcDispatchCallback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
         }
     }
 }

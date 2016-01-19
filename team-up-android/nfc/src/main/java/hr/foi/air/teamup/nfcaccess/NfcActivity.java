@@ -5,6 +5,7 @@ import android.nfc.NfcAdapter;
 import android.support.v7.app.AppCompatActivity;
 
 /**
+ *
  * Created by Tomislav Turek on 19.01.16..
  */
 abstract class NfcActivity extends AppCompatActivity {

@@ -11,13 +11,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
+import hr.foi.air.teamup.nfcaccess.NfcBeamMessageCallback;
 import hr.foi.air.teamup.nfcaccess.NfcForegroundDispatcher;
 import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
@@ -27,14 +33,26 @@ import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 import hr.foi.teamup.handlers.ActiveTeamHandler;
 import hr.foi.teamup.model.Person;
+import hr.foi.teamup.model.TeamMessage;
+import hr.foi.teamup.stomp.ListenerSubscription;
+import hr.foi.teamup.stomp.TeamConnection;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
+import hr.foi.teamup.webservice.ServiceResponse;
+import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
+    private Person client;
+    HashMap<String,ListenerSubscription> subscriptionChannels;
+    TeamConnection socket;
+    String cookie;
+    String teamId;
+    String USER_CHANNEL_PATH = "/user/queue/messages";
+    String GROUP_PATH = "/topic/team/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +60,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
 
+        // navigation menu
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer);
@@ -68,19 +87,135 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
 
         getActiveTeam();
+
+        // starts foreground dispatcher
         try {
             startNfcAdapter();
+            setNfcDispatchCallback(callback);
         } catch (NfcNotAvailableException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // TODO
         } catch (NfcNotEnabledException e) {
             e.printStackTrace();
         }
 
     }
 
+    // gets team id and subscribes him
+    NfcBeamMessageCallback callback=new NfcBeamMessageCallback() {
+        @Override
+        public void onMessageReceived(String message) {
+            Logger.log(message);
+            teamId = message;
+            client = SessionManager.getInstance(getApplicationContext())
+                    .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+            // become a member
+            new ServiceAsyncTask(memberHandler).execute(
+                    new ServiceParams("/" + teamId + "/person/" + client.getIdPerson(),
+                            ServiceCaller.HTTP_POST, null));
+        }
+    };
 
+    // cookie authentication
+    SimpleResponseHandler memberHandler = new SimpleResponseHandler() {
+        @Override
+        public boolean handleResponse(ServiceResponse response) {
+            Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
+
+            if (response.getHttpCode() == 200) {
+                new ServiceAsyncTask(handler).execute(new ServiceParams(
+                        "/login",
+                        ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded", null, "username=" + client.getCredentials().getUsername() +
+                        "&password=" + client.getCredentials().getPassword()));
+                return true;
+
+            } else {
+                // http code different from 200 OK
+                Logger.log("LoginHandler -- invalid credentials sent", Log.WARN);
+                Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+    };
+
+    // after authetication, joins to group
+    SimpleResponseHandler handler = new SimpleResponseHandler() {
+        @Override
+        public boolean handleResponse(ServiceResponse response) {
+            Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
+
+            if (response.getHttpCode() == 202) {
+
+                Log.i("COOKIE ", response.getCookie());
+
+                SessionManager manager = SessionManager.getInstance(getApplicationContext());
+                manager.createSession(response.getCookie(), SessionManager.COOKIE_KEY);
+                cookie= response.getCookie();
+
+                if(cookie!=null) {
+                    joinGroup();
+                    ping();
+                }else {
+                    Log.i("no cookie", "nocokkie");
+                }
+
+                return true;
+
+            } else {
+                // http code different from 200 OK
+                Logger.log("LoginHandler -- invalid credentials sent", Log.WARN);
+                Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+    };
+
+    // pings for team members every second
+    public void ping(){
+
+        TeamMessage message = new TeamMessage();
+
+        Person test= SessionManager.getInstance(this).retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+        message.setMessage(test);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        socket.send("/app/team/"+teamId,message);
+
+    }
+
+    // stomp message callback
+    ListenerSubscription subscription=new ListenerSubscription() {
+        @Override
+        public void onMessage(Map<String, String> headers, String body) {
+            Logger.log(body);
+            // TODO ispis korisnika
+        }
+    };
+
+    /**
+     * joins to group through subscription
+     */
+    private void joinGroup(){
+
+        subscriptionChannels = new HashMap<>();
+        cookie = SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.COOKIE_KEY, String.class);
+
+        if(cookie != null) {
+            subscriptionChannels.put(USER_CHANNEL_PATH, subscription);
+            subscriptionChannels.put(GROUP_PATH + teamId, subscription);
+
+            socket = new TeamConnection(subscriptionChannels, cookie);
+            socket.start();
+        }
+    }
+
+    /**
+     * get current team if exists
+     */
     protected void getActiveTeam(){
-
         SessionManager manager=SessionManager.getInstance(getApplicationContext());
 
         ActiveTeamHandler activeTeamHandler = new ActiveTeamHandler(TeamActivity.this);
@@ -92,7 +227,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 );
 
         new ServiceAsyncTask(activeTeamHandler).execute(params);
-
     }
 
     @Override
@@ -145,6 +279,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.open_map) {
+            // TODO open map
             // FragmentTransaction
             // FragmentManager
             // fragmentManager.replace(bla, bla);
@@ -155,6 +290,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     }
 
+    /**
+     * exchanges fragments
+     * @param fragment fragment that goes in foreground
+     * @param name back stack name
+     */
     private void exchangeFragments(Fragment fragment, String name) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_frame, fragment);
@@ -165,7 +305,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-
+        // handling navigation items
         if (menuItem.getItemId()==R.id.profile){
             Logger.log("Profile clicked");
         } else if (menuItem.getItemId()==R.id.code){

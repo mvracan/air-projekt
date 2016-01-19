@@ -14,11 +14,12 @@ import hr.foi.teamup.model.Team;
 import hr.foi.teamup.webservice.ServiceResponse;
 
 /**
+ * gets active group and saves to session (if exists)
  * Created by paz on 26.12.15..
  */
 public class ActiveTeamHandler extends ResponseHandler {
 
-    public  ActiveTeamHandler(Context context, Serializable... args) {
+    public ActiveTeamHandler(Context context, Serializable... args) {
         super(context, args);
     }
 
