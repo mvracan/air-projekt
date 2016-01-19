@@ -11,10 +11,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,7 +31,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 import hr.foi.teamup.R;
+import hr.foi.teamup.model.Person;
 
 
 /*
@@ -69,9 +76,6 @@ public class LocationFragment extends Fragment implements
         }
         try {
 
-            view = inflater.inflate(, container, false);
-
-
             view = inflater.inflate(R.layout.fragment_map, container, false);
 
         } catch (InflateException e) {
@@ -80,6 +84,16 @@ public class LocationFragment extends Fragment implements
         return view;
     }
 
+    public void setUserLocations(ArrayList<Person> teamMembers){
+
+        Log.i(" maps "," setUserLocations ");
+
+        for (Person p : teamMembers) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
+                    p.getLocation().getLng())).title(p.getName() + " " + p.getSurname()));
+        }
+
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
