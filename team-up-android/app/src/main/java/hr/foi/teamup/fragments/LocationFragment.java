@@ -37,12 +37,14 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import hr.foi.teamup.R;
 
 
 /**
- * Created by hrvoje on 21/11/15.
+ *
+ * Created by paz on 21/11/15.
  */
-public class MapFragment extends Fragment implements
+public class LocationFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
 
@@ -153,24 +155,8 @@ public class MapFragment extends Fragment implements
                 mGoogleApiClient, mLocationRequest, this);
     }
 
-
-
-    TimerTask locations = new TimerTask() {
-        @Override
-        public void run() {
-            //prepare locations of user
-        }
-    };
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-    }
-
-    @Override
-    public void onStop() {
-        t.cancel();
-        t.purge();
-        super.onStop();
     }
 }
