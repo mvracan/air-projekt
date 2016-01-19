@@ -88,7 +88,9 @@ public class LocationFragment extends Fragment implements
 
     public void setUserLocations(ArrayList<Person> teamMembers){
 
+
         if(isVisible()) {
+            mMap.clear();
             Log.i(" maps ", " setUserLocations ");
             Person creator = teamMembers.get(0);
 
@@ -143,7 +145,7 @@ public class LocationFragment extends Fragment implements
         userLocation.setLat(location.getLatitude());
         userLocation.setLng(location.getLongitude());
 
-        
+
         ((TeamActivity)getActivity()).sendLocation(userLocation);
 
     }
