@@ -17,6 +17,7 @@ public class Team implements Serializable {
     String nfcCode;
     Person creator;
     List<Person> members;
+    int active;
 
 
     public Team(long IdTeam, String name, String teamDesc, String password, double radius, String nfcCode,
@@ -88,6 +89,14 @@ public class Team implements Serializable {
     public List<Person> getMembers() { return members; }
 
     public void setMembers(List<Person> members) { this.members = members; }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
 
     @Override
     public String toString() {

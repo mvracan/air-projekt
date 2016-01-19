@@ -24,37 +24,46 @@ public class TeamConnection extends Thread implements Runnable {
     Map<String,String> headersSetup = new HashMap<>();
     HashMap <String, ListenerSubscription> subscriptions;
     String cookie;
+    boolean active;
 
     public TeamConnection( HashMap<String, ListenerSubscription> subscriptions, String cookie) {
         this.subscriptions = subscriptions;
         this.cookie = cookie;
+        this.active = true;
     }
 
     @Override
     public void run() {
 
-        headersSetup.put("Cookie", cookie);
-        Log.i("connect", "going to connect to stomp with cookie" + cookie);
-        Log.i("connect", "going to connect to stomp");
+        if(active) {
+            headersSetup.put("Cookie", cookie);
+            Log.i("connect", "going to connect to stomp with cookie" + cookie);
+            Log.i("connect", "going to connect to stomp");
 
-        client = new Stomp(websocketConnection + "/team", headersSetup, new ListenerWSNetwork() {
-            @Override
-            public void onState(int state) {
-                Log.i("State :", Integer.toString(state));
+            client = new Stomp(websocketConnection + "/team", headersSetup, new ListenerWSNetwork() {
+                @Override
+                public void onState(int state) {
+                    Log.i("State :", Integer.toString(state));
+                }
+            });
+
+            client.connect();
+
+            Log.i("connect - headers ", client.getHeaders().get("Cookie"));
+
+            for (Map.Entry<String, ListenerSubscription> entry : subscriptions.entrySet()) {
+
+                client.subscribe(new Subscription(entry.getKey(), entry.getValue()));
+
             }
-        });
-
-        client.connect();
-
-        Log.i("connect - headers ", client.getHeaders().get("Cookie"));
-
-        for(Map.Entry<String, ListenerSubscription> entry : subscriptions.entrySet()) {
-
-            client.subscribe(new Subscription(entry.getKey(),entry.getValue()));
-
         }
 
 
+    }
+
+    public void finish() {
+        active = false;
+        client.disconnect();
     }
 
     public <T> void send(String dest, T message){

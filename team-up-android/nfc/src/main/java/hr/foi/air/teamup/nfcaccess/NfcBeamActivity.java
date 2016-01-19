@@ -72,15 +72,6 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
     }
 
     /**
-     * sets the intent when beam is recognized
-     * @param intent passed beam intent
-     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-    }
-
-    /**
      * starts the nfc adapter, should be called in onCreate
      * @throws NfcNotAvailableException thrown if the phone does not support nfc
      */

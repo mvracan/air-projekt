@@ -38,6 +38,7 @@ public class TeamFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setRetainInstance(true);
         View v = inflater.inflate(R.layout.fragment_team_current, container, false);
 
         users = (ListView)v.findViewById(R.id.current_team_list);
@@ -45,7 +46,21 @@ public class TeamFragment extends Fragment {
     }
 
     public void updateList(ArrayList<Person> list){
-        adapter = new PersonAdapter(getActivity().getApplicationContext(), R.layout.fragment_team_current, list);
+        if(list != null && this.isVisible()) {
+            adapter = new PersonAdapter(getActivity().getApplicationContext(), R.layout.fragment_team_current, list);
+            users.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         users.setAdapter(adapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        adapter = (PersonAdapter)users.getAdapter();
     }
 }

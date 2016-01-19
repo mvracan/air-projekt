@@ -1,5 +1,6 @@
 package hr.foi.air.teamup.nfcaccess;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.nfc.NfcAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,15 @@ abstract class NfcActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * sets the intent when beam is recognized
+     * @param intent passed beam intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+    }
+
     public NfcAdapter getAdapter() {
         return adapter;
     }
@@ -32,4 +42,5 @@ abstract class NfcActivity extends AppCompatActivity {
     public void setAdapter(NfcAdapter adapter) {
         this.adapter = adapter;
     }
+
 }
