@@ -321,6 +321,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 for(int i = 0; i < getFragmentManager().getBackStackEntryCount(); ++i) {
                     getFragmentManager().popBackStack();
                 }
+                socket.stopThread();
                 TeamActivity.super.onBackPressed();
             }
         };
