@@ -5,13 +5,11 @@
  */
 package hr.foi.teamup.controllers;
 import hr.foi.teamup.model.Credentials;
-import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Role;
 import hr.foi.teamup.repositories.PersonRepository;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.jboss.logging.Logger.Level;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
