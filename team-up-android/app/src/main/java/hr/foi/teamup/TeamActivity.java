@@ -20,7 +20,15 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
@@ -31,6 +39,7 @@ import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.air.teamup.prompts.InputPrompt;
+import hr.foi.teamup.adapters.PersonAdapter;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 import hr.foi.teamup.handlers.ActiveTeamHandler;
@@ -57,6 +66,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     String teamId;
     String USER_CHANNEL_PATH = "/user/queue/messages";
     String GROUP_PATH = "/topic/team/";
+    TeamFragment teamFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +97,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         // set current team for the first time
         if(savedInstanceState == null) {
             Logger.log("First time");
-            exchangeFragments(new TeamFragment(), "currentteam");
+            teamFragment = new TeamFragment();
+            exchangeFragments(teamFragment, "currentteam");
         }
 
         getActiveTeam();
@@ -97,9 +108,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             startNfcAdapter();
             setNfcDispatchCallback(callback);
         } catch (NfcNotAvailableException e) {
-            e.printStackTrace(); // TODO
+            Toast.makeText(this, "NFC is not turned on", Toast.LENGTH_LONG).show();
         } catch (NfcNotEnabledException e) {
-            e.printStackTrace();
+            Toast.makeText(this, "NFC is not supported", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -236,7 +247,10 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         @Override
         public void onMessage(Map<String, String> headers, String body) {
             Logger.log(body);
-            // TODO ispis korisnika
+            Type listType = new TypeToken<ArrayList<Person>>() {}.getType();
+
+            ArrayList<Person> persons = new Gson().fromJson(body, listType);
+            teamFragment.updateList(persons);
         }
     };
 

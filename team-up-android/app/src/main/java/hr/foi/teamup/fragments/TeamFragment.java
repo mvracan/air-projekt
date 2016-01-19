@@ -11,8 +11,10 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.R;
@@ -31,36 +33,19 @@ import hr.foi.teamup.webservice.SimpleResponseHandler;
 public class TeamFragment extends Fragment {
 
     ListView users;
+    PersonAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_team_current, container, false);
 
-        /*ServiceParams params = new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path),
-                ServiceCaller.HTTP_GET, null);
-        new ServiceAsyncTask(currentTeamHandler).execute(params);*/
-
         users = (ListView)v.findViewById(R.id.current_team_list);
         return v;
     }
 
-    SimpleResponseHandler currentTeamHandler = new SimpleResponseHandler() {
-        @Override
-        public boolean handleResponse(ServiceResponse response) {
-            if(response.getHttpCode() == 200) {
-                Type listType = new TypeToken<ArrayList<Person>>() {
-                }.getType();
-                ArrayList<Person> p = new Gson().fromJson(response.getJsonResponse(), listType);
-
-                Logger.log("Setting team history data...", getClass().getName());
-                users.setAdapter(new PersonAdapter(getActivity().getApplicationContext(),
-                        R.layout.fragment_team_current, p));
-
-                return true;
-            } else {
-                return false;
-            }
-        }
-    };
+    public void updateList(ArrayList<Person> list){
+        adapter = new PersonAdapter(getActivity().getApplicationContext(), R.layout.fragment_team_current, list);
+        users.setAdapter(adapter);
+    }
 }
