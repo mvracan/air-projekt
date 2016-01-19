@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 public interface TeamRepository extends JpaRepository<Team, String> {
     
     public Team findByIdTeam( long idTeam);
+    public List<Team> findByMembers_IdPerson(long id);
     public List<Team> findByActive(long active);
     public Team findByActiveAndMembers_IdPerson(long active,long id);
 }
