@@ -7,8 +7,10 @@ package hr.foi.teamup.controllers;
 
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
+import hr.foi.teamup.model.Team;
 import hr.foi.teamup.model.TeamMessage;
 import hr.foi.teamup.repositories.PersonRepository;
+import hr.foi.teamup.repositories.TeamRepository;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -28,16 +30,16 @@ public class TeamMessageController {
     private SimpMessagingTemplate template;
     
     PersonRepository personRepository;
-
+    TeamRepository teamRepository;
    
    
     
     @Autowired
-    public TeamMessageController(SimpMessagingTemplate template, PersonRepository personRepository) {
+    public TeamMessageController(SimpMessagingTemplate template, PersonRepository personRepository, TeamRepository teamRepository) {
         
     this.template = template;
     this.personRepository = personRepository;
-    
+    this.teamRepository = teamRepository;
     }
     
     @MessageMapping("/team/{id}")
@@ -75,6 +77,16 @@ public class TeamMessageController {
         this.personRepository.save(a);
         
         
+    }
+    
+    @MessageMapping("/team/{idTeam}/panic/{idPanicr}")
+    public void panic(@DestinationVariable long idTeam, @DestinationVariable long idPanicr) {
+        Team t = this.teamRepository.findByIdTeam(idTeam);
+        Person lead = t.getCreator();
+        Person panics = this.personRepository.findByIdPerson(idPanicr);
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "User " + panics.getName() + " panics, calling admin " + lead.getName());
+        template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", panics);
     }
     
 }
