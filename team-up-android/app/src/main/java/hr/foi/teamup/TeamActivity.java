@@ -93,11 +93,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         // set current team for the first time
         if(savedInstanceState == null) {
             Logger.log("First time");
-            teamFragment = new TeamFragment();
-            locationFragment = new LocationFragment();
-            exchangeFragments(teamFragment, "currentteam");
+
         }
 
+        teamFragment = new TeamFragment();
+        locationFragment = new LocationFragment();
+        exchangeFragments(teamFragment);
         getActiveTeam();
 
         // starts foreground dispatcher
@@ -306,11 +307,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public void onBackPressed() {
         mDrawer.closeDrawers();
-        if(getFragmentManager().getBackStackEntryCount() != 0) {
-            getFragmentManager().popBackStack();
-        } else {
-            signOut();
-        }
+        signOut();
     }
 
     // ask for sign out
@@ -342,7 +339,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.open_map) {
-            exchangeFragments(locationFragment, "locations");
+            exchangeFragments(locationFragment);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -352,13 +349,10 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     /**
      * exchanges fragments
      * @param fragment fragment that goes in foreground
-     * @param name back stack name
      */
-    private void exchangeFragments(Fragment fragment, String name) {
+    private void exchangeFragments(Fragment fragment) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_frame, fragment);
-        getFragmentManager().popBackStack();
-        transaction.addToBackStack(name);
+        transaction.replace(R.id.fragment_frame, fragment);
         transaction.commit();
     }
 
@@ -379,9 +373,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         } else if (menuItem.getItemId()==R.id.nfc){
             startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId()==R.id.history){
-            exchangeFragments(new TeamHistoryFragment(), "teamhistory");
+            exchangeFragments(new TeamHistoryFragment());
         } else if (menuItem.getItemId()==R.id.new_group){
             startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
+        } else if (menuItem.getItemId()==R.id.home) {
+            exchangeFragments(teamFragment);
         }
 
         mDrawer.closeDrawers();
