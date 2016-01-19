@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
+import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.R;
 import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.model.Person;
@@ -87,21 +88,23 @@ public class LocationFragment extends Fragment implements
 
     public void setUserLocations(ArrayList<Person> teamMembers){
 
-        Log.i(" maps "," setUserLocations ");
-        Person creator = teamMembers.get(0);
+        if(isVisible()) {
+            Log.i(" maps ", " setUserLocations ");
+            Person creator = teamMembers.get(0);
 
-        CameraUpdate center=
-                CameraUpdateFactory.newLatLng(new LatLng(creator.getLocation().getLat(),
-                        creator.getLocation().getLng()));
+            CameraUpdate center =
+                    CameraUpdateFactory.newLatLng(new LatLng(creator.getLocation().getLat(),
+                            creator.getLocation().getLng()));
 
-        CameraUpdate zoom=CameraUpdateFactory.zoomTo(18);
-        mMap.moveCamera(center);
-        mMap.animateCamera(zoom);
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
+            mMap.moveCamera(center);
+            mMap.animateCamera(zoom);
 
 
-        for (Person p : teamMembers) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
-                    p.getLocation().getLng())).title(p.getName() + " " + p.getSurname()));
+            for (Person p : teamMembers) {
+                mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
+                        p.getLocation().getLng())).title(p.getName() + " " + p.getSurname()));
+            }
         }
 
     }
@@ -134,12 +137,14 @@ public class LocationFragment extends Fragment implements
     @Override
     public void onLocationChanged(Location location) {
 
+        Logger.log("Location changed ", getClass().getName(), Log.DEBUG);
+
         hr.foi.teamup.model.Location userLocation = new hr.foi.teamup.model.Location();
         userLocation.setLat(location.getLatitude());
         userLocation.setLng(location.getLongitude());
 
-        //TODO SEND LOCATION OBJECT TO URL /updateLocation
-        //((TeamActivity)getActivity()).ping();
+        
+        ((TeamActivity)getActivity()).sendLocation(userLocation);
 
     }
 

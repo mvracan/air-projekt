@@ -36,6 +36,7 @@ import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
+import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.model.TeamMessage;
@@ -190,6 +191,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     } ;
 
+    public void sendLocation(Location location){
+
+        socket.send("/app/updateLocation",location);
+
+    }
+
     // after authetication, joins to group
     SimpleResponseHandler handler = new SimpleResponseHandler() {
         @Override
@@ -251,6 +258,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 @Override
                 public void run() {
                     teamFragment.updateList(persons);
+                    locationFragment.setUserLocations(persons);
                 }
             });
         }
