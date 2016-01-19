@@ -24,11 +24,11 @@ public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAd
     protected String message;
     private static final String NFC_MIME_TYPE = "text/plain";
     protected PendingIntent mPendingIntent;
-    protected TeamJoinerCallback callback;
+    protected NfcBeamMessageCallback callback;
     protected IntentFilter[] mFilters;
     protected String[][] mTechLists;
 
-    public void setCallback(TeamJoinerCallback callback) {
+    public void setCallback(NfcBeamMessageCallback callback) {
         this.callback = callback;
     }
 
@@ -61,11 +61,8 @@ public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAd
         Intent intent = getIntent();
 
         if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            Logger.log("SReceiving team");
             Parcelable[] raw = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefMessage ndefMessage = (NdefMessage) raw[0];
-            Logger.log("Receiving team with id : " + new String(ndefMessage.getRecords()[0].getPayload()));
-
             callback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
         }
     }
@@ -103,21 +100,11 @@ public abstract class NfcBeamActivity extends AppCompatActivity implements NfcAd
     }
 
     /**
-     * starts the beaming process, by default in reader mode,
-     * waits for the devices to get paired
-     * @param callback callback object that handles beam response
-     * @throws NfcNotAvailableException
-     */
-    protected void startNfcBeam(TeamJoinerCallback callback) throws NfcNotAvailableException {
-        startNfcBeam(null, callback);
-    }
-
-    /**
      * starts the beaming process, waits for the devices to get paired
      * @param message message to beam to the phone, null if in reader mode
      * @throws NfcNotAvailableException thrown if adapter was not initialized
      */
-    protected void startNfcBeam(String message, TeamJoinerCallback callback) throws NfcNotAvailableException {
+    protected void startNfcBeam(String message, NfcBeamMessageCallback callback) throws NfcNotAvailableException {
 
         if(adapter == null) {
             throw new NfcNotAvailableException("Nfc adapter is not available or isn't working," +

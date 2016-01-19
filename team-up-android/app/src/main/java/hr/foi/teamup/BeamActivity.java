@@ -1,14 +1,7 @@
 package hr.foi.teamup;
 
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
-import android.nfc.NfcAdapter;
-import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -17,12 +10,10 @@ import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
-import hr.foi.air.teamup.nfcaccess.TeamJoinerCallback;
+import hr.foi.air.teamup.nfcaccess.NfcBeamMessageCallback;
 import hr.foi.air.teamup.nfcaccess.NfcBeamActivity;
 import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
-import hr.foi.teamup.model.Credentials;
-import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.model.TeamMessage;
@@ -46,7 +37,7 @@ public class BeamActivity extends NfcBeamActivity {
     ImageView image;
     SessionManager manager;
 
-    TeamJoinerCallback callback=new TeamJoinerCallback() {
+    NfcBeamMessageCallback callback=new NfcBeamMessageCallback() {
         @Override
         public void onMessageReceived(String message) {
             Logger.log(message);
