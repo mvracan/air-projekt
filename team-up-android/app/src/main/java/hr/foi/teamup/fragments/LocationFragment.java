@@ -1,8 +1,6 @@
 package hr.foi.teamup.fragments;
 
-/**
- * Created by paz on 19.01.16..
- */
+
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -37,13 +35,14 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import hr.foi.teamup.R;
 
 
 /**
- * Created by hrvoje on 21/11/15.
+ * Created by paz on 19.01.16..
  */
 
-public class MapFragment extends Fragment implements
+public class LocationFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
 
@@ -60,8 +59,8 @@ public class MapFragment extends Fragment implements
 
 
         if(savedInstanceState == null) {
-            t = new Timer();
-            t.schedule(locations, 1000, 1000);
+
+
         }
         buildGoogleApiClient();
     }
@@ -156,25 +155,9 @@ public class MapFragment extends Fragment implements
                 mGoogleApiClient, mLocationRequest, this);
     }
 
-
-
-    TimerTask locations = new TimerTask() {
-        @Override
-        public void run() {
-            //prepare locations of user
-        }
-    };
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-    }
-
-    @Override
-    public void onStop() {
-        t.cancel();
-        t.purge();
-        super.onStop();
     }
 }
 
