@@ -1,17 +1,10 @@
 package hr.foi.teamup.fragments;
 
-/**
- * Created by paz on 19.01.16..
- */
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.app.Fragment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,29 +20,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import hr.foi.teamup.R;
 
-
 /**
  *
- * Created by paz on 21/11/15.
+ * Created by paz on 19.01.16..
  */
 public class LocationFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-
     GoogleMap mMap;
-    Timer t;
     LocationManager locationManager;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
@@ -58,12 +39,6 @@ public class LocationFragment extends Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-
-        if(savedInstanceState == null) {
-            t = new Timer();
-            t.schedule(locations, 1000, 1000);
-        }
         buildGoogleApiClient();
     }
 
@@ -78,9 +53,9 @@ public class LocationFragment extends Fragment implements
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(/*TODO*/, container, false);
+            view = inflater.inflate(R.layout.fragment_map, container, false);
         } catch (InflateException e) {
-
+            e.printStackTrace();
         }
         return view;
     }
@@ -102,7 +77,7 @@ public class LocationFragment extends Fragment implements
     }
 
     protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this.getContext())
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
