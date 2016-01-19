@@ -100,7 +100,7 @@ public class TeamController {
         
         return new ResponseEntity(HttpStatus.OK);
     }
-     @RequestMapping(value="/person/{idPerson}", method=RequestMethod.POST)
+    @RequestMapping(value="/person/{idPerson}", method=RequestMethod.POST)
     public ResponseEntity getActiveUserTeam (@PathVariable long idPerson){
         
         Team foundTeam=teamRepository.findByActiveAndMembers_IdPerson(1, idPerson);
@@ -112,4 +112,18 @@ public class TeamController {
         else
             return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
+    
+    @RequestMapping(value="/person/{idPerson}", method=RequestMethod.GET)
+    public ResponseEntity<List<Team>> getUserTeam (@PathVariable long idPerson){
+        
+        List<Team> foundTeam= this.teamRepository.findByMembers_IdPerson(idPerson);
+       
+        
+        Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "get user team on /team/person" + idPerson);
+        if(foundTeam!=null)
+            return new ResponseEntity(foundTeam,HttpStatus.OK);
+        else
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+    
 }
