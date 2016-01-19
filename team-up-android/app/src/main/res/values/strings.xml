@@ -21,6 +21,7 @@
     <string name="update">Update</string>
     <string name="map">Map</string>
     <string name="user_status">Status</string>
+    <string name="home">Home</string>
 
     <!-- validation -->
     <string name="first_name_error">First name can only contain letters (min 3, max 45)</string>
