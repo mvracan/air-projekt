@@ -48,8 +48,7 @@ public class TeamController {
     public ResponseEntity<List<Team>> retrieveAll() {
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
                 "GET on /team/ -- retrieving full list of groups");
-        
-        
+
         return new ResponseEntity(this.teamRepository.findAll(), HttpStatus.OK);
     }
     
