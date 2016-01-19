@@ -25,6 +25,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     // design android
     compile 'com.android.support:design:23.1.1'
+    // map
+    compile 'com.google.android.gms:play-services-maps:6.5.87'
     // modules
     compile project(':webservice')
     compile project(':model')
