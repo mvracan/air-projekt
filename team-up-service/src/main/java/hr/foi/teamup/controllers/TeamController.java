@@ -52,6 +52,22 @@ public class TeamController {
         return new ResponseEntity(this.teamRepository.findAll(), HttpStatus.OK);
     }
     
+    @RequestMapping(value="/{idTeam}/leave/{idPerson}", method = RequestMethod.POST)
+    public ResponseEntity removeFromTeam(@PathVariable long idPerson, @PathVariable long idTeam) {
+        Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
+                "Removing user "+ idPerson + " from team");
+        
+        Team found = this.teamRepository.findByIdTeam(idTeam);
+        Person removePerson = this.personRepository.findByIdPerson(idPerson);
+        
+        found.getMembers().remove(removePerson);
+        
+        if((this.teamRepository.save(found)) != null)
+            return new ResponseEntity(HttpStatus.OK);
+        else
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+          
+    }
     @RequestMapping(value="/create", method=RequestMethod.POST)
     public ResponseEntity<Team> createTeam(@RequestBody Team t){
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
