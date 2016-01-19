@@ -60,6 +60,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     String GROUP_PATH = "/topic/team/";
     TeamFragment teamFragment;
     LocationFragment locationFragment;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 R.string.drawer_open,  R.string.drawer_close);
         mDrawer.setDrawerListener(mDrawerToggle);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         Button logOut = (Button) findViewById(R.id.log_out_button);
@@ -172,12 +173,19 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                             + ", in teamactivity", getClass().getName(), Log.DEBUG);
                     teamId = String.valueOf(sessionTeam.getIdTeam());
 
+                    navigationView.getMenu().clear();
+                    navigationView.inflateMenu(R.menu.team_exist_menu);
+
                     getCookie();
                     
                     return true;
                 }else{
 
                     Logger.log("Error in creating team session ", getClass().getName(), Log.DEBUG);
+
+                    navigationView.getMenu().clear();
+                    navigationView.inflateMenu(R.menu.menu);
+
                     return false;
                 }
 
@@ -378,6 +386,10 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
         } else if (menuItem.getItemId()==R.id.home) {
             exchangeFragments(teamFragment);
+        } else if (menuItem.getItemId()==R.id.leave_group){
+            //socket.finish();
+            //new ServiceAsyncTask(null).execute(new ServiceParams("url",ServiceCaller.HTTP_POST,null));
+            teamFragment.setViewLayout(R.layout.layout_empty_data);
         }
 
         mDrawer.closeDrawers();

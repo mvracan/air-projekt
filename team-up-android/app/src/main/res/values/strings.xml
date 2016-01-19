@@ -38,6 +38,7 @@
     <string name="new_group">New group</string>
     <string name="history">History</string>
     <string name="log_out">Log out</string>
+    <string name="leave_group">Leave group</string>
 
     <!-- Create team -->
     <string name="team_name">Team name</string>
@@ -48,6 +49,7 @@
 
     <!-- empty messages -->
     <string name="empty_history">There are no teams in history</string>
+    <string name="empty_team">Not joined in group. Use NFC or code to enter the group</string>
 
 
     <string name="team_name_error">Team name can only contain letters (min 3, max 45)</string>
@@ -60,7 +62,7 @@
     <string name="join">Join</string>
 
     <!-- NFC Beam -->
-    <string name="beam"> Beam up! </string>
+    <string name="beam"> Please, align the back of your device with another device! </string>
 
 
 </resources>

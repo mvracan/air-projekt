@@ -2,6 +2,8 @@ package hr.foi.teamup;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -28,7 +30,8 @@ import hr.foi.teamup.webservice.SimpleResponseHandler;
 public class BeamActivity extends NfcBeamActivity {
 
     String IMG_PATH="@drawable/";
-    ImageView image;
+    ImageView beamDevice;
+    ImageView fdDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +39,9 @@ public class BeamActivity extends NfcBeamActivity {
 
         setContentView(R.layout.activity_beam);
 
-        image = (ImageView)findViewById(R.id.imageView);
+        beamDevice = (ImageView)findViewById(R.id.beamDevice);
+        fdDevice = (ImageView)findViewById(R.id.fdDevice);
 
-        if(SessionManager.getInstance(this).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class) != null)
-            image = setImage(image, true);
-        else
-            image = setImage(image, false);
 
         Team t = SessionManager.getInstance(this).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
 
@@ -50,8 +50,10 @@ public class BeamActivity extends NfcBeamActivity {
                 Logger.log("Sending team");
                 startNfcAdapter();
 
-                if(t!=null)
+                if(t!=null) {
                     startNfcBeam(Long.toString(t.getIdTeam()), callback);
+                    startAnimation();
+                }
 
             } catch (NfcNotAvailableException e) {
                 e.printStackTrace();
@@ -59,24 +61,15 @@ public class BeamActivity extends NfcBeamActivity {
                 e.printStackTrace();
             }
 
-
-
     }
 
-    public ImageView setImage(ImageView img,boolean isIn){
-        int imageResource;
-        if(isIn){
-            imageResource = getResources().getIdentifier(IMG_PATH+"send", null, getPackageName());
-            Logger.log("in : "+Integer.toString(imageResource));
-        }
-        else{
-            imageResource = getResources().getIdentifier(IMG_PATH+"receive", null, getPackageName());
-            Logger.log("out : "+ Integer.toString(imageResource));
-        }
+    private void startAnimation(){
+        Animation left= AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_left_nfc);
+        Animation right = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_right_nfc);
 
-        img.setImageResource(imageResource);
+        beamDevice.startAnimation(left);
+        fdDevice.startAnimation(right);
 
-        return img;
     }
 
 }

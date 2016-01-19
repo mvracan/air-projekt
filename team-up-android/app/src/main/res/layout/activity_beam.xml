@@ -9,28 +9,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="hr.foi.teamup.BeamActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Beam up!"
-            android:id="@+id/textView"
-            android:layout_gravity="center_horizontal" />
-
-    </LinearLayout>
 
     <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/fdDevice"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/fd_device"
+        android:layout_alignTop="@+id/beamDevice"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:layout_marginRight="80dp" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/beamDevice"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/beam_device"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="80dp" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onBeam"
-        android:id="@+id/imageView"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/image_logo_space_bottom"
-        android:layout_marginTop="@dimen/image_logo_space_top" />
+        android:text="@string/beam"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="65dp"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:id="@+id/textView" />
 
 </RelativeLayout>
