@@ -307,7 +307,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         // handling navigation items
         if (menuItem.getItemId()==R.id.profile){
-            Logger.log("Profile clicked");
+            startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (menuItem.getItemId()==R.id.code){
             InputPrompt prompt = new InputPrompt(this);
             prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {

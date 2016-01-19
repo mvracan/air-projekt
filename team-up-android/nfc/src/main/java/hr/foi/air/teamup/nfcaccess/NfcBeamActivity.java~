@@ -22,17 +22,21 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
 
     protected String message;
     private static final String NFC_MIME_TYPE = "text/plain";
+<<<<<<< HEAD
     protected PendingIntent mPendingIntent;
     protected NfcBeamMessageCallback callback;
     protected IntentFilter[] mFilters;
     protected String[][] mTechLists;
+=======
     protected NfcBeamMessageCallback callback;
+>>>>>>> c1d02e8321a0fd518ae8f13ad7e5d31ac71ecad7
 
     public void setCallback(NfcBeamMessageCallback callback) {
         this.callback = callback;
     }
 
     /**
+<<<<<<< HEAD
      * gets called after intent is set to handle it
      */
     @Override
@@ -68,6 +72,8 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
     }
 
     /**
+=======
+>>>>>>> c1d02e8321a0fd518ae8f13ad7e5d31ac71ecad7
      * creates the ndef message to beam from passed message
      * @param event devices recognized
      * @return message in ndef format
@@ -87,6 +93,7 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
     }
 
     /**
+<<<<<<< HEAD
      * starts the nfc adapter, should be called in onCreate
      * @throws NfcNotAvailableException thrown if the phone does not support nfc
      */
@@ -100,13 +107,18 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
     }
 
     /**
+=======
+>>>>>>> c1d02e8321a0fd518ae8f13ad7e5d31ac71ecad7
      * starts the beaming process, waits for the devices to get paired
      * @param message message to beam to the phone, null if in reader mode
      * @throws NfcNotAvailableException thrown if adapter was not initialized
      */
     protected void startNfcBeam(String message, NfcBeamMessageCallback callback) throws NfcNotAvailableException {
+<<<<<<< HEAD
 
+=======
         NfcAdapter adapter = getAdapter();
+>>>>>>> c1d02e8321a0fd518ae8f13ad7e5d31ac71ecad7
         if(adapter == null) {
             throw new NfcNotAvailableException("Nfc adapter is not available or isn't working," +
                     " use startNfcAdapter before beaming");

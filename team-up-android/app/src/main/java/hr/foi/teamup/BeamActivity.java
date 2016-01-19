@@ -1,14 +1,7 @@
 package hr.foi.teamup;
 
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
-import android.nfc.NfcAdapter;
-import android.nfc.tech.NfcF;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -21,8 +14,6 @@ import hr.foi.air.teamup.nfcaccess.NfcBeamMessageCallback;
 import hr.foi.air.teamup.nfcaccess.NfcBeamActivity;
 import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
-import hr.foi.teamup.model.Credentials;
-import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.model.TeamMessage;
