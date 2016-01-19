@@ -23,6 +23,7 @@ import hr.foi.teamup.R;
 import hr.foi.teamup.adapters.TeamAdapter;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
+import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
@@ -55,7 +56,7 @@ public class TeamHistoryFragment extends Fragment {
         ServiceParams params = new ServiceParams(
                 getString(hr.foi.teamup.webservice.R.string.team_history_path) + self.getIdPerson(),
                 ServiceCaller.HTTP_GET, null);
-        // new ServiceAsyncTask(historyHandler).execute(params);
+        new ServiceAsyncTask(historyHandler).execute(params);
 
         return v;
     }

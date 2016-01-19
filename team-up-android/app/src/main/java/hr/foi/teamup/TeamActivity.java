@@ -93,9 +93,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             startNfcAdapter();
             setNfcDispatchCallback(callback);
         } catch (NfcNotAvailableException e) {
-            e.printStackTrace(); // TODO
+            Toast.makeText(this, "NFC is not turned on", Toast.LENGTH_LONG).show();
         } catch (NfcNotEnabledException e) {
-            e.printStackTrace();
+            Toast.makeText(this, "NFC is not supported", Toast.LENGTH_LONG).show();
         }
 
     }

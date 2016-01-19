@@ -10,7 +10,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.nfc.tech.NfcF;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 
 import hr.foi.air.teamup.Logger;
 
@@ -23,14 +22,9 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
     protected String message;
     private static final String NFC_MIME_TYPE = "text/plain";
     protected PendingIntent mPendingIntent;
-    protected NfcBeamMessageCallback callback;
     protected IntentFilter[] mFilters;
     protected String[][] mTechLists;
     protected NfcBeamMessageCallback callback;
-
-    public void setCallback(NfcBeamMessageCallback callback) {
-        this.callback = callback;
-    }
 
     /**
      * gets called after intent is set to handle it
@@ -56,7 +50,7 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
 
         // Setup a tech list for all NfcF tags
         mTechLists = new String[][] { new String[] { NfcF.class.getName() } };
-        adapter.enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
+        getAdapter().enableForegroundDispatch(this, mPendingIntent, mFilters, mTechLists);
 
         Intent intent = getIntent();
 
@@ -94,7 +88,8 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
         if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
             throw new NfcNotAvailableException("Nfc adapter is not available on this phone");
         }
-        if((adapter = NfcAdapter.getDefaultAdapter(this))==null){
+        setAdapter(NfcAdapter.getDefaultAdapter(this));
+        if(getAdapter()==null){
             throw new NfcNotEnabledException("Nfc adapter is not enabled on this phone");
         }
     }
