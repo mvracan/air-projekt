@@ -4,7 +4,7 @@ package hr.foi.air.teamup.nfcaccess;
  *
  * Created by Tomislav Turek on 07.12.15..
  */
-public interface TeamJoinerCallback {
+public interface NfcBeamMessageCallback {
 
     void onMessageReceived(String message);
 
