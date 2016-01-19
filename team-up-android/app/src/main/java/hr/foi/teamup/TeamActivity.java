@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +34,9 @@ import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 import hr.foi.teamup.handlers.ActiveTeamHandler;
+import hr.foi.teamup.handlers.ResponseHandler;
 import hr.foi.teamup.model.Person;
+import hr.foi.teamup.model.Team;
 import hr.foi.teamup.model.TeamMessage;
 import hr.foi.teamup.stomp.ListenerSubscription;
 import hr.foi.teamup.stomp.TeamConnection;
@@ -115,6 +119,15 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     };
 
+    public void getCookie(){
+
+        new ServiceAsyncTask(handler).execute(new ServiceParams(
+                "/login",
+                ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded", null, "username=" + client.getCredentials().getUsername() +
+                "&password=" + client.getCredentials().getPassword()));
+
+    }
+
     // cookie authentication
     SimpleResponseHandler memberHandler = new SimpleResponseHandler() {
         @Override
@@ -122,10 +135,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
 
             if (response.getHttpCode() == 200) {
-                new ServiceAsyncTask(handler).execute(new ServiceParams(
-                        "/login",
-                        ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded", null, "username=" + client.getCredentials().getUsername() +
-                        "&password=" + client.getCredentials().getPassword()));
+                    getCookie();
                 return true;
 
             } else {
@@ -136,6 +146,41 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             }
         }
     };
+
+    SimpleResponseHandler activeTeamHandler = new SimpleResponseHandler() {
+        @Override
+        public boolean handleResponse(ServiceResponse response) {
+            Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
+
+            if(response.getHttpCode() == 200) {
+
+                // convert json to person object
+                Team team = new Gson().fromJson(response.getJsonResponse(), Team.class);
+                // save team to session
+                SessionManager manager = SessionManager.getInstance(getApplicationContext());
+                if(manager.createSession(team, SessionManager.TEAM_INFO_KEY)) {
+
+                    Team sessionTeam = manager.retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
+                    Logger.log("Valid user and team, created session: " + sessionTeam.toString()
+                            + ", in teamactivity", getClass().getName(), Log.DEBUG);
+
+                    getCookie();
+                    
+                    return true;
+                }else{
+
+                    Logger.log("Error in creating team session ", getClass().getName(), Log.DEBUG);
+                    return false;
+                }
+
+
+            }  else {
+
+                Toast.makeText(getApplicationContext(), "Currently without team! ", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+    } ;
 
     // after authetication, joins to group
     SimpleResponseHandler handler = new SimpleResponseHandler() {
@@ -218,7 +263,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     protected void getActiveTeam(){
         SessionManager manager=SessionManager.getInstance(getApplicationContext());
 
-        ActiveTeamHandler activeTeamHandler = new ActiveTeamHandler(TeamActivity.this);
+
         Person user = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
 
         ServiceParams params = new ServiceParams(
@@ -227,6 +272,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 );
 
         new ServiceAsyncTask(activeTeamHandler).execute(params);
+
+
     }
 
     @Override
