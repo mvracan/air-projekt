@@ -33,6 +33,7 @@ import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.air.teamup.prompts.InputPrompt;
+import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 import hr.foi.teamup.model.Person;
@@ -58,6 +59,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     String USER_CHANNEL_PATH = "/user/queue/messages";
     String GROUP_PATH = "/topic/team/";
     TeamFragment teamFragment;
+    LocationFragment locationFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         if(savedInstanceState == null) {
             Logger.log("First time");
             teamFragment = new TeamFragment();
+            locationFragment = new LocationFragment();
             exchangeFragments(teamFragment, "currentteam");
         }
 
@@ -339,11 +342,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.open_map) {
-            // TODO open map
-            // FragmentTransaction
-            // FragmentManager
-            // fragmentManager.replace(bla, bla);
-
+            exchangeFragments(locationFragment, "locations");
             return true;
         } else {
             return super.onOptionsItemSelected(item);
