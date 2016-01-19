@@ -120,8 +120,14 @@ public class TeamController {
        
         
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "get user team on /team/person" + idPerson);
-        if(foundTeam!=null)
+        if(foundTeam!=null){
+            
+            Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "returning");
+            
             return new ResponseEntity(foundTeam,HttpStatus.OK);
+            
+            
+        }
         else
             return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
