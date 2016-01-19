@@ -16,7 +16,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+/*
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -42,6 +42,7 @@ import java.util.TimerTask;
 /**
  * Created by hrvoje on 21/11/15.
  */
+
 public class MapFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -76,12 +77,14 @@ public class MapFragment extends Fragment implements
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(/*TODO*/, container, false);
+            view = inflater.inflate(/*TODO*//*, container, false);
+        /*
         } catch (InflateException e) {
 
         }
         return view;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -174,3 +177,4 @@ public class MapFragment extends Fragment implements
         super.onStop();
     }
 }
+*/

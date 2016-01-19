@@ -24,7 +24,6 @@ public class TeamConnection extends Thread implements Runnable {
     Map<String,String> headersSetup = new HashMap<>();
     HashMap <String, ListenerSubscription> subscriptions;
     String cookie;
-    volatile boolean running = true;
 
     public TeamConnection( HashMap<String, ListenerSubscription> subscriptions, String cookie) {
         this.subscriptions = subscriptions;
@@ -33,9 +32,6 @@ public class TeamConnection extends Thread implements Runnable {
 
     @Override
     public void run() {
-
-        if(!running)
-            return;
 
         headersSetup.put("Cookie", cookie);
         Log.i("connect", "going to connect to stomp with cookie" + cookie);
@@ -67,9 +63,6 @@ public class TeamConnection extends Thread implements Runnable {
         Log.i("Stomp message", m);
         this.client.send(dest,null, m);
 
-    }
-    public void stopThread(){
-        this.running = false;
     }
 
 }
