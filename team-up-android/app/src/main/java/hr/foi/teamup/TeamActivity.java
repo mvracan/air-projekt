@@ -117,7 +117,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             teamId = message;
             // become a member
             new ServiceAsyncTask(memberHandler).execute(
-                    new ServiceParams("/" + teamId + "/person/" + client.getIdPerson(),
+                    new ServiceParams("/team/" + teamId + "/person/" + client.getIdPerson(),
                             ServiceCaller.HTTP_POST, null));
         }
     };
@@ -279,7 +279,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         Person user = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
 
         ServiceParams params = new ServiceParams(
-                getString(hr.foi.teamup.webservice.R.string.team_history_path)+user.getIdPerson(),
+                getString(hr.foi.teamup.webservice.R.string.team_person_path)+user.getIdPerson(),
                 ServiceCaller.HTTP_POST, null
                 );
 
@@ -317,6 +317,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             public void onClick(DialogInterface dialog, int which) {
                 SessionManager.getInstance(getApplicationContext()).destroyAll();
                 dialog.dismiss();
+                socket.finish();
                 for(int i = 0; i < getFragmentManager().getBackStackEntryCount(); ++i) {
                     getFragmentManager().popBackStack();
                 }

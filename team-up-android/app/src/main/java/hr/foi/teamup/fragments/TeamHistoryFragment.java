@@ -55,7 +55,7 @@ public class TeamHistoryFragment extends Fragment {
 
         ServiceParams params = new ServiceParams(
                 getString(hr.foi.teamup.webservice.R.string.team_history_path) + self.getIdPerson(),
-                ServiceCaller.HTTP_GET, null);
+                ServiceCaller.HTTP_POST, null);
         new ServiceAsyncTask(historyHandler).execute(params);
 
         return v;
