@@ -78,8 +78,5 @@ public class TeamConnection extends Thread implements Runnable {
         this.client.send(dest,null, m);
 
     }
-    public void stopThread(){
-        this.running = false;
-    }
 
 }
