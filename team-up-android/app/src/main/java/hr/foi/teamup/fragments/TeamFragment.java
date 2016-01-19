@@ -56,15 +56,5 @@ public class TeamFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        users.setAdapter(adapter);
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        adapter = (PersonAdapter)users.getAdapter();
-    }
 }

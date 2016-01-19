@@ -11,11 +11,14 @@ import hr.foi.teamup.model.Team;
 import hr.foi.teamup.model.TeamMessage;
 import hr.foi.teamup.repositories.PersonRepository;
 import hr.foi.teamup.repositories.TeamRepository;
+import java.security.Principal;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,16 +58,16 @@ public class TeamMessageController {
     } 
     
     @MessageMapping("/updateLocation")
-    public void updateLocation(@Payload Location location){
+    public void updateLocation(Message<Object> message, @Payload Location location){
         
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         
-        String username = auth.getName();
-        
+        Principal principal = message.getHeaders().get(SimpMessageHeaderAccessor.USER_HEADER, Principal.class);
+        String authedSender = principal.getName();
+      
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
-                "Update location for person" + username);
+                "Update location for person" + authedSender);
         
-        Person a = this.personRepository.findByCredentialsUsername(username);
+        Person a = this.personRepository.findByCredentialsUsername(authedSender);
         
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "Person get from repo" + a.getName());
