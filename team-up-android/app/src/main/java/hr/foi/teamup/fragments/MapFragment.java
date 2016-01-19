@@ -16,7 +16,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-/*
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -77,8 +77,8 @@ public class MapFragment extends Fragment implements
                 parent.removeView(view);
         }
         try {
-            view = inflater.inflate(/*TODO*//*, container, false);
-        /*
+            view = inflater.inflate(, container, false);
+
         } catch (InflateException e) {
 
         }
@@ -177,4 +177,4 @@ public class MapFragment extends Fragment implements
         super.onStop();
     }
 }
-*/
+
