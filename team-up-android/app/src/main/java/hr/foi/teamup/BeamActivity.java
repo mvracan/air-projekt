@@ -17,7 +17,7 @@ import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
-import hr.foi.air.teamup.nfcaccess.TeamJoinerCallback;
+import hr.foi.air.teamup.nfcaccess.NfcBeamMessageCallback;
 import hr.foi.air.teamup.nfcaccess.NfcBeamActivity;
 import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
@@ -46,7 +46,7 @@ public class BeamActivity extends NfcBeamActivity {
     ImageView image;
     SessionManager manager;
 
-    TeamJoinerCallback callback=new TeamJoinerCallback() {
+    NfcBeamMessageCallback callback=new NfcBeamMessageCallback() {
         @Override
         public void onMessageReceived(String message) {
             Logger.log(message);
