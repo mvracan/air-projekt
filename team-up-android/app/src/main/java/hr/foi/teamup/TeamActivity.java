@@ -18,6 +18,9 @@ import android.widget.Button;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
+import hr.foi.air.teamup.nfcaccess.NfcForegroundDispatcher;
+import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
+import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.TeamFragment;
@@ -28,7 +31,7 @@ import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 
-public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
@@ -65,7 +68,13 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         }
 
         getActiveTeam();
-
+        try {
+            startNfcAdapter();
+        } catch (NfcNotAvailableException e) {
+            e.printStackTrace();
+        } catch (NfcNotEnabledException e) {
+            e.printStackTrace();
+        }
 
     }
 

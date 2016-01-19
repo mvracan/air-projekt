@@ -147,10 +147,6 @@ public class BeamActivity extends NfcBeamActivity {
                 manager.createSession(response.getCookie(), SessionManager.COOKIE_KEY);
                 cookie= response.getCookie();
 
-                //Intent intent = new Intent(getApplicationContext(), BeamActivity.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //getApplicationContext().startActivity(intent);
-
                 if(cookie!=null) {
 
                     joinGroup();
