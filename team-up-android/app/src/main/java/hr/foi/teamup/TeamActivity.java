@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -19,16 +18,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-
-
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
@@ -39,11 +33,8 @@ import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.air.teamup.prompts.InputPrompt;
-import hr.foi.teamup.adapters.PersonAdapter;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
-import hr.foi.teamup.handlers.ActiveTeamHandler;
-import hr.foi.teamup.handlers.ResponseHandler;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.model.TeamMessage;
@@ -94,6 +85,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             }
         });
 
+        client = SessionManager.getInstance(getApplicationContext())
+                .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+
         // set current team for the first time
         if(savedInstanceState == null) {
             Logger.log("First time");
@@ -121,8 +115,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         public void onMessageReceived(String message) {
             Logger.log(message);
             teamId = message;
-            client = SessionManager.getInstance(getApplicationContext())
-                    .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
             // become a member
             new ServiceAsyncTask(memberHandler).execute(
                     new ServiceParams("/" + teamId + "/person/" + client.getIdPerson(),
@@ -174,6 +166,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     Team sessionTeam = manager.retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
                     Logger.log("Valid user and team, created session: " + sessionTeam.toString()
                             + ", in teamactivity", getClass().getName(), Log.DEBUG);
+                    teamId = String.valueOf(sessionTeam.getIdTeam());
 
                     getCookie();
                     
@@ -209,7 +202,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
                 if(cookie!=null) {
                     joinGroup();
-                    ping();
+                    //ping();
                 }else {
                     Log.i("no cookie", "nocokkie");
                 }
@@ -249,8 +242,13 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             Logger.log(body);
             Type listType = new TypeToken<ArrayList<Person>>() {}.getType();
 
-            ArrayList<Person> persons = new Gson().fromJson(body, listType);
-            teamFragment.updateList(persons);
+            final ArrayList<Person> persons = new Gson().fromJson(body, listType);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    teamFragment.updateList(persons);
+                }
+            });
         }
     };
 

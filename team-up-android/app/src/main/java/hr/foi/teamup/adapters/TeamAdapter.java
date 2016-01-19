@@ -33,8 +33,7 @@ public class TeamAdapter extends BaseAdapter<Team> {
         final ViewHolder holder;
         try {
             if (convertView == null) {
-                // TODO: check if works (parent was null before)
-                vi = getInflater().inflate(R.layout.list_item_team_history, parent);
+                vi = getInflater().inflate(R.layout.list_item_team_history, null);
                 holder = new ViewHolder();
                 holder.teamCode = (TextView) vi.findViewById(R.id.team_code);
                 holder.teamName = (TextView) vi.findViewById(R.id.team_name);

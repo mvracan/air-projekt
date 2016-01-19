@@ -28,6 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/itemName" />
 
@@ -36,6 +37,7 @@
                 android:layout_marginLeft="@dimen/small_left_margin_blank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/itemSurname" />
 
@@ -44,6 +46,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/itemUsername" />
     </LinearLayout>

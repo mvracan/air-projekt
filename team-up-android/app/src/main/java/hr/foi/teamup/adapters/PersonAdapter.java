@@ -36,8 +36,7 @@ public class PersonAdapter extends BaseAdapter<Person> {
         final ViewHolder holder;
         try {
             if (convertView == null) {
-                // TODO: check if works (parent was null before)
-                vi = getInflater().inflate(R.layout.list_item_members, parent);
+                vi = getInflater().inflate(R.layout.list_item_members, null);
                 holder = new ViewHolder();
                 holder.status = (ImageView) vi.findViewById(R.id.status);
                 holder.personName = (TextView) vi.findViewById(R.id.itemName);
