@@ -32,8 +32,6 @@ public class BeamActivity extends NfcBeamActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        super.setCallback(callback);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_beam);
