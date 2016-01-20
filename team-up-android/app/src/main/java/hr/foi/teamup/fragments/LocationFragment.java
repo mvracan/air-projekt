@@ -6,6 +6,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -50,6 +53,8 @@ public class LocationFragment extends Fragment implements
     LocationManager locationManager;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
+    LatLng creatorPosition;
+    private float ZOOM = 25;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,27 +91,53 @@ public class LocationFragment extends Fragment implements
         return view;
     }
 
-    public void setUserLocations(ArrayList<Person> teamMembers){
+    private GoogleMap.OnCameraChangeListener zoomListener = new GoogleMap.OnCameraChangeListener() {
+        @Override
+        public void onCameraChange(CameraPosition cameraPosition) {
+            if (cameraPosition.zoom != ZOOM){
+                ZOOM = cameraPosition.zoom;
+
+            }
+        }
+    };
+
+    public void setUserLocations(ArrayList<Person> teamMembers, double radius){
 
 
         if(isVisible()) {
+
             mMap.clear();
             Log.i(" maps ", " setUserLocations ");
+
+            Log.i(" radius ", "radius is " + radius);
+
+            Log.i(" maps ", "zoom is " + ZOOM);
             Person creator = teamMembers.get(0);
 
-            CameraUpdate center =
-                    CameraUpdateFactory.newLatLng(new LatLng(creator.getLocation().getLat(),
-                            creator.getLocation().getLng()));
 
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(18);
+            creatorPosition = new LatLng(creator.getLocation().getLat(),creator.getLocation().getLng());
+
+            CameraUpdate center =
+                    CameraUpdateFactory.newLatLng(creatorPosition);
+
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(ZOOM);
             mMap.moveCamera(center);
             mMap.animateCamera(zoom);
 
+            CircleOptions teamRadius = new CircleOptions()
+                    .center(creatorPosition)
+                    .radius(radius)
+                    .strokeWidth(2)
+                    .strokeColor(Color.BLUE)
+                    .fillColor(Color.parseColor("#500084d3"));
+
+            mMap.addCircle(teamRadius);
 
             for (Person p : teamMembers) {
                 mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
                         p.getLocation().getLng())).title(p.getName() + " " + p.getSurname()));
             }
+
         }
 
     }
@@ -117,7 +148,10 @@ public class LocationFragment extends Fragment implements
         MapFragment mMapFragment = (com.google.android.gms.maps.MapFragment) getActivity()
                 .getFragmentManager().findFragmentById(R.id.map);
         mMap = mMapFragment.getMap();
+
         createLocationRequest();
+
+        mMap.setOnCameraChangeListener(zoomListener);
     }
 
     protected void createLocationRequest() {
@@ -175,6 +209,7 @@ public class LocationFragment extends Fragment implements
         super.onResume();
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             startLocationUpdates();
+            mMap.setOnCameraChangeListener(zoomListener);
         }
     }
 

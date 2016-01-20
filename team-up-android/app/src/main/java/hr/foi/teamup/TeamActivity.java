@@ -54,6 +54,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
     private Person client;
+    private double teamRadius;
     HashMap<String,ListenerSubscription> subscriptionChannels;
     TeamConnection socket;
     String cookie;
@@ -63,6 +64,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     TeamFragment teamFragment;
     LocationFragment locationFragment;
     NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +178,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     Logger.log("Valid user and team, created session: " + sessionTeam.toString()
                             + ", in teamactivity", getClass().getName(), Log.DEBUG);
                     teamId = String.valueOf(sessionTeam.getIdTeam());
-
+                    teamRadius = sessionTeam.getRadius();
                     navigationView.getMenu().clear();
                     navigationView.inflateMenu(R.menu.team_exist_menu);
 
@@ -268,7 +270,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 @Override
                 public void run() {
                     teamFragment.updateList(persons);
-                    locationFragment.setUserLocations(persons);
+                    locationFragment.setUserLocations(persons, teamRadius);
                 }
             });
         }
