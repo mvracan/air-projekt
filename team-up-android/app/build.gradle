@@ -28,6 +28,8 @@ dependencies {
     // map
     compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.google.android.gms:play-services-location:8.3.0'
+    // unit testing
+    compile 'com.jayway.android.robotium:robotium-solo:5.5.3'
     // modules
     compile project(':webservice')
     compile project(':model')
