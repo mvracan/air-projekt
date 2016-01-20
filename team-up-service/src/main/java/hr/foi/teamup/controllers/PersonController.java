@@ -15,6 +15,7 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -134,7 +135,7 @@ public class PersonController {
      * @return person info with HTTP 200 on success or HTTP 404 on fail
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity modify(@RequestParam long id, @RequestBody Person person) {
+    public ResponseEntity modify(@PathVariable long id, @RequestBody Person person) {
         Logger.getLogger("PersonController.java").log(Level.INFO,
                 "PUT on /person/" + id + " -- " + person.toString());
         

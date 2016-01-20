@@ -285,7 +285,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         public void onMessage(Map<String, String> headers, String body) {
 
             Logger.log(body);
-
+            Logger.log("user losT", Log.WARN);
             panicPerson = new Gson().fromJson(body,Person.class);
 
 
@@ -293,8 +293,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 @Override
                 public void run() {
 
-
-                    locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
+                    if(locationFragment.isVisible()) {
+                        locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
+                    }
 
 
                     Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);

@@ -56,7 +56,7 @@ public class LocationFragment extends Fragment implements
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
     LatLng creatorPosition;
-    private float ZOOM = 25;
+    private volatile float ZOOM = 25;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,6 +127,8 @@ public class LocationFragment extends Fragment implements
             mMap.moveCamera(center);
             mMap.animateCamera(zoom);
 
+
+
             CircleOptions teamRadius = new CircleOptions()
                     .center(creatorPosition)
                     .radius(radius)
@@ -167,8 +169,9 @@ public class LocationFragment extends Fragment implements
         MapFragment mMapFragment = (com.google.android.gms.maps.MapFragment) getActivity()
                 .getFragmentManager().findFragmentById(R.id.map);
         mMap = mMapFragment.getMap();
-
+        mMap.setOnCameraChangeListener(zoomListener);
         createLocationRequest();
+
 
 
     }
@@ -229,15 +232,17 @@ public class LocationFragment extends Fragment implements
 
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             startLocationUpdates();
-
+            mMap.setOnCameraChangeListener(zoomListener);
         }
+
+
     }
 
     protected void startLocationUpdates() {
 
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
-        mMap.setOnCameraChangeListener(zoomListener);
+
     }
 
     @Override
