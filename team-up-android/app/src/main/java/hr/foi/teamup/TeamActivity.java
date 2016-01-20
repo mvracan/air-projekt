@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -64,7 +65,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     TeamFragment teamFragment;
     LocationFragment locationFragment;
     NavigationView navigationView;
-
+    Person panicPerson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,11 +282,14 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
             Logger.log(body);
 
-            Person panicPerson = new Gson().fromJson(body,Person.class);
+            panicPerson = new Gson().fromJson(body,Person.class);
+
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
+                    locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
 
                 }
             });
@@ -304,7 +308,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         cookie = SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.COOKIE_KEY, String.class);
 
         if(cookie != null) {
-            subscriptionChannels.put(USER_CHANNEL_PATH, subscription);
+            subscriptionChannels.put(USER_CHANNEL_PATH, subscriptionUserLost);
             subscriptionChannels.put(GROUP_PATH + teamId, subscription);
 
             socket = new TeamConnection(subscriptionChannels, cookie);
