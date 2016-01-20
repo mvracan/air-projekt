@@ -30,9 +30,13 @@ public class TeamFragment extends Fragment {
 
     ListView users;
     PersonAdapter adapter;
+<<<<<<< HEAD
     FloatingActionButton panicButton;
     TextView groupName;
     TextView groupCode;
+=======
+
+>>>>>>> 9404fa1237b09eda0c746db41a4f4a830f5ad5f4
 
     @Nullable
     @Override
@@ -40,6 +44,7 @@ public class TeamFragment extends Fragment {
         setRetainInstance(true);
         View v = inflater.inflate(R.layout.fragment_team_current, container, false);
         users = (ListView)v.findViewById(R.id.current_team_list);
+<<<<<<< HEAD
 
         groupName = (TextView)v.findViewById(R.id.group_name);
         groupCode = (TextView)v.findViewById(R.id.group_code);
@@ -53,6 +58,8 @@ public class TeamFragment extends Fragment {
             }
         });
 
+=======
+>>>>>>> 9404fa1237b09eda0c746db41a4f4a830f5ad5f4
         return v;
     }
 
