@@ -69,6 +69,13 @@ public class TeamMessageController {
         
         Person a = this.personRepository.findByCredentialsUsername(authedSender);
         
+        Team t = this.teamRepository.findByActiveAndMembers_IdPerson(1, a.getIdPerson());
+        Person lead = t.getCreator();
+        
+        if(t.getRadius() < location.distanceTo(lead.getLocation())) {
+            template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", a);
+        }
+        
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "Person get from repo" + a.getName());
         
