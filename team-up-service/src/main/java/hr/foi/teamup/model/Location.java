@@ -5,6 +5,7 @@
  */
 package hr.foi.teamup.model;
 
+import hr.foi.teamup.utilities.Distance;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -38,5 +39,29 @@ public class Location implements Serializable {
         this.lng = lng;
     }
     
+    /**
+     * calculates distance between this and l
+     * @param l second location
+     * @return distance
+     */
+    public double distanceTo(Location l) {
+        double lat1 = this.getLat();
+        double lat2 = l.getLat();
+        double lon1 = this.getLng();
+        double lon2 = l.getLng();
+        
+        double dLat = Distance.toRad(lat2-lat1);
+        double dLon = Distance.toRad(lon2-lon1); 
+        
+        double a = Math.sin(dLat/2)
+                * Math.sin(dLat/2)
+                + Math.cos(Distance.toRad(lat1))
+                * Math.cos(Distance.toRad(lat2))
+                * Math.sin(dLon/2) * Math.sin(dLon/2); 
+        
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        
+        return c * Distance.EARTH_RADIUS;
+    }
     
 }
