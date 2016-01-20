@@ -1,53 +1,35 @@
 package hr.foi.teamup.fragments;
 
-
-
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-
+import android.app.Fragment;
 import android.graphics.Color;
-import android.graphics.drawable.Icon;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.R;
-import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.model.Person;
 
-
 /*
+ * shows markers on map
  * Created by paz on 19.01.16..
  */
-
 public class LocationFragment extends Fragment {
 
     GoogleMap mMap;
@@ -80,16 +62,23 @@ public class LocationFragment extends Fragment {
         return view;
     }
 
+    /**
+     * used to retain the zoom defined by user
+     */
     private GoogleMap.OnCameraChangeListener zoomListener = new GoogleMap.OnCameraChangeListener() {
         @Override
         public void onCameraChange(CameraPosition cameraPosition) {
-            if (cameraPosition.zoom != ZOOM){
-                Logger.log("ZOOMAM");
-                ZOOM = cameraPosition.zoom;
-            }
+        if (cameraPosition.zoom != ZOOM){
+            ZOOM = cameraPosition.zoom;
+        }
         }
     };
 
+    /**
+     * called from outside activity to set markers
+     * @param teamMembers members from the team
+     * @param radius team radius
+     */
     public void setUserLocations(ArrayList<Person> teamMembers, double radius){
         if(isVisible()) {
 
