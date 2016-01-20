@@ -381,7 +381,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             public void onClick(DialogInterface dialog, int which) {
                 SessionManager.getInstance(getApplicationContext()).destroyAll();
                 dialog.dismiss();
-                socket.finish();
+                if(socket != null) socket.finish();
                 for(int i = 0; i < getFragmentManager().getBackStackEntryCount(); ++i) {
                     getFragmentManager().popBackStack();
                 }
@@ -444,7 +444,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             exchangeFragments(teamFragment);
         } else if (menuItem.getItemId()==R.id.leave_group){
             socket.finish();
-            new ServiceAsyncTask(null).execute(new ServiceParams(hr.foi.teamup.webservice.R.string.team_path + teamId + "/leave/" + client.getIdPerson(),
+            new ServiceAsyncTask(null).execute(new ServiceParams("/team/" + teamId + "/leave/" + client.getIdPerson(),
                     ServiceCaller.HTTP_POST,null));
             teamFragment.setViewLayout(R.layout.layout_empty_data);
         }
@@ -456,7 +456,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public void onPause() {
         super.onPause();
-        mapConfiguration.stopLocationUpdates();
+        if(mapConfiguration.getGoogleApiClient() != null && mapConfiguration.getGoogleApiClient().isConnected())
+            mapConfiguration.stopLocationUpdates();
     }
 
     @Override
