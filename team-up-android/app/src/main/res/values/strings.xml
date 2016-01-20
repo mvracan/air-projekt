@@ -51,6 +51,11 @@
     <string name="empty_history">There are no teams in history</string>
     <string name="empty_team">Not joined in group. Use NFC or code to enter the group</string>
 
+    <!-- tests -->
+    <string name="test_as">as</string>
+    <string name="test_asdf">asdf</string>
+    <string name="test_asdf123">asdf123</string>
+    <string name="test_lalalalalala">lalalalalala</string>
 
     <string name="team_name_error">Team name can only contain letters (min 3, max 45)</string>
     <string name="team_desc_error">Team description  can only contain letters (min 3, max 45)</string>

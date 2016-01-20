@@ -2,10 +2,13 @@ package hr.foi.teamup;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -276,6 +279,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             });
         }
     };
+
     ListenerSubscription subscriptionUserLost=new ListenerSubscription() {
         @Override
         public void onMessage(Map<String, String> headers, String body) {
@@ -289,7 +293,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 @Override
                 public void run() {
 
+
                     locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
+
+
+                    Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(2000);
 
                 }
             });
