@@ -63,26 +63,27 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private DrawerLayout mDrawer;
     private Person client;
     private double teamRadius;
-    HashMap<String,ListenerSubscription> subscriptionChannels;
-    TeamConnection socket;
-    String cookie;
-    String teamId;
-    String USER_CHANNEL_PATH = "/user/queue/messages";
-    String GROUP_PATH = "/topic/team/";
-    TeamFragment teamFragment;
-    LocationFragment locationFragment;
-    NavigationView navigationView;
-    Person panicPerson;
-    FloatingActionButton panicButton;
-    public MapConfiguration mapConfiguration;
+    private HashMap<String,ListenerSubscription> subscriptionChannels;
+    private TeamConnection socket;
+    private String cookie;
+    private String teamId;
+    private String USER_CHANNEL_PATH = "/user/queue/messages";
+    private String GROUP_PATH = "/topic/team/";
+    private TeamFragment teamFragment;
+    private LocationFragment locationFragment;
+    private NavigationView navigationView;
+    private Person panicPerson;
+    private MapConfiguration mapConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        mapConfiguration= new MapConfiguration(this, this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
+
+        // instantiate location listeners
+        mapConfiguration= new MapConfiguration(this, this);
+        mapConfiguration.buildGoogleApiClient();
+        mapConfiguration.createLocationRequest();
 
         // navigation menu
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -95,8 +96,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-        panicButton = (FloatingActionButton) findViewById(R.id.panic_button);
+        // panic button
+        FloatingActionButton panicButton = (FloatingActionButton) findViewById(R.id.panic_button);
         panicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +105,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             }
         });
 
-
+        // log out button
         Button logOut = (Button) findViewById(R.id.log_out_button);
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,24 +115,23 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             }
         });
 
-        client = SessionManager.getInstance(getApplicationContext())
-                .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
-
-        // set current team for the first time
-        if(savedInstanceState == null) {
-            Logger.log("First time");
-
-        }
-
-        mapConfiguration.buildGoogleApiClient();
-        mapConfiguration.createLocationRequest();
-
+        // set main fragments
         teamFragment = new TeamFragment();
         locationFragment = new LocationFragment();
         exchangeFragments(teamFragment);
-        getActiveTeam();
 
-        // starts foreground dispatcher
+        // get current user
+        client = SessionManager.getInstance(getApplicationContext())
+                .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+
+        // get current team (does not need to exist)
+        ServiceParams params = new ServiceParams(
+                getString(hr.foi.teamup.webservice.R.string.team_person_path)+client.getIdPerson(),
+                ServiceCaller.HTTP_POST, null
+        );
+        new ServiceAsyncTask(activeTeamHandler).execute(params);
+
+        // starts nfc foreground dispatcher
         try {
             startNfcAdapter();
             setNfcDispatchCallback(callback);
@@ -149,29 +149,34 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     }
 
-    // gets team id and subscribes him
+    /**
+     * gets team id and subscribes him to team channel
+     */
     NfcBeamMessageCallback callback=new NfcBeamMessageCallback() {
         @Override
         public void onMessageReceived(String message) {
             Logger.log(message);
-            teamId = message;
             // become a member
             new ServiceAsyncTask(memberHandler).execute(
-                    new ServiceParams("/team/" + teamId + "/person/" + client.getIdPerson(),
+                    new ServiceParams("/team/" + message + "/person/" + client.getIdPerson(),
                             ServiceCaller.HTTP_POST, null));
         }
     };
 
+    /**
+     * makes call to service to get the auth cookie
+     */
     public void getCookie(){
-
         new ServiceAsyncTask(handler).execute(new ServiceParams(
                 "/login",
-                ServiceCaller.HTTP_POST, ServiceCaller.X_WWW_FORM_URLENCODED, null, "username=" + client.getCredentials().getUsername() +
+                ServiceCaller.HTTP_POST, ServiceCaller.X_WWW_FORM_URLENCODED, null,
+                "username=" + client.getCredentials().getUsername() +
                 "&password=" + client.getCredentials().getPassword()));
-
     }
 
-    // cookie authentication
+    /**
+     * get authentication cookie after subscription
+     */
     SimpleResponseHandler memberHandler = new SimpleResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
@@ -190,6 +195,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     };
 
+    /**
+     * fetch active team from response and get active auth cookie
+     */
     SimpleResponseHandler activeTeamHandler = new SimpleResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
@@ -208,18 +216,14 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                             + ", in teamactivity", getClass().getName(), Log.DEBUG);
                     teamId = String.valueOf(sessionTeam.getIdTeam());
                     teamRadius = sessionTeam.getRadius();
-                    navigationView.getMenu().clear();
-                    navigationView.inflateMenu(R.menu.team_exist_menu);
+                    setNavigationMenuItems(R.menu.team_exist_menu);
 
                     getCookie();
                     
                     return true;
                 }else{
-
                     Logger.log("Error in creating team session ", getClass().getName(), Log.DEBUG);
-
-                    navigationView.getMenu().clear();
-                    navigationView.inflateMenu(R.menu.menu);
+                    setNavigationMenuItems(R.menu.menu);
                     teamFragment.setViewLayout(R.layout.layout_empty_data);
                     return false;
                 }
@@ -230,23 +234,21 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     } ;
 
-    // after authetication, joins to group
+    /**
+     * after authetication, joins to group
+     */
     SimpleResponseHandler handler = new SimpleResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
             Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
 
             if (response.getHttpCode() == 202) {
-
-                Log.i("COOKIE ", response.getCookie());
-
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
                 manager.createSession(response.getCookie(), SessionManager.COOKIE_KEY);
                 cookie= response.getCookie();
 
                 if(cookie!=null) {
                     joinGroup();
-                    //ping();
                 }else {
                     Log.i("no cookie", "nocokkie");
                 }
@@ -262,7 +264,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     };
 
-    // stomp message callback
+    /**
+     * stomp message callback
+     */
     ListenerSubscription subscription=new ListenerSubscription() {
         @Override
         public void onMessage(Map<String, String> headers, String body) {
@@ -280,13 +284,15 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     };
 
-    // stomp panic message callback
+    /**
+     * stomp panic message callback
+     */
     ListenerSubscription subscriptionUserLost=new ListenerSubscription() {
         @Override
         public void onMessage(Map<String, String> headers, String body) {
 
             Logger.log(body);
-            Logger.log("user losT", Log.WARN);
+            Logger.log("user lost", Log.WARN);
             panicPerson = new Gson().fromJson(body,Person.class);
 
             runOnUiThread(new Runnable() {
@@ -294,7 +300,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 public void run() {
 
                     // make him red if fragment is visible
-                    if(locationFragment.isVisible()) {
+                    if (locationFragment.isVisible()) {
                         locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
                     }
 
@@ -307,12 +313,13 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                             new NotificationCompat.Builder(getApplicationContext())
                                     .setSmallIcon(R.drawable.logo)
                                     .setContentTitle("TeamUp")
-                                    .setContentText("User " + panicPerson.getName() + " is panicking, go find him");
+                                    .setContentText("User " + panicPerson.getName() + " is panicking, go find this person");
 
                     int mNotificationId = 1;
                     NotificationManager mNotifyMgr =
                             (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+                    // set pending intent launch
                     Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
                     PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(pendingIntent);
@@ -339,23 +346,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     }
 
-    /**
-     * get current team if exists
-     */
-    protected void getActiveTeam(){
-        SessionManager manager=SessionManager.getInstance(getApplicationContext());
-
-
-        Person user = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
-
-        ServiceParams params = new ServiceParams(
-                getString(hr.foi.teamup.webservice.R.string.team_person_path)+user.getIdPerson(),
-                ServiceCaller.HTTP_POST, null
-        );
-
-        new ServiceAsyncTask(activeTeamHandler).execute(params);
-    }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -366,6 +356,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private void setNavigationMenuItems(int menuId) {
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(menuId);
     }
 
     @Override
@@ -430,7 +425,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Logger.log("Stisnul je da");
+                    // TODO join by code
                 }
             },R.string.join, null, R.string.cancel);
             prompt.showPrompt();
