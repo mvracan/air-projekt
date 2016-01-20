@@ -97,6 +97,7 @@ public class LocationFragment extends Fragment implements
         @Override
         public void onCameraChange(CameraPosition cameraPosition) {
             if (cameraPosition.zoom != ZOOM){
+                Logger.log("ZOOMAM");
                 ZOOM = cameraPosition.zoom;
 
             }
@@ -135,8 +136,16 @@ public class LocationFragment extends Fragment implements
 
             mMap.addCircle(teamRadius);
 
+            paintPerson(creator, BitmapDescriptorFactory.HUE_GREEN);
+
+            Logger.log("Paint peron " + creator.getName());
+
+            teamMembers.remove(0);
             for (Person p : teamMembers) {
-                paintPerson(p, "lalal");
+
+                Logger.log("Paint peron " + p.getName());
+                paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
+
             }
 
         }
@@ -144,15 +153,16 @@ public class LocationFragment extends Fragment implements
     }
 
 
-    public void paintPerson(Person p, String path){
+    public void paintPerson(Person p, float marker){
 
         mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
                 p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())
-                .icon(BitmapDescriptorFactory.fromFile(path)));
+                .icon(BitmapDescriptorFactory.defaultMarker(marker)));
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
         MapFragment mMapFragment = (com.google.android.gms.maps.MapFragment) getActivity()
                 .getFragmentManager().findFragmentById(R.id.map);
@@ -160,7 +170,7 @@ public class LocationFragment extends Fragment implements
 
         createLocationRequest();
 
-        mMap.setOnCameraChangeListener(zoomListener);
+
     }
 
     protected void createLocationRequest() {
@@ -216,15 +226,18 @@ public class LocationFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             startLocationUpdates();
-            mMap.setOnCameraChangeListener(zoomListener);
+
         }
     }
 
     protected void startLocationUpdates() {
+
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
+        mMap.setOnCameraChangeListener(zoomListener);
     }
 
     @Override
