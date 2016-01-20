@@ -60,6 +60,9 @@ public class TeamController {
         Team found = this.teamRepository.findByIdTeam(idTeam);
         Person removePerson = this.personRepository.findByIdPerson(idPerson);
         
+        if(removePerson == found.getCreator())
+            found.setActive(0);
+        
         found.getMembers().remove(removePerson);
         
         if((this.teamRepository.save(found)) != null)

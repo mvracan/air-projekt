@@ -48,13 +48,9 @@ import hr.foi.teamup.model.Person;
  * Created by paz on 19.01.16..
  */
 
-public class LocationFragment extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class LocationFragment extends Fragment {
 
     GoogleMap mMap;
-    LocationManager locationManager;
-    LocationRequest mLocationRequest;
-    GoogleApiClient mGoogleApiClient;
     LatLng creatorPosition;
     private volatile float ZOOM = 25;
 
@@ -62,15 +58,6 @@ public class LocationFragment extends Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-
-
-        if(savedInstanceState == null) {
-
-
-        }
-
-        buildGoogleApiClient();
     }
 
     private static View view;
@@ -99,14 +86,11 @@ public class LocationFragment extends Fragment implements
             if (cameraPosition.zoom != ZOOM){
                 Logger.log("ZOOMAM");
                 ZOOM = cameraPosition.zoom;
-
             }
         }
     };
 
     public void setUserLocations(ArrayList<Person> teamMembers, double radius){
-
-
         if(isVisible()) {
 
             mMap.clear();
@@ -149,14 +133,12 @@ public class LocationFragment extends Fragment implements
                 paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
 
             }
-
         }
 
     }
 
 
     public void paintPerson(Person p, float marker){
-
         mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
                 p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())
                 .icon(BitmapDescriptorFactory.defaultMarker(marker)));
@@ -164,90 +146,18 @@ public class LocationFragment extends Fragment implements
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
         MapFragment mMapFragment = (com.google.android.gms.maps.MapFragment) getActivity()
                 .getFragmentManager().findFragmentById(R.id.map);
         mMap = mMapFragment.getMap();
         mMap.setOnCameraChangeListener(zoomListener);
-        createLocationRequest();
-
-
-
-    }
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-        Logger.log("Location changed ", getClass().getName(), Log.DEBUG);
-
-        hr.foi.teamup.model.Location userLocation = new hr.foi.teamup.model.Location();
-        userLocation.setLat(location.getLatitude());
-        userLocation.setLng(location.getLongitude());
-
-
-        ((TeamActivity)getActivity()).sendLocation(userLocation);
-
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        startLocationUpdates();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        stopLocationUpdates();
-    }
-
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-            mMap.setOnCameraChangeListener(zoomListener);
-        }
-
-
+        mMap.setOnCameraChangeListener(zoomListener);
     }
 
-    protected void startLocationUpdates() {
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
 }
 
