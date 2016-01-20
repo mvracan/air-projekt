@@ -21,7 +21,7 @@ import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 
-public class RegistrationActivity extends AppCompatActivity implements Serializable {
+public class RegistrationActivity extends AppCompatActivity {
 
     Button submit;
     EditText firstName;

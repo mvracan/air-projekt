@@ -2,7 +2,6 @@ package hr.foi.teamup.maps;
 
 import android.app.Activity;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,15 +14,14 @@ import com.google.android.gms.location.LocationServices;
 import hr.foi.air.teamup.Logger;
 
 /**
- *
+ * implements the map and location interfaces
  * Created by paz on 20.01.16..
  */
-public class MapConfiguration implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
+public class MapConfiguration implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener{
 
-    private LocationManager locationManager;
-    private LocationRequest mLocationRequest;
-    private GoogleApiClient mGoogleApiClient;
-    private hr.foi.teamup.model.Location userLocation;
+    private LocationRequest locationRequest;
+    private GoogleApiClient googleApiClient;
     private LocationCallback callback;
     private Activity activity;
 
@@ -33,39 +31,34 @@ public class MapConfiguration implements GoogleApiClient.ConnectionCallbacks, Go
     }
 
     public void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     public synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(activity.getApplicationContext())
+        googleApiClient = new GoogleApiClient.Builder(activity.getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        mGoogleApiClient.connect();
+        googleApiClient.connect();
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
-
-
         Logger.log("Location changed ", getClass().getName(), Log.DEBUG);
 
-        userLocation = new hr.foi.teamup.model.Location();
+        // change location to known type
+        hr.foi.teamup.model.Location userLocation = new hr.foi.teamup.model.Location();
         userLocation.setLat(location.getLatitude());
         userLocation.setLng(location.getLongitude());
 
+        // handle user location
         callback.onLocationChanged(userLocation);
-
-
     }
-
-
-
 
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -74,34 +67,24 @@ public class MapConfiguration implements GoogleApiClient.ConnectionCallbacks, Go
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
-
-
 
     public void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
     }
-
-
 
     public void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+                googleApiClient, locationRequest, this);
 
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
-    public LocationRequest getmLocationRequest() {
-        return mLocationRequest;
-    }
-
-    public GoogleApiClient getmGoogleApiClient() {
-        return mGoogleApiClient;
+    public GoogleApiClient getGoogleApiClient() {
+        return googleApiClient;
     }
 }
 

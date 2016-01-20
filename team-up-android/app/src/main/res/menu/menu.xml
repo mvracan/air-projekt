@@ -10,8 +10,7 @@
         android:id="@+id/profile"
         android:title="@string/profile"/>
 
-    <group
-        android:id="@+id/teams">
+    <group android:id="@+id/teams">
         <item
             android:id="@+id/history"
             android:title="@string/history"/>
@@ -21,15 +20,11 @@
             android:title="@string/new_group"/>
     </group>
 
-
-    <item android:id="@+id/group"
-        android:title="@string/group">
-        <menu>
-            <item android:id="@+id/code"
-                android:title="@string/code"/>
-            <item android:id="@+id/nfc"
-                android:title="@string/nfc" />
-        </menu>
-    </item>
+    <group  android:id="@+id/join">
+        <item android:id="@+id/code"
+            android:title="@string/code"/>
+        <item android:id="@+id/nfc"
+            android:title="@string/nfc" />
+    </group>
 
 </menu>

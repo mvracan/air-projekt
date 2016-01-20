@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- *
+ * all adapters extend the base adapter
  * Created by Tomislav Turek on 06.12.15..
  */
 public abstract class BaseAdapter<T extends Serializable> extends ArrayAdapter<T> {

@@ -2,32 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/home"
-        android:title="@string/home"/>
-
-    <item
-        android:id="@+id/profile"
-        android:title="@string/profile"/>
-
-    <group
-        android:id="@+id/teams">
+    <group android:id="@+id/home">
         <item
-            android:id="@+id/history"
-            android:title="@string/history"/>
+            android:id="@+id/home"
+            android:title="@string/home"/>
+
+        <item
+            android:id="@+id/profile"
+            android:title="@string/profile"/>
+    </group>
+
+    <item
+        android:id="@+id/nfc"
+        android:title="@string/nfc" />
+
+    <group android:id="@+id/leave">
+        <item
+            android:id="@+id/leave_group"
+            android:title="@string/leave_group"/>
 
     </group>
 
-
-    <item android:id="@+id/group"
-        android:title="@string/group">
-        <menu>
-            <item android:id="@+id/nfc"
-                android:title="@string/nfc" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/leave_group"
-        android:title="@string/leave_group"/>
 
 </menu>

@@ -1,7 +1,10 @@
 package hr.foi.teamup.fragments;
 
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.R;
+import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.adapters.PersonAdapter;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
@@ -22,12 +26,17 @@ import hr.foi.teamup.model.Team;
  * fragment containing current team members list
  * Created by Tomislav Turek on 05.12.15..
  */
-public class TeamFragment extends LayoutExchangeFragment {
+public class TeamFragment extends Fragment {
 
     ListView users;
     PersonAdapter adapter;
+<<<<<<< HEAD
+    FloatingActionButton panicButton;
     TextView groupName;
     TextView groupCode;
+=======
+
+>>>>>>> 9404fa1237b09eda0c746db41a4f4a830f5ad5f4
 
     @Nullable
     @Override
@@ -35,25 +44,46 @@ public class TeamFragment extends LayoutExchangeFragment {
         setRetainInstance(true);
         View v = inflater.inflate(R.layout.fragment_team_current, container, false);
         users = (ListView)v.findViewById(R.id.current_team_list);
+<<<<<<< HEAD
 
         groupName = (TextView)v.findViewById(R.id.group_name);
         groupCode = (TextView)v.findViewById(R.id.group_code);
 
+        panicButton = (FloatingActionButton) v.findViewById(R.id.panic_button);
+        panicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Logger.log("Panic button activated");
+                ((TeamActivity)getActivity()).panic();
+            }
+        });
+
+=======
+>>>>>>> 9404fa1237b09eda0c746db41a4f4a830f5ad5f4
         return v;
     }
 
-    /**
-     * called from outside activity to update the list of persons
-     * @param list list of persons online
-     */
+
+    public void setViewLayout(int id){
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View mainView= inflater.inflate(id, null);
+        ((TextView)mainView.findViewById(R.id.empty_message)).setText(R.string.empty_team);
+        ViewGroup rootView = (ViewGroup) getView();
+        rootView.removeAllViews();
+        rootView.addView(mainView);
+    }
+
     public void updateList(ArrayList<Person> list){
         if(list != null && isVisible()) {
+            Logger.log("PROSO", Log.ERROR);
             adapter = new PersonAdapter(getActivity().getApplicationContext(), R.layout.fragment_team_current, list);
             users.setAdapter(adapter);
-            Team t= SessionManager.getInstance(getActivity().getApplicationContext())
-                    .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
+            Team t= SessionManager.getInstance(getActivity().getApplicationContext()).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
             groupName.setText(t.getName());
             groupCode.setText(t.getPassword());
         }
+
     }
+
+
 }

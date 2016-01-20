@@ -7,7 +7,6 @@ import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.NfcF;
 import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 
 import hr.foi.air.teamup.Logger;
 
@@ -38,7 +37,7 @@ public abstract class NfcForegroundDispatcher extends NfcActivity {
         try {
             ndef.addDataType("*/*");
         } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("fail", e);
+            throw new RuntimeException("Mime type is unknown", e);
         }
         mFilters = new IntentFilter[] {
                 ndef,
