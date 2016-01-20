@@ -15,8 +15,8 @@ public class InputTest extends ActivityInstrumentationTestCase2<TeamActivity> {
 
     TeamActivity activity;
 
-    public InputTest(Class<TeamActivity> activityClass) {
-        super(activityClass);
+    public InputTest() {
+        super(TeamActivity.class);
     }
 
     @Override
