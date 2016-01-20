@@ -48,6 +48,7 @@ public class TeamHistoryFragment extends LayoutExchangeFragment {
 
         Logger.log("Initiated history, calling service...", getClass().getName());
 
+        // gets history items
         ServiceParams params = new ServiceParams(
                 getString(hr.foi.teamup.webservice.R.string.team_history_path) + self.getIdPerson(),
                 ServiceCaller.HTTP_POST, null);
@@ -66,6 +67,7 @@ public class TeamHistoryFragment extends LayoutExchangeFragment {
                 }.getType();
                 ArrayList<Team> t = new Gson().fromJson(response.getJsonResponse(), listType);
 
+                // change layout according to history items
                 if(t == null || t.size() == 0) {
                     setViewLayout(R.layout.layout_empty_data, new ViewCustomization() {
                         @Override
@@ -75,7 +77,6 @@ public class TeamHistoryFragment extends LayoutExchangeFragment {
                     });
                 } else {
                     setViewLayout(R.layout.fragment_team_history);
-                    Logger.log("Setting team history data...", getClass().getName());
                     teams.setAdapter(new TeamAdapter(getActivity().getApplicationContext(),
                             R.layout.fragment_team_history, t));
                 }

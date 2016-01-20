@@ -31,9 +31,9 @@ import hr.foi.teamup.model.Person;
  */
 public class LocationFragment extends Fragment {
 
-    GoogleMap mMap;
-    LatLng creatorPosition;
-    private volatile float ZOOM = 25;
+    private GoogleMap mMap;
+    private LatLng creatorPosition;
+    private volatile float zoom = 25;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,8 +65,8 @@ public class LocationFragment extends Fragment {
     private GoogleMap.OnCameraChangeListener zoomListener = new GoogleMap.OnCameraChangeListener() {
         @Override
         public void onCameraChange(CameraPosition cameraPosition) {
-        if (cameraPosition.zoom != ZOOM){
-            ZOOM = cameraPosition.zoom;
+        if (cameraPosition.zoom != zoom){
+            zoom = cameraPosition.zoom;
         }
         }
     };
@@ -80,7 +80,7 @@ public class LocationFragment extends Fragment {
         if(isVisible()) {
             mMap.clear();
             Logger.log("Radius is " + radius);
-            Logger.log("Zoom is " + ZOOM);
+            Logger.log("Zoom is " + zoom);
             Person creator = teamMembers.get(0);
             creatorPosition = new LatLng(creator.getLocation().getLat(),creator.getLocation().getLng());
 
@@ -88,7 +88,7 @@ public class LocationFragment extends Fragment {
             CameraUpdate center =
                     CameraUpdateFactory.newLatLng(creatorPosition);
 
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(ZOOM);
+            CameraUpdate zoom = CameraUpdateFactory.zoomTo(this.zoom);
             mMap.moveCamera(center);
             mMap.animateCamera(zoom);
 

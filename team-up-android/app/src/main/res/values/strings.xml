@@ -71,6 +71,8 @@
 
     <!-- NFC Beam -->
     <string name="beam"> Please, align the back of your device with another device! </string>
+    <string name="nfc_error">NFC is not turned on, open NFC settings?</string>
+    <string name="open_settings">Open settings</string>
 
 
 </resources>

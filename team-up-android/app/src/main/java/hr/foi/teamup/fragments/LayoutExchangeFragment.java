@@ -37,8 +37,10 @@ public abstract class LayoutExchangeFragment extends Fragment {
             customization.customize(mainView);
 
         ViewGroup rootView = (ViewGroup) getView();
-        rootView.removeAllViews();
-        rootView.addView(mainView);
+        if (rootView != null) {
+            rootView.removeAllViews();
+            rootView.addView(mainView);
+        }
     }
 
 }

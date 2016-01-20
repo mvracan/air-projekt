@@ -65,14 +65,14 @@ public class CreateTeamActivity extends AppCompatActivity {
 
                 Logger.log("CreateTeamActivity -- creating new group and sending object to service");
 
+                // set team data
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
                 Person creator = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
-
                 String uuid = UUID.randomUUID().toString().substring(0, 4);
-
                 List<Person> members= new ArrayList<>();
                 members.add(creator);
 
+                // create team
                 Team team =new Team(
                         0,
                         name.getText().toString(),
@@ -83,8 +83,8 @@ public class CreateTeamActivity extends AppCompatActivity {
                         creator,
                         members);
 
+                // call service
                 TeamCreateHandler teamCreateHandler = new TeamCreateHandler(CreateTeamActivity.this, team);
-
                 new ServiceAsyncTask(teamCreateHandler).execute(new ServiceParams(
                         getString(hr.foi.teamup.webservice.R.string.team_create_path),
                         ServiceCaller.HTTP_POST, team));

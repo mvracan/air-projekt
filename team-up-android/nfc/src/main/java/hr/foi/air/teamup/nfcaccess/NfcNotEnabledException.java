@@ -1,7 +1,7 @@
 package hr.foi.air.teamup.nfcaccess;
 
 /**
- * when nfc is not supported
+ * when nfc is not turned on
  * Created by paz on 08.12.15..
  */
 public class NfcNotEnabledException extends Exception {

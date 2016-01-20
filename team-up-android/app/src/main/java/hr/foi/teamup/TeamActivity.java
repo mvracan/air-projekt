@@ -2,7 +2,6 @@ package hr.foi.teamup;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -57,7 +56,8 @@ import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
 import hr.foi.teamup.webservice.SimpleResponseHandler;
 
-public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener,LocationCallback {
+public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener,
+        LocationCallback {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
@@ -166,7 +166,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         new ServiceAsyncTask(handler).execute(new ServiceParams(
                 "/login",
-                ServiceCaller.HTTP_POST, "application/x-www-form-urlencoded", null, "username=" + client.getCredentials().getUsername() +
+                ServiceCaller.HTTP_POST, ServiceCaller.X_WWW_FORM_URLENCODED, null, "username=" + client.getCredentials().getUsername() +
                 "&password=" + client.getCredentials().getPassword()));
 
     }
@@ -462,7 +462,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     protected void onResume() {
         super.onResume();
-        if (mapConfiguration.getmGoogleApiClient() != null && mapConfiguration.getmGoogleApiClient().isConnected()) {
+        if (mapConfiguration.getGoogleApiClient() != null && mapConfiguration.getGoogleApiClient().isConnected()) {
             mapConfiguration.startLocationUpdates();
         }
     }

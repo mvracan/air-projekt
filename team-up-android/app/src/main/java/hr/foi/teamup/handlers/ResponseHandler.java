@@ -8,7 +8,7 @@ import hr.foi.air.teamup.prompts.LoadingPrompt;
 import hr.foi.teamup.webservice.ServiceResponseHandler;
 
 /**
- *
+ * used when loading prompt is needed
  * Created by Tomislav Turek on 07.11.15..
  */
 public abstract class ResponseHandler implements ServiceResponseHandler {
