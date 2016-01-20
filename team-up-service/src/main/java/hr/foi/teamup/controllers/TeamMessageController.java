@@ -72,7 +72,16 @@ public class TeamMessageController {
         Team t = this.teamRepository.findByActiveAndMembers_IdPerson(1, a.getIdPerson());
         Person lead = t.getCreator();
         
+        double dist = location.distanceTo(lead.getLocation());
+        
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Distance " + dist);
+        
         if(t.getRadius() < location.distanceTo(lead.getLocation())) {
+            
+            Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Sending pannic " + dist);
+            
             template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", a);
         }
         

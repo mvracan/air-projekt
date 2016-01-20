@@ -28,7 +28,7 @@ public class TeamFragment extends Fragment {
 
     ListView users;
     PersonAdapter adapter;
-    FloatingActionButton panicButton;
+
 
     @Nullable
     @Override
@@ -39,14 +39,7 @@ public class TeamFragment extends Fragment {
         users = (ListView)v.findViewById(R.id.current_team_list);
 
 
-        panicButton = (FloatingActionButton) v.findViewById(R.id.panic_button);
-        panicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Logger.log("Panic button activated");
-                ((TeamActivity)getActivity()).panic();
-            }
-        });
+
 
         return v;
     }
