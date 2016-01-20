@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -100,6 +101,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         }
 
+
         teamFragment = new TeamFragment();
         locationFragment = new LocationFragment();
         exchangeFragments(teamFragment);
@@ -114,6 +116,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         } catch (NfcNotEnabledException e) {
             Toast.makeText(this, "NFC is not supported", Toast.LENGTH_LONG).show();
         }
+
 
     }
 
@@ -188,7 +191,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
                     navigationView.getMenu().clear();
                     navigationView.inflateMenu(R.menu.menu);
-
                     return false;
                 }
 
@@ -404,5 +406,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         mDrawer.closeDrawers();
         return true;
+    }
+
+    public void panic(){
+        socket.send("/app/team/"+teamId+"/panic/"+client.getIdPerson(),null);
     }
 }
