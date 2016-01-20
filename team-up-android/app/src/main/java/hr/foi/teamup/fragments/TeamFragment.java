@@ -15,10 +15,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import hr.foi.air.teamup.Logger;
+import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.R;
 import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.adapters.PersonAdapter;
 import hr.foi.teamup.model.Person;
+import hr.foi.teamup.model.Team;
 
 /**
  * fragment containing current team members list
@@ -29,6 +31,8 @@ public class TeamFragment extends Fragment {
     ListView users;
     PersonAdapter adapter;
     FloatingActionButton panicButton;
+    TextView groupName;
+    TextView groupCode;
 
     @Nullable
     @Override
@@ -38,6 +42,8 @@ public class TeamFragment extends Fragment {
 
         users = (ListView)v.findViewById(R.id.current_team_list);
 
+        groupName = (TextView)v.findViewById(R.id.group_name);
+        groupCode = (TextView)v.findViewById(R.id.group_code);
 
         panicButton = (FloatingActionButton) v.findViewById(R.id.panic_button);
         panicButton.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +72,9 @@ public class TeamFragment extends Fragment {
             Logger.log("PROSO", Log.ERROR);
             adapter = new PersonAdapter(getActivity().getApplicationContext(), R.layout.fragment_team_current, list);
             users.setAdapter(adapter);
+            Team t= SessionManager.getInstance(getActivity().getApplicationContext()).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
+            groupName.setText(t.getName());
+            groupCode.setText(t.getPassword());
         }
 
     }
