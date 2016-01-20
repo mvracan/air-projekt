@@ -9,6 +9,7 @@ import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.repositories.PersonRepository;
 import hr.foi.teamup.repositories.TeamRepository;
+import java.util.ArrayList;
 import java.util.List;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,9 @@ public class TeamController {
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
                 "POST on /team/create -- creating team " + t.toString());
         
+        t.setActive(1);
         Team created = teamRepository.save(t);
+        
         if(created != null){
             Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
                 "Successfully created team " + created.toString());
@@ -135,9 +138,12 @@ public class TeamController {
     @RequestMapping(value="/history/person/{idPerson}", method=RequestMethod.POST)
     public ResponseEntity getUserTeam (@PathVariable long idPerson){
         
-        List<Team> foundTeam= this.teamRepository.findByMembers_IdPerson(idPerson);
+        List<Team> foundTeam = new ArrayList<>();
+        
+        if(this.teamRepository.findByMembers_IdPerson(idPerson) != null)
+            foundTeam= this.teamRepository.findByMembers_IdPerson(idPerson);
        
-        Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "get user team on /team/person" + foundTeam.get(0).getName());
+        
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "get user team on /team/person" + idPerson);
         if(foundTeam!=null){
             

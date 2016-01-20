@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package hr.foi.teamup.services;
+import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.repositories.TeamRepository;
 import java.util.List;
@@ -41,7 +42,7 @@ public class ActiveUserPinger {
     List<Team> Teams = this.teamRepository.findByActive(1);
     
     for(Team t: Teams){
-        
+          
     template.convertAndSend("/topic/team/" + t.getIdTeam() , t.getMembers());
      
     }

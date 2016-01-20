@@ -42,7 +42,8 @@
         </activity>
         <activity android:name=".RegistrationActivity"/>
         <activity android:name=".UserProfileActivity"/>
-        <activity android:name=".TeamActivity"><intent-filter>
+        <activity android:name=".TeamActivity"
+            android:screenOrientation="portrait"><intent-filter>
             <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
             <data android:mimeType="mime/type" />
         </intent-filter>
@@ -55,6 +56,7 @@
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED"/>
             </intent-filter>
+
         </activity>
         <activity android:name=".CreateTeamActivity"/>
         <activity android:name=".BeamActivity">

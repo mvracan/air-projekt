@@ -20,6 +20,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.R;
@@ -31,8 +34,8 @@ import hr.foi.teamup.model.Person;
  */
 public class LocationFragment extends Fragment {
 
+    Timer timerPaint;
     private GoogleMap mMap;
-    private LatLng creatorPosition;
     private volatile float zoom = 25;
 
     @Override
@@ -82,7 +85,7 @@ public class LocationFragment extends Fragment {
             Logger.log("Radius is " + radius);
             Logger.log("Zoom is " + zoom);
             Person creator = teamMembers.get(0);
-            creatorPosition = new LatLng(creator.getLocation().getLat(),creator.getLocation().getLng());
+            LatLng creatorPosition = new LatLng(creator.getLocation().getLat(), creator.getLocation().getLng());
 
             // zoom to default position
             CameraUpdate center =
@@ -119,9 +122,41 @@ public class LocationFragment extends Fragment {
      * @param marker color
      */
     public void paintPerson(Person p, float marker){
+
         mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
                 p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())
                 .icon(BitmapDescriptorFactory.defaultMarker(marker)));
+    }
+
+    public void paintPerson(Person p, float marker, int time){
+
+            if(timerPaint != null)
+                stopTimer();
+
+            timerPaint = new Timer();
+
+
+            timerPaint.schedule(new PaintPanicPerson(p, marker), 0, time);
+
+    }
+
+    protected  void stopTimer(){
+
+        timerPaint.cancel();
+        timerPaint.purge();
+
+    }
+
+    @Override
+    public void onPause() {
+        stopTimer();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        stopTimer();
+        super.onDestroyView();
     }
 
     @Override
@@ -140,5 +175,39 @@ public class LocationFragment extends Fragment {
         mMap.setOnCameraChangeListener(zoomListener);
     }
 
-}
+    class PaintPanicPerson extends TimerTask{
+
+        Person panicPerson;
+        float markerPanic;
+
+        public PaintPanicPerson(Person p,float m) {
+            this.panicPerson = p;
+            this.markerPanic = m;
+        }
+
+
+            @Override
+            public void run () {
+
+                getActivity().runOnUiThread(new Runnable() {
+
+
+                    @Override
+                    public void run() {
+
+
+                        paintPerson(panicPerson, markerPanic);
+
+                    }
+
+
+                });
+
+            }
+        }//End paint class
+
+
+    }
+
+
 
