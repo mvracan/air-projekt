@@ -3,7 +3,7 @@ package hr.foi.teamup.webservice;
 import java.io.Serializable;
 
 /**
- *
+ * defines the service parameters
  * Created by Tomislav Turek on 23.10.15..
  */
 public class ServiceParams {
@@ -14,6 +14,12 @@ public class ServiceParams {
     private Serializable object;
     private String urlEncoded;
 
+    /**
+     * default constructor, uses type application/json
+     * @param url path url
+     * @param method service method
+     * @param object object to send
+     */
     public ServiceParams(String url, String method, Serializable object) {
         this.url = url;
         this.method = method;
@@ -21,14 +27,14 @@ public class ServiceParams {
         this.type = ServiceCaller.APPLICATION_JSON;
     }
 
-
-    public ServiceParams(String url, String method, String type, Serializable object) {
-        this.url = url;
-        this.method = method;
-        this.type = type;
-        this.object = object;
-    }
-
+    /**
+     * default constructor, can use any type
+     * @param url path url
+     * @param method service method
+     * @param type data type
+     * @param object object to send
+     * @param urlEncoded url encoded objects
+     */
     public ServiceParams(String url, String method, String type, Serializable object, String urlEncoded) {
         this.url = url;
         this.method = method;
