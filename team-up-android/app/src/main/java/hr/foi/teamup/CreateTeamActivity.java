@@ -27,7 +27,6 @@ public class CreateTeamActivity extends AppCompatActivity {
     Button submit;
     EditText name;
     EditText teamDesc;
-
     EditText radius;
     List<Input> inputs;
 
@@ -36,7 +35,6 @@ public class CreateTeamActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_team);
-
 
         name = (EditText) findViewById(R.id.teamName);
         teamDesc = (EditText) findViewById(R.id.teamDesc);
@@ -70,7 +68,7 @@ public class CreateTeamActivity extends AppCompatActivity {
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
                 Person creator = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
 
-                UUID uuid = UUID.randomUUID();
+                String uuid = UUID.randomUUID().toString().substring(0, 4);
 
                 List<Person> members= new ArrayList<>();
                 members.add(creator);
@@ -79,20 +77,17 @@ public class CreateTeamActivity extends AppCompatActivity {
                         0,
                         name.getText().toString(),
                         teamDesc.getText().toString(),
-                        uuid.toString(),
+                        uuid,
                         Double.parseDouble( radius.getText().toString()),
-                        uuid.toString(),
+                        uuid,
                         creator,
                         members);
-
-
 
                 TeamCreateHandler teamCreateHandler = new TeamCreateHandler(CreateTeamActivity.this, team);
 
                 new ServiceAsyncTask(teamCreateHandler).execute(new ServiceParams(
                         getString(hr.foi.teamup.webservice.R.string.team_create_path),
                         ServiceCaller.HTTP_POST, team));
-
             }
         }
     };
