@@ -45,6 +45,7 @@ public class Location implements Serializable {
      * @return distance
      */
     public double distanceTo(Location l) {
+        
         double lat1 = this.getLat();
         double lat2 = l.getLat();
         double lon1 = this.getLng();
@@ -61,7 +62,7 @@ public class Location implements Serializable {
         
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         
-        return c * Distance.EARTH_RADIUS;
+        return (c * Distance.EARTH_RADIUS)*1000 ;
     }
     
 }

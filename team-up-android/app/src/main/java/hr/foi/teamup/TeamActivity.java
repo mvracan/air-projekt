@@ -1,5 +1,6 @@
 package hr.foi.teamup;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -41,6 +42,8 @@ import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
+import hr.foi.teamup.maps.LocationCallback;
+import hr.foi.teamup.maps.MapConfiguration;
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
@@ -53,7 +56,7 @@ import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
 import hr.foi.teamup.webservice.SimpleResponseHandler;
 
-public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener {
+public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener,LocationCallback {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawer;
@@ -69,9 +72,13 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     LocationFragment locationFragment;
     NavigationView navigationView;
     Person panicPerson;
+    FloatingActionButton panicButton;
+    public MapConfiguration mapConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        mapConfiguration= new MapConfiguration(this, (Activity)this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
@@ -86,6 +93,16 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        panicButton = (FloatingActionButton) findViewById(R.id.panic_button);
+        panicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                socket.send("/app/team/" + teamId + "/panic/" + client.getIdPerson(), null);
+            }
+        });
+
 
         Button logOut = (Button) findViewById(R.id.log_out_button);
         logOut.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +122,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         }
 
+        mapConfiguration.buildGoogleApiClient();
+        mapConfiguration.createLocationRequest();
 
         teamFragment = new TeamFragment();
         locationFragment = new LocationFragment();
@@ -120,8 +139,13 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         } catch (NfcNotEnabledException e) {
             Toast.makeText(this, "NFC is not supported", Toast.LENGTH_LONG).show();
         }
+    }
 
-
+    @Override
+    public void onLocationChanged(Location location) {
+        if(socket != null) {
+            socket.send("/app/updateLocation", location);
+        }
     }
 
     // gets team id and subscribes him
@@ -197,10 +221,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     navigationView.inflateMenu(R.menu.menu);
                     return false;
                 }
-
-
             }  else {
-
                 Toast.makeText(getApplicationContext(), "Currently without team! ", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -288,7 +309,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             Logger.log("user losT", Log.WARN);
             panicPerson = new Gson().fromJson(body,Person.class);
 
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -296,16 +316,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     if(locationFragment.isVisible()) {
                         locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
                     }
-
-
                     Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(2000);
 
                 }
             });
-
-
-
         }
     };
 
@@ -338,11 +353,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         ServiceParams params = new ServiceParams(
                 getString(hr.foi.teamup.webservice.R.string.team_person_path)+user.getIdPerson(),
                 ServiceCaller.HTTP_POST, null
-                );
+        );
 
         new ServiceAsyncTask(activeTeamHandler).execute(params);
-
-
     }
 
     @Override
@@ -441,7 +454,17 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         return true;
     }
 
-    public void panic(){
-        socket.send("/app/team/" + teamId + "/panic/" + client.getIdPerson(), null);
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapConfiguration.stopLocationUpdates();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mapConfiguration.getmGoogleApiClient() != null && mapConfiguration.getmGoogleApiClient().isConnected()) {
+            mapConfiguration.startLocationUpdates();
+        }
     }
 }
