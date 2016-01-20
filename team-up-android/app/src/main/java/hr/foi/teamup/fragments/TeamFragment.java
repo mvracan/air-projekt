@@ -56,16 +56,6 @@ public class TeamFragment extends Fragment {
         return v;
     }
 
-
-    public void setViewLayout(int id){
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View mainView= inflater.inflate(id, null);
-        ((TextView)mainView.findViewById(R.id.empty_message)).setText(R.string.empty_team);
-        ViewGroup rootView = (ViewGroup) getView();
-        rootView.removeAllViews();
-        rootView.addView(mainView);
-    }
-
     public void updateList(ArrayList<Person> list){
         if(list != null && isVisible()) {
             Logger.log("PROSO", Log.ERROR);
@@ -75,8 +65,5 @@ public class TeamFragment extends Fragment {
             groupName.setText(t.getName());
             groupCode.setText(t.getPassword());
         }
-
     }
-
-
 }

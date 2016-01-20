@@ -1,6 +1,5 @@
 package hr.foi.teamup.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -33,18 +32,14 @@ import hr.foi.teamup.webservice.SimpleResponseHandler;
  * fragment with teams list that were joined earlier (history)
  * Created by maja on 27.11.15..
  */
-public class TeamHistoryFragment extends Fragment {
+public class TeamHistoryFragment extends LayoutExchangeFragment {
 
     ListView teams;
     Person self;
-    ViewGroup container;
-    LayoutInflater inflater;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.inflater = inflater;
-        this.container = container;
         View v = inflater.inflate(R.layout.fragment_team_history, container, false);
 
         teams = (ListView) v.findViewById(R.id.history_teams_list);
@@ -72,12 +67,14 @@ public class TeamHistoryFragment extends Fragment {
                 ArrayList<Team> t = new Gson().fromJson(response.getJsonResponse(), listType);
 
                 if(t == null || t.size() == 0) {
-                    // TODO: check if this works
-                    container.removeAllViews();
-                    View v = inflater.inflate(R.layout.layout_empty_data, container);
-                    ((TextView)v.findViewById(R.id.empty_message)).setText(R.string.empty_history);
-                    // view returned?
+                    setViewLayout(R.layout.layout_empty_data, new ViewCustomization() {
+                        @Override
+                        public void customize(View v) {
+                            ((TextView)v.findViewById(R.id.empty_message)).setText(R.string.empty_history);
+                        }
+                    });
                 } else {
+                    setViewLayout(R.layout.fragment_team_history);
                     Logger.log("Setting team history data...", getClass().getName());
                     teams.setAdapter(new TeamAdapter(getActivity().getApplicationContext(),
                             R.layout.fragment_team_history, t));

@@ -2,7 +2,9 @@ package hr.foi.teamup;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -310,6 +312,10 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     int mNotificationId = 1;
                     NotificationManager mNotifyMgr =
                             (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(pendingIntent);
                     mNotifyMgr.notify(mNotificationId, mBuilder.build());
                 }
             });
