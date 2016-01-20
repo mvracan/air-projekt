@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.teamup.R;
+import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.adapters.PersonAdapter;
 import hr.foi.teamup.model.Person;
 
@@ -26,6 +28,7 @@ public class TeamFragment extends Fragment {
 
     ListView users;
     PersonAdapter adapter;
+    FloatingActionButton panicButton;
 
     @Nullable
     @Override
@@ -34,6 +37,17 @@ public class TeamFragment extends Fragment {
       View v = inflater.inflate(R.layout.fragment_team_current, container, false);
 
         users = (ListView)v.findViewById(R.id.current_team_list);
+
+
+        panicButton = (FloatingActionButton) v.findViewById(R.id.panic_button);
+        panicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Logger.log("Panic button activated");
+                ((TeamActivity)getActivity()).panic();
+            }
+        });
+
         return v;
     }
 
