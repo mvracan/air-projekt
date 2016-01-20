@@ -21,6 +21,7 @@ import hr.foi.teamup.model.Team;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
+import hr.foi.teamup.webservice.ServiceResponse;
 
 public class CreateTeamActivity extends AppCompatActivity {
 
@@ -59,7 +60,7 @@ public class CreateTeamActivity extends AppCompatActivity {
         public void onClick(View v) {
             Logger.log("CreateTeamActivity -- initiated creation of group");
 
-            Logger.log("Radius : " +radius.getText().toString());
+            Logger.log("Radius : " + radius.getText().toString());
 
             if(Input.validate(inputs)){
 
@@ -88,7 +89,7 @@ public class CreateTeamActivity extends AppCompatActivity {
                 new ServiceAsyncTask(teamCreateHandler).execute(new ServiceParams(
                         getString(hr.foi.teamup.webservice.R.string.team_create_path),
                         ServiceCaller.HTTP_POST, team));
-                
+
             }
         }
     };
