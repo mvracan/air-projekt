@@ -88,6 +88,7 @@ public class CreateTeamActivity extends AppCompatActivity {
                 new ServiceAsyncTask(teamCreateHandler).execute(new ServiceParams(
                         getString(hr.foi.teamup.webservice.R.string.team_create_path),
                         ServiceCaller.HTTP_POST, team));
+                
             }
         }
     };
