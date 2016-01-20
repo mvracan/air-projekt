@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -134,12 +136,19 @@ public class LocationFragment extends Fragment implements
             mMap.addCircle(teamRadius);
 
             for (Person p : teamMembers) {
-                mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
-                        p.getLocation().getLng())).title(p.getName() + " " + p.getSurname()));
+                paintPerson(p, "lalal");
             }
 
         }
 
+    }
+
+
+    public void paintPerson(Person p, String path){
+
+        mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
+                p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())
+                .icon(BitmapDescriptorFactory.fromFile(path)));
     }
 
     @Override

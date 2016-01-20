@@ -275,6 +275,25 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             });
         }
     };
+    ListenerSubscription subscriptionUserLost=new ListenerSubscription() {
+        @Override
+        public void onMessage(Map<String, String> headers, String body) {
+
+            Logger.log(body);
+
+            Person panicPerson = new Gson().fromJson(body,Person.class);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+
+
+
+        }
+    };
 
     /**
      * joins to group through subscription
@@ -409,6 +428,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     }
 
     public void panic(){
-        socket.send("/app/team/"+teamId+"/panic/"+client.getIdPerson(),null);
+        socket.send("/app/team/" + teamId + "/panic/" + client.getIdPerson(), null);
     }
 }
