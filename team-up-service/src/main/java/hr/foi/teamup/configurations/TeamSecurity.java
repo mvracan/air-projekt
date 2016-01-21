@@ -30,17 +30,6 @@ public class TeamSecurity extends WebSecurityConfigurerAdapter{
     @Autowired
           public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-              /*
-            auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("select * from person where username=?")
-                .authoritiesByUsernameQuery("SELECT p.username, r.name " +
-                  "FROM person p  " + 
-                  "LEFT OUTER JOIN person_role ON p.id_person = person_role.id_person " +
-                  "LEFT OUTER JOIN role r ON person_role.id_role = r.id_role" +
-                        " WHERE p.username=?");
-                      */
-
                auth.userDetailsService(users);
 
           }	

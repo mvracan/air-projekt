@@ -81,8 +81,11 @@ public class TeamMessageController {
             
             a.setPanic(1);
             
-
             template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", a);
+            
+            if(!a.equals(lead))
+                template.convertAndSendToUser(a.getCredentials().getUsername(), "/queue/messages", a);
+            
         }
         else
             a.setPanic(0);

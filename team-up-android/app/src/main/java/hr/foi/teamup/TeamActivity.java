@@ -272,11 +272,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                         v.vibrate(2000);
 
                         // issue notification
-                        NotificationCompat.Builder mBuilder =
-                                new NotificationCompat.Builder(getApplicationContext())
-                                        .setSmallIcon(R.drawable.logo)
-                                        .setContentTitle("TeamUp")
-                                        .setContentText("User " + panicPerson.getName() + " is panicking, go find this person");
+                        NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client,panicPerson));
 
                         int mNotificationId = 1;
                         NotificationManager mNotifyMgr =
@@ -374,6 +370,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO join by code
+
+
                 }
             }, R.string.join, null, R.string.cancel);
             prompt.showPrompt();
@@ -410,4 +408,25 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             mapConfiguration.startLocationUpdates();
         }
     }
+
+    protected String setNotificationMessage(Person client, Person panic){
+
+        if(client.getIdPerson() == panic.getIdPerson())
+            return "Please come back to group area!";
+
+        return "User " + panic.getName() + " is panicking, go find this person!";
+
+    }
+
+    protected NotificationCompat.Builder setNotification(String notification){
+
+        return new  NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle("TeamUp")
+                .setContentText(notification);
+
+
+    }
+
+
 }
