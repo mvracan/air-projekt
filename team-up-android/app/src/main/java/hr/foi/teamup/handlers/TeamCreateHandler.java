@@ -1,5 +1,6 @@
 package hr.foi.teamup.handlers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,8 +18,8 @@ import hr.foi.teamup.webservice.ServiceResponse;
  */
 public class TeamCreateHandler extends ResponseHandler {
 
-    public TeamCreateHandler(Context context, Serializable... args) {
-        super(context, args);
+    public TeamCreateHandler(Activity activity, Serializable... args) {
+        super(activity, args);
     }
 
     @Override
@@ -30,17 +31,17 @@ public class TeamCreateHandler extends ResponseHandler {
             Logger.log("Successfully created team", getClass().getName(), Log.DEBUG);
             // login
 
-            SessionManager manager= SessionManager.getInstance(getContext());
+            SessionManager manager= SessionManager.getInstance(getActivity());
             manager.createSession(team, SessionManager.TEAM_INFO_KEY);
 
-            //TODO switch to teamactivity
+            getActivity().finish();
 
             return true;
         } else {
             Logger.log("Creating team failed " + response.getHttpCode(),
                     getClass().getName(), Log.WARN);
             // show fail
-            Toast.makeText(getContext(),
+            Toast.makeText(getActivity(),
                     "Team creation failed, please try again (" + response.getHttpCode() + ")",
                     Toast.LENGTH_LONG).show();
             return false;

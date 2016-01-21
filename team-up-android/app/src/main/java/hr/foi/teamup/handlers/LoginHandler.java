@@ -1,5 +1,6 @@
 package hr.foi.teamup.handlers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -21,8 +22,8 @@ import hr.foi.teamup.webservice.ServiceResponse;
  */
 public class LoginHandler extends ResponseHandler {
 
-    public LoginHandler(Context context, Serializable... args) {
-        super(context, args);
+    public LoginHandler(Activity activity, Serializable... args) {
+        super(activity, args);
     }
 
     @Override
@@ -34,20 +35,20 @@ public class LoginHandler extends ResponseHandler {
             // convert json to person object
             Person person = new Gson().fromJson(response.getJsonResponse(), Person.class);
             // save person to session
-            SessionManager manager = SessionManager.getInstance(getContext());
+            SessionManager manager = SessionManager.getInstance(getActivity());
             if(manager.createSession(person, SessionManager.PERSON_INFO_KEY)) {
 
                 Person sessionPerson = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
                 Logger.log("Valid user, created session: " + sessionPerson.toString()
                                 + ", proceeding to group activity", getClass().getName(), Log.DEBUG);
                 // start main activity
-                Intent intent = new Intent(getContext(), TeamActivity.class);
+                Intent intent = new Intent(getActivity(), TeamActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(intent);
+                getActivity().startActivity(intent);
                 return true;
 
             } else {
-                Toast.makeText(getContext(),
+                Toast.makeText(getActivity(),
                         "Internal application error, please try again", Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -55,7 +56,7 @@ public class LoginHandler extends ResponseHandler {
         } else  {
             // http code different from 200 OK
             Logger.log("LoginHandler -- invalid credentials sent", Log.WARN);
-            Toast.makeText(getContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Invalid credentials", Toast.LENGTH_LONG).show();
             return false;
         }
     }

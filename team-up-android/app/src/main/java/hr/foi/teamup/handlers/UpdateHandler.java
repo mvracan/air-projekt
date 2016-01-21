@@ -1,5 +1,6 @@
 package hr.foi.teamup.handlers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,8 +18,8 @@ import hr.foi.teamup.webservice.ServiceResponse;
  */
 public class UpdateHandler extends ResponseHandler {
 
-    public UpdateHandler(Context context, Serializable... args) {
-        super(context, args);
+    public UpdateHandler(Activity activity, Serializable... args) {
+        super(activity, args);
     }
 
     @Override
@@ -30,18 +31,20 @@ public class UpdateHandler extends ResponseHandler {
             Logger.log("Successfully updated user", getClass().getName());
 
             // update session
-            SessionManager manager= SessionManager.getInstance(getContext());
+            SessionManager manager= SessionManager.getInstance(getActivity());
             manager.destroySession(SessionManager.PERSON_INFO_KEY);
             manager.createSession(user, SessionManager.PERSON_INFO_KEY);
-            Toast.makeText(getContext(),
+            Toast.makeText(getActivity(),
                     "Update successful", Toast.LENGTH_LONG).show();
-            // finish()
+
+            getActivity().finish();
+
             return true;
         } else {
             Logger.log("Update failed, server returned code "
                     + response.getHttpCode(), getClass().getName(), Log.WARN);
             // show fail
-            Toast.makeText(getContext(),
+            Toast.makeText(getActivity(),
                     "Update failed, please try again ("+response.getHttpCode()+")",
                     Toast.LENGTH_LONG).show();
             return false;
