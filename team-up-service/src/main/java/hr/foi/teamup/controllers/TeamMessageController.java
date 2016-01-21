@@ -79,9 +79,9 @@ public class TeamMessageController {
         
         if(t.getRadius() < location.distanceTo(lead.getLocation())) {
             
-            Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
-                "Sending pannic " + dist);
+            a.setPanic(1);
             
+
             template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", a);
         }
         
@@ -103,6 +103,8 @@ public class TeamMessageController {
         Team t = this.teamRepository.findByIdTeam(idTeam);
         Person lead = t.getCreator();
         Person panics = this.personRepository.findByIdPerson(idPanicr);
+        panics.setPanic(1);
+        this.personRepository.save(panics);
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "User " + panics.getName() + " panics, calling admin " + lead.getName());
         template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", panics);

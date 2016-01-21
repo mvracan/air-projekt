@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -34,8 +35,9 @@ import hr.foi.teamup.model.Person;
  */
 public class LocationFragment extends Fragment {
 
+    GoogleMap mMap;
+    LatLng creatorPosition;
     Timer timerPaint;
-    private GoogleMap mMap;
     private volatile float zoom = 25;
 
     @Override
@@ -105,13 +107,24 @@ public class LocationFragment extends Fragment {
 
             mMap.addCircle(teamRadius);
 
-            // paint yourself in green
-            paintPerson(creator, BitmapDescriptorFactory.HUE_GREEN);
 
             // everyone else is painted violet
-            teamMembers.remove(0);
+
             for (Person p : teamMembers) {
-                paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
+
+                if((p == creator ) && (p.getPanics() == 1)){
+                    paintPerson(p, 1);
+                    Logger.log("ja sam admin u panici");
+                }
+                else if (p == creator){
+                    paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
+                    Logger.log("ja sam admin");
+                }
+                else if(p.getPanics() != 1)
+                  paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
+                else
+                    paintPerson(p, 1);
+
             }
         }
     }
@@ -128,17 +141,16 @@ public class LocationFragment extends Fragment {
                 .icon(BitmapDescriptorFactory.defaultMarker(marker)));
     }
 
-    public void paintPerson(Person p, float marker, int time){
+    public void paintPerson(Person p,  int red){
 
-            if(timerPaint != null)
-                stopTimer();
+       Marker markerShow = mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
+                p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-            timerPaint = new Timer();
-
-
-            timerPaint.schedule(new PaintPanicPerson(p, marker), 0, time);
-
+        markerShow.showInfoWindow();
     }
+
+
 
     protected  void stopTimer(){
 
@@ -149,14 +161,18 @@ public class LocationFragment extends Fragment {
 
     @Override
     public void onPause() {
-        stopTimer();
-        super.onPause();
+         super.onPause();
+
     }
+
+
 
     @Override
     public void onDestroyView() {
-        stopTimer();
+
+
         super.onDestroyView();
+
     }
 
     @Override
@@ -175,36 +191,6 @@ public class LocationFragment extends Fragment {
         mMap.setOnCameraChangeListener(zoomListener);
     }
 
-    class PaintPanicPerson extends TimerTask{
-
-        Person panicPerson;
-        float markerPanic;
-
-        public PaintPanicPerson(Person p,float m) {
-            this.panicPerson = p;
-            this.markerPanic = m;
-        }
-
-
-            @Override
-            public void run () {
-
-                getActivity().runOnUiThread(new Runnable() {
-
-
-                    @Override
-                    public void run() {
-
-
-                        paintPerson(panicPerson, markerPanic);
-
-                    }
-
-
-                });
-
-            }
-        }//End paint class
 
 
     }

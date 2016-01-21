@@ -264,8 +264,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     // make him red if fragment is visible
 
                     if (locationFragment.isVisible()) {
-                        locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED, 5000);
-
+                        locationFragment.paintPerson(panicPerson, 1);
+                    }
 
                         // vibrate
                         Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -287,7 +287,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mBuilder.setContentIntent(pendingIntent);
                         mNotifyMgr.notify(mNotificationId, mBuilder.build());
-                    }
+
                 }
             });
         }
@@ -387,10 +387,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             exchangeFragments(teamFragment);
         } else if (menuItem.getItemId() == R.id.leave_group) {
             socket.finish();
-            new ServiceAsyncTask(null).execute(new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path) + teamId + "/leave/" + client.getIdPerson(),
+            new ServiceAsyncTask(null).execute(new ServiceParams(hr.foi.teamup.webservice.R.string.team_path + teamId + "/leave/" + client.getIdPerson(),
                     ServiceCaller.HTTP_POST, null));
             teamFragment.setViewLayout(R.layout.layout_empty_data);
-            setNavigationMenuItems(R.menu.menu);
         }
 
         mDrawer.closeDrawers();
