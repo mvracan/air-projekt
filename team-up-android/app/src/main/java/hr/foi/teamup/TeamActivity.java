@@ -303,8 +303,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     // make him red if fragment is visible
 
                     if (locationFragment.isVisible()) {
-                        locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED, 5000);
-
+                        locationFragment.paintPerson(panicPerson, 1);
+                    }
 
                         // vibrate
                         Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -326,142 +326,144 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mBuilder.setContentIntent(pendingIntent);
                         mNotifyMgr.notify(mNotificationId, mBuilder.build());
-                    }
+
                 }
             });
         }
 
-        ;
+    };
 
-        /**
-         * joins to group through subscription
-         */
-        private void joinGroup() {
+    /**
+     * joins to group through subscription
+     */
+    private void joinGroup() {
 
-            subscriptionChannels = new HashMap<>();
-            cookie = SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.COOKIE_KEY, String.class);
+        subscriptionChannels = new HashMap<>();
+        cookie = SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.COOKIE_KEY, String.class);
 
-            if (cookie != null) {
-                subscriptionChannels.put(USER_CHANNEL_PATH, subscriptionUserLost);
-                subscriptionChannels.put(GROUP_PATH + teamId, subscription);
+        if (cookie != null) {
+            subscriptionChannels.put(USER_CHANNEL_PATH, subscriptionUserLost);
+            subscriptionChannels.put(GROUP_PATH + teamId, subscription);
 
-                socket = new TeamConnection(subscriptionChannels, cookie);
-                socket.start();
+            socket = new TeamConnection(subscriptionChannels, cookie);
+            socket.start();
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private void setNavigationMenuItems(int menuId) {
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(menuId);
+    }
+
+    @Override
+    public void onBackPressed() {
+        mDrawer.closeDrawers();
+        signOut();
+    }
+
+    // ask for sign out
+    private void signOut() {
+        DialogInterface.OnClickListener signOutListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SessionManager.getInstance(getApplicationContext()).destroyAll();
+                dialog.dismiss();
+                socket.finish();
+                for (int i = 0; i < getFragmentManager().getBackStackEntryCount(); ++i) {
+                    getFragmentManager().popBackStack();
+                }
+                TeamActivity.super.onBackPressed();
             }
-        }
+        };
+        AlertPrompt signOutPrompt = new AlertPrompt(this);
+        signOutPrompt.prepare(R.string.log_out_question, signOutListener,
+                R.string.log_out, null, R.string.cancel);
+        signOutPrompt.showPrompt();
+    }
 
-        @Override
-        protected void onPostCreate(Bundle savedInstanceState) {
-            super.onPostCreate(savedInstanceState);
-            mDrawerToggle.syncState();
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_team_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-        @Override
-        public void onConfigurationChanged(Configuration newConfig) {
-            super.onConfigurationChanged(newConfig);
-            mDrawerToggle.onConfigurationChanged(newConfig);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.open_map) {
+            exchangeFragments(locationFragment);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
+    }
 
-        private void setNavigationMenuItems(int menuId) {
-            navigationView.getMenu().clear();
-            navigationView.inflateMenu(menuId);
-        }
+    /**
+     * exchanges fragments
+     *
+     * @param fragment fragment that goes in foreground
+     */
+    private void exchangeFragments(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_frame, fragment);
+        transaction.commit();
+    }
 
-        @Override
-        public void onBackPressed() {
-            mDrawer.closeDrawers();
-            signOut();
-        }
-
-        // ask for sign out
-        private void signOut() {
-            DialogInterface.OnClickListener signOutListener = new DialogInterface.OnClickListener() {
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        // handling navigation items
+        if (menuItem.getItemId() == R.id.profile) {
+            startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
+        } else if (menuItem.getItemId() == R.id.code) {
+            InputPrompt prompt = new InputPrompt(this);
+            prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    SessionManager.getInstance(getApplicationContext()).destroyAll();
-                    dialog.dismiss();
-                    socket.finish();
-                    for (int i = 0; i < getFragmentManager().getBackStackEntryCount(); ++i) {
-                        getFragmentManager().popBackStack();
-                    }
-                    TeamActivity.super.onBackPressed();
+                    // TODO join by code
                 }
-            };
-            AlertPrompt signOutPrompt = new AlertPrompt(this);
-            signOutPrompt.prepare(R.string.log_out_question, signOutListener,
-                    R.string.log_out, null, R.string.cancel);
-            signOutPrompt.showPrompt();
+            }, R.string.join, null, R.string.cancel);
+            prompt.showPrompt();
+        } else if (menuItem.getItemId() == R.id.nfc) {
+            startActivity(new Intent(this, BeamActivity.class));
+        } else if (menuItem.getItemId() == R.id.history) {
+            exchangeFragments(new TeamHistoryFragment());
+        } else if (menuItem.getItemId() == R.id.new_group) {
+            startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
+        } else if (menuItem.getItemId() == R.id.home) {
+            exchangeFragments(teamFragment);
+        } else if (menuItem.getItemId() == R.id.leave_group) {
+            socket.finish();
+            new ServiceAsyncTask(null).execute(new ServiceParams(hr.foi.teamup.webservice.R.string.team_path + teamId + "/leave/" + client.getIdPerson(),
+                    ServiceCaller.HTTP_POST, null));
+            teamFragment.setViewLayout(R.layout.layout_empty_data);
         }
 
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            getMenuInflater().inflate(R.menu.toolbar_team_activity, menu);
-            return super.onCreateOptionsMenu(menu);
-        }
+        mDrawer.closeDrawers();
+        return true;
+    }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            if (item.getItemId() == R.id.open_map) {
-                exchangeFragments(locationFragment);
-                return true;
-            } else {
-                return super.onOptionsItemSelected(item);
-            }
-        }
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapConfiguration.stopLocationUpdates();
+    }
 
-        /**
-         * exchanges fragments
-         * @param fragment fragment that goes in foreground
-         */
-        private void exchangeFragments(Fragment fragment) {
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_frame, fragment);
-            transaction.commit();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mapConfiguration.getGoogleApiClient() != null && mapConfiguration.getGoogleApiClient().isConnected()) {
+            mapConfiguration.startLocationUpdates();
         }
-
-        @Override
-        public boolean onNavigationItemSelected(MenuItem menuItem) {
-            // handling navigation items
-            if (menuItem.getItemId() == R.id.profile) {
-                startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
-            } else if (menuItem.getItemId() == R.id.code) {
-                InputPrompt prompt = new InputPrompt(this);
-                prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO join by code
-                    }
-                }, R.string.join, null, R.string.cancel);
-                prompt.showPrompt();
-            } else if (menuItem.getItemId() == R.id.nfc) {
-                startActivity(new Intent(this, BeamActivity.class));
-            } else if (menuItem.getItemId() == R.id.history) {
-                exchangeFragments(new TeamHistoryFragment());
-            } else if (menuItem.getItemId() == R.id.new_group) {
-                startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
-            } else if (menuItem.getItemId() == R.id.home) {
-                exchangeFragments(teamFragment);
-            } else if (menuItem.getItemId() == R.id.leave_group) {
-                socket.finish();
-                new ServiceAsyncTask(null).execute(new ServiceParams(hr.foi.teamup.webservice.R.string.team_path + teamId + "/leave/" + client.getIdPerson(),
-                        ServiceCaller.HTTP_POST, null));
-                teamFragment.setViewLayout(R.layout.layout_empty_data);
-            }
-
-            mDrawer.closeDrawers();
-            return true;
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-            mapConfiguration.stopLocationUpdates();
-        }
-
-        @Override
-        protected void onResume() {
-            super.onResume();
-            if (mapConfiguration.getGoogleApiClient() != null && mapConfiguration.getGoogleApiClient().isConnected()) {
-                mapConfiguration.startLocationUpdates();
-            }
-        }
+    }
+}

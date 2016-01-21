@@ -45,7 +45,9 @@ public class Person implements Serializable {
     
     @Column(name="surname")
     String surname;
-   
+    
+    @Column(name = "panic")
+    long panic;
     
     @Embedded
     Credentials credentials;
@@ -151,5 +153,15 @@ public class Person implements Serializable {
     public String toString() {
         return this.name + " " + this.surname;
     }
+
+    public long getPanic() {
+        return panic;
+    }
+
+    public void setPanic(long panic) {
+        this.panic = panic;
+    }
+    
+    
     
 }

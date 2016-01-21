@@ -14,6 +14,7 @@ public class Person implements Serializable {
     String surname;
     Credentials credentials;
     Location location;
+    int panics;
 
     private List<Team> creatorOfGroups;
     private List<Team> memberOfGroups;
@@ -27,6 +28,14 @@ public class Person implements Serializable {
         this.surname = surname;
         this.credentials = credentials;
         this.location = location;
+    }
+
+    public int getPanics() {
+        return panics;
+    }
+
+    public void setPanics(int panics) {
+        this.panics = panics;
     }
 
     public String getName() {
