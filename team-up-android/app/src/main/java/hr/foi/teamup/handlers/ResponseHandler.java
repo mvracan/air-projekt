@@ -1,5 +1,6 @@
 package hr.foi.teamup.handlers;
 
+import android.app.Activity;
 import android.content.Context;
 
 import java.io.Serializable;
@@ -13,14 +14,14 @@ import hr.foi.teamup.webservice.ServiceResponseHandler;
  */
 public abstract class ResponseHandler implements ServiceResponseHandler {
 
-    private Context context;
+    private Activity activity;
     private Object[] args;
     private LoadingPrompt loadingPrompt;
 
-    public ResponseHandler(Context context, Serializable... args) {
-        this.context = context;
+    public ResponseHandler(Activity activity, Serializable... args) {
+        this.activity = activity;
         this.args = args;
-        this.loadingPrompt = new LoadingPrompt(this.context);
+        this.loadingPrompt = new LoadingPrompt(this.activity);
     }
 
     @Override
@@ -33,8 +34,8 @@ public abstract class ResponseHandler implements ServiceResponseHandler {
         loadingPrompt.hidePrompt();
     }
 
-    public Context getContext() {
-        return context;
+    public Activity getActivity() {
+        return activity;
     }
 
     public Object[] getArgs() {

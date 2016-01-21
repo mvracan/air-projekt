@@ -43,6 +43,10 @@ import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
+import hr.foi.teamup.handlers.ActiveTeamHandler;
+import hr.foi.teamup.handlers.CodeCaller;
+import hr.foi.teamup.handlers.JoinGroupHandler;
+import hr.foi.teamup.handlers.MemberCookieHandler;
 import hr.foi.teamup.maps.LocationCallback;
 import hr.foi.teamup.maps.MapConfiguration;
 import hr.foi.teamup.model.Location;
@@ -53,8 +57,6 @@ import hr.foi.teamup.stomp.TeamConnection;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
-import hr.foi.teamup.webservice.ServiceResponse;
-import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener,
         LocationCallback {
@@ -63,9 +65,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private DrawerLayout mDrawer;
     private Person client;
     private double teamRadius;
-    private HashMap<String, ListenerSubscription> subscriptionChannels;
     private TeamConnection socket;
-    private String cookie;
     private String teamId;
     private static final String USER_CHANNEL_PATH = "/user/queue/messages";
     private static final String GROUP_PATH = "/topic/team/";
@@ -129,7 +129,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 getString(hr.foi.teamup.webservice.R.string.team_person_path) + client.getIdPerson(),
                 ServiceCaller.HTTP_POST, null
         );
-        new ServiceAsyncTask(activeTeamHandler).execute(params);
+        new ServiceAsyncTask(new ActiveTeamHandler(this, activeTeamCaller)).execute(params);
 
         // starts nfc foreground dispatcher
         try {
@@ -157,7 +157,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         public void onMessageReceived(String message) {
             Logger.log(message);
             // become a member
-            new ServiceAsyncTask(memberHandler).execute(
+            new ServiceAsyncTask(new MemberCookieHandler(TeamActivity.this, memberCaller)).execute(
                     new ServiceParams("/team/" + message + "/person/" + client.getIdPerson(),
                             ServiceCaller.HTTP_POST, null));
         }
@@ -167,7 +167,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
      * makes call to service to get the auth cookie
      */
     public void getCookie() {
-        new ServiceAsyncTask(handler).execute(new ServiceParams(
+        new ServiceAsyncTask(new JoinGroupHandler(this, joinGroupCaller)).execute(new ServiceParams(
                 "/login",
                 ServiceCaller.HTTP_POST, ServiceCaller.X_WWW_FORM_URLENCODED, null,
                 "username=" + client.getCredentials().getUsername() +
@@ -175,91 +175,52 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     }
 
     /**
-     * get authentication cookie after subscription
+     * gets user cookie after auth
      */
-    SimpleResponseHandler memberHandler = new SimpleResponseHandler() {
+    CodeCaller memberCaller = new CodeCaller() {
         @Override
-        public boolean handleResponse(ServiceResponse response) {
-            Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
+        public void call(boolean positive) {
+            getCookie();
+        }
+    };
 
-            if (response.getHttpCode() == 200) {
+    /**
+     * remote code that gets sent to active team handler to handle
+     * authentication cookies and navigation menu items
+     */
+    CodeCaller activeTeamCaller = new CodeCaller() {
+        @Override
+        public void call(boolean positive) {
+            if(positive) {
+                Team sessionTeam = SessionManager.getInstance(getApplicationContext())
+                        .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
+                teamId = String.valueOf(sessionTeam.getIdTeam());
+                teamRadius = sessionTeam.getRadius();
+
+                setNavigationMenuItems(R.menu.team_exist_menu);
                 getCookie();
-                return true;
-
             } else {
-                // http code different from 200 OK
-                Logger.log("LoginHandler -- invalid credentials sent", Log.WARN);
-                Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
-                return false;
+                setNavigationMenuItems(R.menu.menu);
+                teamFragment.setViewLayout(R.layout.layout_empty_data);
             }
         }
     };
 
     /**
-     * fetch active team from response and get active auth cookie
+     * joins to group through subscription
      */
-    SimpleResponseHandler activeTeamHandler = new SimpleResponseHandler() {
+    CodeCaller joinGroupCaller = new CodeCaller() {
         @Override
-        public boolean handleResponse(ServiceResponse response) {
-            Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
+        public void call(boolean positive) {
+            HashMap<String, ListenerSubscription> subscriptionChannels = new HashMap<>();
+            String cookie = SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.COOKIE_KEY, String.class);
 
-            if (response.getHttpCode() == 200) {
+            if (cookie != null) {
+                subscriptionChannels.put(USER_CHANNEL_PATH, subscriptionUserLost);
+                subscriptionChannels.put(GROUP_PATH + teamId, subscription);
 
-                // convert json to person object
-                Team team = new Gson().fromJson(response.getJsonResponse(), Team.class);
-                // save team to session
-                SessionManager manager = SessionManager.getInstance(getApplicationContext());
-                if (manager.createSession(team, SessionManager.TEAM_INFO_KEY)) {
-
-                    Team sessionTeam = manager.retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
-                    Logger.log("Valid user and team, created session: " + sessionTeam.toString()
-                            + ", in teamactivity", getClass().getName(), Log.DEBUG);
-                    teamId = String.valueOf(sessionTeam.getIdTeam());
-                    teamRadius = sessionTeam.getRadius();
-                    setNavigationMenuItems(R.menu.team_exist_menu);
-
-                    getCookie();
-
-                    return true;
-                } else {
-                    Logger.log("Error in creating team session ", getClass().getName(), Log.DEBUG);
-                    setNavigationMenuItems(R.menu.menu);
-                    teamFragment.setViewLayout(R.layout.layout_empty_data);
-                    return false;
-                }
-            } else {
-                Toast.makeText(getApplicationContext(), "Currently without team! ", Toast.LENGTH_LONG).show();
-                return false;
-            }
-        }
-    };
-
-    /**
-     * after authetication, joins to group
-     */
-    SimpleResponseHandler handler = new SimpleResponseHandler() {
-        @Override
-        public boolean handleResponse(ServiceResponse response) {
-            Logger.log("Got response: " + response.toString(), getClass().getName(), Log.DEBUG);
-
-            if (response.getHttpCode() == 202) {
-                SessionManager manager = SessionManager.getInstance(getApplicationContext());
-                manager.createSession(response.getCookie(), SessionManager.COOKIE_KEY);
-                cookie = response.getCookie();
-
-                if (cookie != null) {
-                    joinGroup();
-                } else {
-                    Log.i("no cookie", "nocokkie");
-                }
-
-                return true;
-
-            } else {
-                // http code different from 200 OK
-                Logger.log("LoginHandler -- invalid credentials sent", Log.WARN);
-                Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
-                return false;
+                socket = new TeamConnection(subscriptionChannels, cookie);
+                socket.start();
             }
         }
     };
@@ -331,23 +292,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             });
         }
     };
-
-    /**
-     * joins to group through subscription
-     */
-    private void joinGroup() {
-
-        subscriptionChannels = new HashMap<>();
-        cookie = SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.COOKIE_KEY, String.class);
-
-        if (cookie != null) {
-            subscriptionChannels.put(USER_CHANNEL_PATH, subscriptionUserLost);
-            subscriptionChannels.put(GROUP_PATH + teamId, subscription);
-
-            socket = new TeamConnection(subscriptionChannels, cookie);
-            socket.start();
-        }
-    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

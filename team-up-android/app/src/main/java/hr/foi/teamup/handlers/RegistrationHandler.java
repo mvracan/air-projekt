@@ -1,5 +1,6 @@
 package hr.foi.teamup.handlers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,8 +20,8 @@ import hr.foi.teamup.webservice.ServiceResponse;
  */
 public class RegistrationHandler extends ResponseHandler {
 
-    public RegistrationHandler(Context context, Serializable... args) {
-        super(context, args);
+    public RegistrationHandler(Activity activity, Serializable... args) {
+        super(activity, args);
     }
 
     @Override
@@ -31,9 +32,9 @@ public class RegistrationHandler extends ResponseHandler {
         if(response.getHttpCode() == 200) {
             Logger.log("Successfully registered user, logging in now...", getClass().getName(), Log.DEBUG);
             // login
-            LoginHandler loginHandler = new LoginHandler(getContext());
+            LoginHandler loginHandler = new LoginHandler(getActivity());
             ServiceParams params = new ServiceParams(
-                    getContext().getString(hr.foi.teamup.webservice.R.string.person_login_path),
+                    getActivity().getString(hr.foi.teamup.webservice.R.string.person_login_path),
                     ServiceCaller.HTTP_POST, credentials);
             new ServiceAsyncTask(loginHandler).execute(params);
             return true;
@@ -41,7 +42,7 @@ public class RegistrationHandler extends ResponseHandler {
             Logger.log("Registration failed, server returned code "
                     + response.getHttpCode(), getClass().getName(), Log.WARN);
             // show fail
-            Toast.makeText(getContext(),
+            Toast.makeText(getActivity(),
                     "Registration failed, please try again (" + response.getHttpCode() + ")",
                     Toast.LENGTH_LONG).show();
             return false;
