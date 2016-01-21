@@ -157,4 +157,24 @@ public class TeamController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
     
+    @RequestMapping(value="/{idPerson}/person", method=RequestMethod.POST)
+    public ResponseEntity addByCode(@PathVariable long id, @RequestBody String code){
+        
+        Team found = this.teamRepository.findByPassword(code);
+        
+        
+        
+        if(found != null){
+            
+            Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "returning");
+            return new ResponseEntity(found.getIdTeam(), HttpStatus.OK);
+        
+        }else{
+            Logger.getLogger("TeamController.java").log(Logger.Level.INFO, " not returning");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+             
+        }
+        
+    }
+    
 }
