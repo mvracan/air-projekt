@@ -111,7 +111,7 @@ public class LocationFragment extends Fragment {
             for (Person p : teamMembers) {
                 Logger.log("PANIC JE :" + p.getPanic());
                if(p.getPanic() == 1)
-                   paintPerson(p,1);
+                   paintPerson(p);
                else if(p == creator)
                    paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
                 else if( p != creator)
@@ -133,7 +133,7 @@ public class LocationFragment extends Fragment {
                 .icon(BitmapDescriptorFactory.defaultMarker(marker)));
     }
 
-    public void paintPerson(Person p,  int red){
+    public void paintPerson(Person p){
 
        Marker markerShow = mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
                 p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())

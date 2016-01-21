@@ -264,7 +264,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     // make him red if fragment is visible
 
                     if (locationFragment.isVisible()) {
-                        locationFragment.paintPerson(panicPerson, 1);
+                        locationFragment.paintPerson(panicPerson);
                     }
 
                         // vibrate
