@@ -10,6 +10,8 @@ import android.widget.EditText;
  */
 public class InputPrompt extends AlertPrompt {
 
+    EditText editText;
+
     /**
      * default constructor
      * @param context current application context
@@ -23,8 +25,14 @@ public class InputPrompt extends AlertPrompt {
                         DialogInterface.OnClickListener negative, int negativeMessage) {
         super.prepare(title, positive, positiveMessage, negative, negativeMessage);
 
-        // dialog input
+        editText = new EditText(getContext());
         // TODO: check if EditText works and refactor
-        this.getBuilder().setView(new EditText(getContext()));
+
+        this.getBuilder().setView(editText);
     }
+
+    public String getInput() {
+        return this.editText.getText().toString();
+    }
+
 }

@@ -369,11 +369,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         if (menuItem.getItemId() == R.id.profile) {
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (menuItem.getItemId() == R.id.code) {
-            InputPrompt prompt = new InputPrompt(this);
+            final InputPrompt prompt = new InputPrompt(this);
             prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO join by code
+                    callback.onMessageReceived(prompt.getInput());
                 }
             }, R.string.join, null, R.string.cancel);
             prompt.showPrompt();

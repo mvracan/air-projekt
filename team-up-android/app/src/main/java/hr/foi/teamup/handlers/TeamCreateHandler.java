@@ -35,7 +35,7 @@ public class TeamCreateHandler extends ResponseHandler {
 
             SessionManager manager= SessionManager.getInstance(getActivity());
             manager.createSession(team, SessionManager.TEAM_INFO_KEY);
-            
+
             getActivity().finish();
 
             return true;
