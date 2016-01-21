@@ -48,6 +48,7 @@ import hr.foi.teamup.handlers.CodeCaller;
 import hr.foi.teamup.handlers.JoinGroupHandler;
 import hr.foi.teamup.handlers.MemberCookieHandler;
 import hr.foi.teamup.maps.LocationCallback;
+import hr.foi.teamup.maps.onPanicMarkerClick;
 import hr.foi.teamup.maps.MapConfiguration;
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
@@ -74,6 +75,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private NavigationView navigationView;
     private Person panicPerson;
     private MapConfiguration mapConfiguration;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +120,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         // set main fragments
         teamFragment = new TeamFragment();
         locationFragment = new LocationFragment();
+        locationFragment.setCallback(callbackMarkerClick);
+
         exchangeFragments(teamFragment);
 
         // get current user
@@ -148,6 +152,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             socket.send("/app/updateLocation", location);
         }
     }
+
 
     /**
      * gets team id and subscribes him to team channel
@@ -264,7 +269,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     // make him red if fragment is visible
 
                     if (locationFragment.isVisible()) {
-                        locationFragment.paintPerson(panicPerson);
+                        locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
                     }
 
                         // vibrate
@@ -417,6 +422,18 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         return "User " + panic.getName() + " is panicking, go find this person!";
 
     }
+    onPanicMarkerClick callbackMarkerClick = new onPanicMarkerClick(){
+
+        @Override
+        public void sendCalmDownMessage(String username){
+
+            if(socket != null)
+                socket.send("/app/team/"+teamId+"/calmUser",username);
+
+        }
+
+
+    };
 
     protected NotificationCompat.Builder setNotification(String notification){
 

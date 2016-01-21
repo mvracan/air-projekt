@@ -61,9 +61,9 @@ public class TeamMessageController {
     public void updateLocation(Message<Object> message, @Payload Location location){
         
         
-        Principal principal = message.getHeaders().get(SimpMessageHeaderAccessor.USER_HEADER, Principal.class);
-        String authedSender = principal.getName();
-      
+        
+        String authedSender = getSessionUsername(message);
+        
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "Update location for person" + authedSender);
         
@@ -115,6 +115,46 @@ public class TeamMessageController {
         template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", panics);
     }
     
+    public String getSessionUsername(Message<Object> message){
+        
+        Principal principal = message.getHeaders().get(SimpMessageHeaderAccessor.USER_HEADER, Principal.class);
+        return principal.getName();
+        
+    }
     
+    
+    @MessageMapping("/team/{idTeam}/calmUser")
+    public void calmDownUser(Message<Object> message,@Payload String username,@DestinationVariable long idTeam){
+        
+        String authedSender = getSessionUsername(message);
+        
+        Person sender = this.personRepository.findByCredentialsUsername(authedSender);
+        
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Authed user " + sender.getName() );
+        
+        Person panicUser = this.personRepository.findByCredentialsUsername(username);
+        
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Calming down user " + panicUser.getName() );
+        
+        Team team = this.teamRepository.findByIdTeam(idTeam);
+        
+        if(sender.equals(team.getCreator())){
+            
+            panicUser.setPanic(0);
+            this.personRepository.save(panicUser);
+            
+            Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "User is safe" );
+            
+        }
+        else
+            Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Not autherized for this operation" );
+            
+        
+        
+    }
     
 }
