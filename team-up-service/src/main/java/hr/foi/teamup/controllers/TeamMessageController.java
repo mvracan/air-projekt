@@ -59,9 +59,7 @@ public class TeamMessageController {
     
     @MessageMapping("/updateLocation")
     public void updateLocation(Message<Object> message, @Payload Location location){
-        
-        
-        
+
         String authedSender = getSessionUsername(message);
         
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
@@ -83,7 +81,7 @@ public class TeamMessageController {
             
             template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", a);
             
-            if(!a.equals(lead))
+            if(equalsById(lead, a))
                 template.convertAndSendToUser(a.getCredentials().getUsername(), "/queue/messages", a);
             
         }
@@ -131,16 +129,19 @@ public class TeamMessageController {
         Person sender = this.personRepository.findByCredentialsUsername(authedSender);
         
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
-                "Authed user " + sender.getName() );
+                "Authed user " + sender.getCredentials().getUsername() );
         
         Person panicUser = this.personRepository.findByCredentialsUsername(username);
         
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
-                "Calming down user " + panicUser.getName() );
+                "Calming down user " + panicUser.getCredentials().getUsername() );
         
         Team team = this.teamRepository.findByIdTeam(idTeam);
         
-        if(sender.equals(team.getCreator())){
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Calming down user " + team.getCreator().getCredentials().getUsername());
+        
+        if(equalsById(team.getCreator(), sender)){
             
             panicUser.setPanic(0);
             this.personRepository.save(panicUser);
@@ -152,9 +153,15 @@ public class TeamMessageController {
         else
             Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "Not autherized for this operation" );
-            
+
+    }
+    
+    public boolean equalsById(Person lead, Person member){
         
+        return ( lead.getIdPerson() == member.getIdPerson() );
+         
         
     }
+    
     
 }

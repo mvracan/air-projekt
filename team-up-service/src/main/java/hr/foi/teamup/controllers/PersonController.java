@@ -63,15 +63,9 @@ public class PersonController {
         String password = credentials.getPassword();
         
         Person found = this.personRepository.findByCredentialsUsername(username);
-        if(found != null && found.getCredentials().getPassword().equals(password)) {
-            Logger.getLogger("PersonController.java").log(Level.INFO,
-                    "Successfully verified, returning " + found.toString());
-            return new ResponseEntity(found, HttpStatus.OK);
-        } else {
-            Logger.getLogger("PersonController.java").log(Level.WARN,
-                    "Verification failed for " + credentials.toString());
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        return (found != null && found.getCredentials().getPassword().equals(password))?
+                 new ResponseEntity(found, HttpStatus.OK)
+                :new ResponseEntity(HttpStatus.NOT_FOUND);
      
     }
     
@@ -89,23 +83,14 @@ public class PersonController {
         role.setId(2);
         role.setName("ROLE_USER");
         HashSet<Role> roles = new HashSet<>();
-        
-       
-        
-        
+
         roles.add(role);
         person.setRoles(roles);
         
         Person signed = this.personRepository.save(person);
-        if(signed != null) {
-            Logger.getLogger("PersonController.java").log(Level.INFO,
-                    "Registration success for " + signed.toString());
-            return new ResponseEntity(signed, HttpStatus.OK);
-        } else {
-            Logger.getLogger("PersonController.java").log(Level.WARN,
-                    "Registration failed for " + person.toString());
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        return (signed != null)?new ResponseEntity(signed, HttpStatus.OK)
+                               :new ResponseEntity(HttpStatus.BAD_REQUEST);
+          
     }
     
     /**
@@ -118,15 +103,10 @@ public class PersonController {
         Logger.getLogger("PersonController.java").log(Level.INFO,
                 "GET on /person/" + id + " -- ");
         Person found = this.personRepository.findByIdPerson(id);
-        if(found != null) {
-            Logger.getLogger("PersonController.java").log(Level.INFO,
-                    "User found for id " + id + ", returning " + found.toString());
-            return new ResponseEntity(found, HttpStatus.OK);
-        } else {
-            Logger.getLogger("PersonController.java").log(Level.WARN,
-                    "No user found for id " + id);
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        
+        return (found != null)? new ResponseEntity(found, HttpStatus.OK)
+                                :new ResponseEntity(HttpStatus.NOT_FOUND);
+          
     }
    
      /**

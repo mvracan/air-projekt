@@ -66,10 +66,9 @@ public class TeamController {
         
         found.getMembers().remove(removePerson);
         
-        if((this.teamRepository.save(found)) != null)
-            return new ResponseEntity(HttpStatus.OK);
-        else
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return ((this.teamRepository.save(found)) != null)? new ResponseEntity(HttpStatus.OK):
+                                                            new ResponseEntity(HttpStatus.BAD_REQUEST);
+          
           
     }
     @RequestMapping(value="/create", method=RequestMethod.POST)
@@ -80,16 +79,10 @@ public class TeamController {
         t.setActive(1);
         Team created = teamRepository.save(t);
         
-        if(created != null){
-            Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
-                "Successfully created team " + created.toString());
-            return new ResponseEntity(created,HttpStatus.OK);
-        }
-        else {
-            Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
-                "Failed to create team " + t.toString());
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        return (created != null)? new ResponseEntity(created,HttpStatus.OK):
+                                  new ResponseEntity(HttpStatus.BAD_REQUEST);
+           
+       
     }
     
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
@@ -129,10 +122,9 @@ public class TeamController {
         Person foundPerson=personRepository.findByIdPerson(idPerson);
         
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "get user team on /team/person" + idPerson);
-        if(foundTeam!=null)
-            return new ResponseEntity(foundTeam,HttpStatus.OK);
-        else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        return (foundTeam!=null)? new ResponseEntity(foundTeam,HttpStatus.OK):
+                                  new ResponseEntity(HttpStatus.NOT_FOUND);
+            
     }
     
     @RequestMapping(value="/history/person/{idPerson}", method=RequestMethod.POST)
@@ -145,16 +137,10 @@ public class TeamController {
        
         
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "get user team on /team/person" + idPerson);
-        if(foundTeam!=null){
-            
-            Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "returning");
-            
-            return new ResponseEntity(foundTeam,HttpStatus.OK);
-            
-            
-        }
-        else
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        
+        return (foundTeam!=null)? new ResponseEntity(foundTeam,HttpStatus.OK)
+                                 :new ResponseEntity(HttpStatus.NOT_FOUND);
+ 
     }
     
     @RequestMapping(value="/{idPerson}/code/{code}", method=RequestMethod.POST)
@@ -164,17 +150,9 @@ public class TeamController {
         
         Team found = this.teamRepository.findByPassword(code);
 
-        if(found != null){
-            
-            Logger.getLogger("TeamController.java").log(Logger.Level.INFO, "returning");
-            return new ResponseEntity(found.getIdTeam(), HttpStatus.OK);
-        
-        }else{
-            Logger.getLogger("TeamController.java").log(Logger.Level.INFO, " not returning");
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-             
-        }
-        
+        return (found != null)?new ResponseEntity(found.getIdTeam(), HttpStatus.OK)
+                                :new ResponseEntity(HttpStatus.BAD_REQUEST);
+ 
     }
     
 }
