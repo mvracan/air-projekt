@@ -67,8 +67,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private TeamConnection socket;
     private String cookie;
     private String teamId;
-    private String USER_CHANNEL_PATH = "/user/queue/messages";
-    private String GROUP_PATH = "/topic/team/";
+    private static final String USER_CHANNEL_PATH = "/user/queue/messages";
+    private static final String GROUP_PATH = "/topic/team/";
     private TeamFragment teamFragment;
     private LocationFragment locationFragment;
     private NavigationView navigationView;
@@ -330,7 +330,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 }
             });
         }
-
     };
 
     /**
@@ -380,7 +379,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             public void onClick(DialogInterface dialog, int which) {
                 SessionManager.getInstance(getApplicationContext()).destroyAll();
                 dialog.dismiss();
-                socket.finish();
+                if (socket != null) socket.finish();
                 for (int i = 0; i < getFragmentManager().getBackStackEntryCount(); ++i) {
                     getFragmentManager().popBackStack();
                 }
@@ -456,7 +455,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public void onPause() {
         super.onPause();
-        mapConfiguration.stopLocationUpdates();
+        if (mapConfiguration.getGoogleApiClient() != null && mapConfiguration.getGoogleApiClient().isConnected())
+            mapConfiguration.stopLocationUpdates();
     }
 
     @Override

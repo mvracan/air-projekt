@@ -35,14 +35,10 @@ import hr.foi.teamup.model.Person;
  */
 public class LocationFragment extends Fragment {
 
-
     GoogleMap mMap;
     LatLng creatorPosition;
     Timer timerPaint;
     private volatile float zoom = 25;
-
-
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,7 +87,7 @@ public class LocationFragment extends Fragment {
             Logger.log("Radius is " + radius);
             Logger.log("Zoom is " + zoom);
             Person creator = teamMembers.get(0);
-            creatorPosition = new LatLng(creator.getLocation().getLat(),creator.getLocation().getLng());
+            LatLng creatorPosition = new LatLng(creator.getLocation().getLat(), creator.getLocation().getLng());
 
             // zoom to default position
             CameraUpdate center =

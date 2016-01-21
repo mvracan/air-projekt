@@ -63,7 +63,7 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
      */
     @Override
     protected void onPostExecute(ServiceResponse s) {
-        if(sp != null) {
+        if(sp != null && handler != null) {
             Log.i(ServiceCaller.SERVICE_LOG_TAG, "ServiceAsyncTask -- Calling service response handler");
             handler.handleResponse(s);
             if(handler instanceof ServiceResponseHandler)
