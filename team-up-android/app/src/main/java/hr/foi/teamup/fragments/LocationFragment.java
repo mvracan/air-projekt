@@ -108,22 +108,14 @@ public class LocationFragment extends Fragment {
             mMap.addCircle(teamRadius);
 
 
-            // everyone else is painted violet
-
             for (Person p : teamMembers) {
-
-                if((p == creator ) && (p.getPanics() == 1)){
-                    paintPerson(p, 1);
-                    Logger.log("ja sam admin u panici");
-                }
-                else if (p == creator){
-                    paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
-                    Logger.log("ja sam admin");
-                }
-                else if(p.getPanics() != 1)
-                  paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
-                else
-                    paintPerson(p, 1);
+                Logger.log("PANIC JE :" + p.getPanic());
+               if(p.getPanic() == 1)
+                   paintPerson(p,1);
+               else if(p == creator)
+                   paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
+                else if( p != creator)
+                   paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
 
             }
         }
