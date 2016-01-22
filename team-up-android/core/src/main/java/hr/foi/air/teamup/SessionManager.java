@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 
 /**
- *
+ * manages vital data that is carried in app
  * Created by Tomislav Turek on 05.11.15..
  */
 public class SessionManager {

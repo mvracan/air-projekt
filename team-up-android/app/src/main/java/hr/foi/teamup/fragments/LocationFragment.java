@@ -1,7 +1,6 @@
 package hr.foi.teamup.fragments;
 
 import android.app.Fragment;
-import hr.foi.teamup.maps.onPanicMarkerClick;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,15 +22,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 import hr.foi.air.teamup.Logger;
-import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.teamup.R;
-import hr.foi.teamup.TeamActivity;
+import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.model.Person;
 
 /*
@@ -41,13 +36,12 @@ import hr.foi.teamup.model.Person;
 public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     GoogleMap mMap;
-    LatLng creatorPosition;
-    onPanicMarkerClick callback;
+    MarkerClickHandler callback;
     private float PANIC=0.8f;
 
     private volatile float zoom = 25;
 
-    public void setCallback(onPanicMarkerClick callback) {
+    public void setCallback(MarkerClickHandler callback) {
         this.callback = callback;
     }
 
@@ -126,8 +120,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
                    paintPerson(p, BitmapDescriptorFactory.HUE_RED);
                else if(p == creator)
                    paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
-                else if( p != creator)
-                   paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
+               else paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
 
             }
         }
@@ -200,7 +193,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                callback.sendCalmDownMessage(panicUser);
+                callback.onMarkerClick(panicUser);
 
             }
         };

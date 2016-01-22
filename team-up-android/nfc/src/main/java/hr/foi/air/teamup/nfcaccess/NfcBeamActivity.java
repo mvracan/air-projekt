@@ -29,20 +29,6 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
     }
 
     /**
-     * starts the nfc adapter, should be called in onCreate
-     * @throws NfcNotAvailableException thrown if adapter was not initialized
-     */
-    protected void startNfcAdapter() throws NfcNotAvailableException, NfcNotEnabledException {
-        if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
-            throw new NfcNotAvailableException("Nfc adapter is not available on this phone");
-        }
-        setAdapter(NfcAdapter.getDefaultAdapter(this));
-        if(getAdapter()==null){
-            throw new NfcNotEnabledException("Nfc adapter is not enabled on this phone");
-        }
-    }
-
-    /**
      * starts the beaming process, waits for the devices to get paired
      * @param message message to beam to the phone, null if in reader mode
      * @throws NfcNotAvailableException thrown if adapter was not initialized

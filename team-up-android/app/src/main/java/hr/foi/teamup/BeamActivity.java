@@ -3,32 +3,17 @@ package hr.foi.teamup;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
-import hr.foi.air.teamup.nfcaccess.NfcBeamMessageCallback;
 import hr.foi.air.teamup.nfcaccess.NfcBeamActivity;
 import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
 import hr.foi.air.teamup.prompts.AlertPrompt;
-import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
-import hr.foi.teamup.model.TeamMessage;
-import hr.foi.teamup.stomp.ListenerSubscription;
-import hr.foi.teamup.stomp.TeamConnection;
-import hr.foi.teamup.webservice.ServiceAsyncTask;
-import hr.foi.teamup.webservice.ServiceCaller;
-import hr.foi.teamup.webservice.ServiceParams;
-import hr.foi.teamup.webservice.ServiceResponse;
-import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 public class BeamActivity extends NfcBeamActivity {
 
