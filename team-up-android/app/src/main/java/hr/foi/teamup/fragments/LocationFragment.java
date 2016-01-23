@@ -44,6 +44,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
     LatLng creatorPosition;
     onPanicMarkerClick callback;
     private float PANIC=0.8f;
+    CameraUpdate zoomCamera;
 
     private volatile float zoom = 25;
 
@@ -104,9 +105,9 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
             CameraUpdate center =
                     CameraUpdateFactory.newLatLng(creatorPosition);
 
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(this.zoom);
+            zoomCamera = CameraUpdateFactory.zoomTo(this.zoom);
             mMap.moveCamera(center);
-            mMap.animateCamera(zoom);
+            mMap.animateCamera(zoomCamera);
 
             // draw radius
             CircleOptions teamRadius = new CircleOptions()
@@ -175,6 +176,10 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
         MapFragment mMapFragment = (com.google.android.gms.maps.MapFragment) getActivity()
                 .getFragmentManager().findFragmentById(R.id.map);
         mMap = mMapFragment.getMap();
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        zoomCamera = CameraUpdateFactory.zoomTo(this.zoom);
+        mMap.animateCamera(zoomCamera);
         mMap.setOnCameraChangeListener(zoomListener);
         mMap.setOnMarkerClickListener(this);
     }

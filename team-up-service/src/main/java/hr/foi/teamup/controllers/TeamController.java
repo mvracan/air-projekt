@@ -55,6 +55,7 @@ public class TeamController {
     
     @RequestMapping(value="/{idTeam}/leave/{idPerson}", method = RequestMethod.POST)
     public ResponseEntity removeFromTeam(@PathVariable long idPerson, @PathVariable long idTeam) {
+        
         Logger.getLogger("TeamController.java").log(Logger.Level.INFO,
                 "Removing user "+ idPerson + " from team");
         

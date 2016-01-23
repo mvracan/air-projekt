@@ -85,8 +85,7 @@ public class TeamMessageController {
                 template.convertAndSendToUser(a.getCredentials().getUsername(), "/queue/messages", a);
             
         }
-        else
-            a.setPanic(0);
+        
         
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "Person get from repo" + a.getName());

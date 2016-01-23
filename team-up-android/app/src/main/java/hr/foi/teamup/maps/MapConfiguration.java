@@ -32,7 +32,7 @@ public class MapConfiguration implements GoogleApiClient.ConnectionCallbacks,
 
     public void createLocationRequest() {
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
+        locationRequest.setInterval(1000);
         locationRequest.setFastestInterval(5000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
