@@ -1,7 +1,6 @@
 package hr.foi.teamup.handlers;
 
 import android.app.Activity;
-import android.content.Context;
 
 import java.io.Serializable;
 

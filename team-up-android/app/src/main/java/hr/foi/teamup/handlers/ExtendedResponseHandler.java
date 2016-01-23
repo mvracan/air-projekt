@@ -5,7 +5,8 @@ import android.app.Activity;
 import java.io.Serializable;
 
 /**
- *
+ * extends response handler to be able to call
+ * implementation back to the original caller
  * Created by maja on 21.01.16..
  */
 public abstract class ExtendedResponseHandler extends ResponseHandler {

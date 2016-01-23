@@ -48,7 +48,7 @@ import hr.foi.teamup.handlers.CodeCaller;
 import hr.foi.teamup.handlers.JoinGroupHandler;
 import hr.foi.teamup.handlers.MemberCookieHandler;
 import hr.foi.teamup.maps.LocationCallback;
-import hr.foi.teamup.maps.onPanicMarkerClick;
+import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.maps.MapConfiguration;
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
@@ -152,7 +152,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             socket.send("/app/updateLocation", location);
         }
     }
-
 
     /**
      * gets team id and subscribes him to team channel
@@ -272,22 +271,22 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                         locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
                     }
 
-                        // vibrate
-                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(2000);
+                    // vibrate
+                    Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(2000);
 
-                        // issue notification
-                        NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client,panicPerson));
+                    // issue notification
+                    NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client,panicPerson));
 
-                        int mNotificationId = 1;
-                        NotificationManager mNotifyMgr =
-                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    int mNotificationId = 1;
+                    NotificationManager mNotifyMgr =
+                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-                        // set pending intent launch
-                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mBuilder.setContentIntent(pendingIntent);
-                        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                    // set pending intent launch
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(pendingIntent);
+                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
                 }
             });
@@ -317,7 +316,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         signOut();
     }
 
-    // ask for sign out
+    /**
+     * ask for sign out
+     */
     private void signOut() {
         DialogInterface.OnClickListener signOutListener = new DialogInterface.OnClickListener() {
             @Override
@@ -355,7 +356,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
     /**
      * exchanges fragments
-     *
      * @param fragment fragment that goes in foreground
      */
     private void exchangeFragments(Fragment fragment) {
@@ -414,6 +414,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         }
     }
 
+    /**
+     * sets the notification message (panic or client)
+     * @param client user using app
+     * @param panic user that panics
+     * @return notification message
+     */
     protected String setNotificationMessage(Person client, Person panic){
 
         if(client.getIdPerson() == panic.getIdPerson())
@@ -422,27 +428,32 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         return "User " + panic.getName() + " is panicking, go find this person!";
 
     }
-    onPanicMarkerClick callbackMarkerClick = new onPanicMarkerClick(){
+
+    /**
+     * handles red marker click
+     */
+    MarkerClickHandler callbackMarkerClick = new MarkerClickHandler(){
 
         @Override
-        public void sendCalmDownMessage(String username){
-
+        public void onMarkerClick(String... args){
+            String username = args[0];
             if(socket != null)
                 socket.send("/app/team/"+teamId+"/calmUser",username);
 
         }
-
-
     };
 
+    /**
+     * creates notification
+     * @param notification notification text
+     * @return notification builder
+     */
     protected NotificationCompat.Builder setNotification(String notification){
 
-        return new  NotificationCompat.Builder(getApplicationContext())
+        return new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.logo)
-                .setContentTitle("TeamUp")
+                .setContentTitle(getString(R.string.app_name))
                 .setContentText(notification);
-
-
     }
 
 

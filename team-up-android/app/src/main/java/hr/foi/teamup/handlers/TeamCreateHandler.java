@@ -1,8 +1,6 @@
 package hr.foi.teamup.handlers;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -10,7 +8,6 @@ import java.io.Serializable;
 
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
-import hr.foi.teamup.TeamActivity;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.webservice.ServiceResponse;
 
