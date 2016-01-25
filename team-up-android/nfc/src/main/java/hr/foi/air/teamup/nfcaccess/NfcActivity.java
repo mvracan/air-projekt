@@ -39,8 +39,4 @@ abstract class NfcActivity extends AppCompatActivity {
         return adapter;
     }
 
-    public void setAdapter(NfcAdapter adapter) {
-        this.adapter = adapter;
-    }
-
 }

@@ -59,11 +59,9 @@ public class TeamMessageController {
     
     @MessageMapping("/updateLocation")
     public void updateLocation(Message<Object> message, @Payload Location location){
+
+        String authedSender = getSessionUsername(message);
         
-        
-        Principal principal = message.getHeaders().get(SimpMessageHeaderAccessor.USER_HEADER, Principal.class);
-        String authedSender = principal.getName();
-      
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "Update location for person" + authedSender);
         
@@ -81,11 +79,13 @@ public class TeamMessageController {
             
             a.setPanic(1);
             
-
             template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", a);
+            
+            if(equalsById(lead, a))
+                template.convertAndSendToUser(a.getCredentials().getUsername(), "/queue/messages", a);
+            
         }
-        else
-            a.setPanic(0);
+        
         
         Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
                 "Person get from repo" + a.getName());
@@ -111,5 +111,56 @@ public class TeamMessageController {
                 "User " + panics.getName() + " panics, calling admin " + lead.getName());
         template.convertAndSendToUser(lead.getCredentials().getUsername(), "/queue/messages", panics);
     }
+    
+    public String getSessionUsername(Message<Object> message){
+        
+        Principal principal = message.getHeaders().get(SimpMessageHeaderAccessor.USER_HEADER, Principal.class);
+        return principal.getName();
+        
+    }
+    
+    
+    @MessageMapping("/team/{idTeam}/calmUser")
+    public void calmDownUser(Message<Object> message,@Payload String username,@DestinationVariable long idTeam){
+        
+        String authedSender = getSessionUsername(message);
+        
+        Person sender = this.personRepository.findByCredentialsUsername(authedSender);
+        
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Authed user " + sender.getCredentials().getUsername() );
+        
+        Person panicUser = this.personRepository.findByCredentialsUsername(username);
+        
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Calming down user " + panicUser.getCredentials().getUsername() );
+        
+        Team team = this.teamRepository.findByIdTeam(idTeam);
+        
+        Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Calming down user " + team.getCreator().getCredentials().getUsername());
+        
+        if(equalsById(team.getCreator(), sender)){
+            
+            panicUser.setPanic(0);
+            this.personRepository.save(panicUser);
+            
+            Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "User is safe" );
+            
+        }
+        else
+            Logger.getLogger("MessageController.java").log(Logger.Level.INFO,
+                "Not autherized for this operation" );
+
+    }
+    
+    public boolean equalsById(Person lead, Person member){
+        
+        return ( lead.getIdPerson() == member.getIdPerson() );
+         
+        
+    }
+    
     
 }

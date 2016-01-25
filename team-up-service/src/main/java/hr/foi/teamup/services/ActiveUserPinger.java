@@ -34,11 +34,8 @@ public class ActiveUserPinger {
   
   @Scheduled(fixedDelay = 2000)
   public void pingUsers() {
-     Logger.getLogger("TeamUserPinger.java").log(Level.INFO,
-                "Going to ping users");
-    
-  
-    
+   
+
     List<Team> Teams = this.teamRepository.findByActive(1);
     
     for(Team t: Teams){

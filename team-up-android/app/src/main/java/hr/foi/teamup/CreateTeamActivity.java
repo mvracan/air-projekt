@@ -21,7 +21,6 @@ import hr.foi.teamup.model.Team;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
-import hr.foi.teamup.webservice.ServiceResponse;
 
 public class CreateTeamActivity extends AppCompatActivity {
 
@@ -55,7 +54,11 @@ public class CreateTeamActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    /**
+     * handles submit click
+     */
     View.OnClickListener onSubmit = new View.OnClickListener() {
+
         @Override
         public void onClick(View v) {
             Logger.log("CreateTeamActivity -- initiated creation of group");

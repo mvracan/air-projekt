@@ -74,5 +74,9 @@
     <string name="nfc_error">NFC is not turned on, open NFC settings?</string>
     <string name="open_settings">Open settings</string>
 
+    <!-- Prompt calm down user-->
+    <string name="calmdown"> Calm down user? </string>
+    <string name="yes"> Yes </string>
+
 
 </resources>

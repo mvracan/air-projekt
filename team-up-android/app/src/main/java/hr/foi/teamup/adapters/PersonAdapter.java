@@ -52,11 +52,24 @@ public class PersonAdapter extends BaseAdapter<Person> {
             holder.personName.setText(current.getName());
             holder.personUsername.setText(current.getCredentials().getUsername());
             holder.personSurname.setText(current.getSurname());
-            holder.status.setImageDrawable(getContext().getResources().getDrawable(android.R.drawable.presence_online));
+
+            setStatusIcon(holder,current.getPanic());
+
 
         } catch (Exception e) {
             Logger.log("Failed to fill view with team members", getClass().getName(), Log.ERROR);
         }
         return vi;
     }
+
+
+    public void setStatusIcon(ViewHolder holder,int panic){
+
+        if(panic != 1)
+            holder.status.setImageDrawable(getContext().getResources().getDrawable(android.R.drawable.presence_online));
+        else
+            holder.status.setImageDrawable(getContext().getResources().getDrawable(android.R.drawable.presence_busy));
+
+    }
+
 }

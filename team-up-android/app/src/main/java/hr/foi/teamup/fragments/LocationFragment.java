@@ -1,6 +1,7 @@
 package hr.foi.teamup.fragments;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,24 +22,29 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 import hr.foi.air.teamup.Logger;
+import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.teamup.R;
+import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.model.Person;
 
 /*
  * shows markers on map
  * Created by paz on 19.01.16..
  */
-public class LocationFragment extends Fragment {
+public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
 
     GoogleMap mMap;
-    LatLng creatorPosition;
-    Timer timerPaint;
+    MarkerClickHandler callback;
+    private float PANIC=0.8f;
+    CameraUpdate zoomCamera;
+
     private volatile float zoom = 25;
+
+    public void setCallback(MarkerClickHandler callback) {
+        this.callback = callback;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,9 +99,9 @@ public class LocationFragment extends Fragment {
             CameraUpdate center =
                     CameraUpdateFactory.newLatLng(creatorPosition);
 
-            CameraUpdate zoom = CameraUpdateFactory.zoomTo(this.zoom);
+            zoomCamera = CameraUpdateFactory.zoomTo(this.zoom);
             mMap.moveCamera(center);
-            mMap.animateCamera(zoom);
+            mMap.animateCamera(zoomCamera);
 
             // draw radius
             CircleOptions teamRadius = new CircleOptions()
@@ -109,13 +115,13 @@ public class LocationFragment extends Fragment {
 
 
             for (Person p : teamMembers) {
+
                 Logger.log("PANIC JE :" + p.getPanic());
                if(p.getPanic() == 1)
-                   paintPerson(p,1);
+                   paintPerson(p, BitmapDescriptorFactory.HUE_RED);
                else if(p == creator)
                    paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
-                else if( p != creator)
-                   paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
+               else paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
 
             }
         }
@@ -128,28 +134,18 @@ public class LocationFragment extends Fragment {
      */
     public void paintPerson(Person p, float marker){
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
+        Marker markerShow = mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
                 p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())
-                .icon(BitmapDescriptorFactory.defaultMarker(marker)));
-    }
+                .icon(BitmapDescriptorFactory.defaultMarker(marker))
+                .snippet(p.getCredentials().getUsername()));
 
-    public void paintPerson(Person p,  int red){
-
-       Marker markerShow = mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLocation().getLat(),
-                p.getLocation().getLng())).title(p.getName() + " " + p.getSurname())
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-
-        markerShow.showInfoWindow();
+        if(marker == BitmapDescriptorFactory.HUE_RED) {
+            markerShow.setAlpha(PANIC);
+            markerShow.showInfoWindow();
+        }
     }
 
 
-
-    protected  void stopTimer(){
-
-        timerPaint.cancel();
-        timerPaint.purge();
-
-    }
 
     @Override
     public void onPause() {
@@ -173,7 +169,12 @@ public class LocationFragment extends Fragment {
         MapFragment mMapFragment = (com.google.android.gms.maps.MapFragment) getActivity()
                 .getFragmentManager().findFragmentById(R.id.map);
         mMap = mMapFragment.getMap();
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        zoomCamera = CameraUpdateFactory.zoomTo(this.zoom);
+        mMap.animateCamera(zoomCamera);
         mMap.setOnCameraChangeListener(zoomListener);
+        mMap.setOnMarkerClickListener(this);
     }
 
     @Override
@@ -181,6 +182,35 @@ public class LocationFragment extends Fragment {
         super.onResume();
         // set zoom listener again to override outzooming
         mMap.setOnCameraChangeListener(zoomListener);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+       if(marker.getAlpha() != PANIC)
+           return false;
+
+      final String panicUser = marker.getSnippet();
+      Logger.log("Marker data: " + panicUser);
+
+
+        DialogInterface.OnClickListener signOutListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                callback.onMarkerClick(panicUser);
+
+            }
+        };
+
+        AlertPrompt signOutPrompt = new AlertPrompt(getActivity());
+        signOutPrompt.prepare(R.string.calmdown, signOutListener,
+                R.string.yes, null, R.string.cancel);
+        signOutPrompt.showPrompt();
+
+
+
+        return true;
     }
 
 

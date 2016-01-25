@@ -48,6 +48,7 @@ import hr.foi.teamup.handlers.CodeCaller;
 import hr.foi.teamup.handlers.JoinGroupHandler;
 import hr.foi.teamup.handlers.MemberCookieHandler;
 import hr.foi.teamup.maps.LocationCallback;
+import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.maps.MapConfiguration;
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
@@ -76,6 +77,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private NavigationView navigationView;
     private Person panicPerson;
     private MapConfiguration mapConfiguration;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,8 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         // set main fragments
         teamFragment = new TeamFragment();
         locationFragment = new LocationFragment();
+        locationFragment.setCallback(callbackMarkerClick);
+
         exchangeFragments(teamFragment);
 
         // get current user
@@ -266,29 +270,25 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     // make him red if fragment is visible
 
                     if (locationFragment.isVisible()) {
-                        locationFragment.paintPerson(panicPerson, 1);
+                        locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
                     }
 
-                        // vibrate
-                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        v.vibrate(2000);
+                    // vibrate
+                    Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(2000);
 
-                        // issue notification
-                        NotificationCompat.Builder mBuilder =
-                                new NotificationCompat.Builder(getApplicationContext())
-                                        .setSmallIcon(R.drawable.logo)
-                                        .setContentTitle("TeamUp")
-                                        .setContentText("User " + panicPerson.getName() + " is panicking, go find this person");
+                    // issue notification
+                    NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client,panicPerson));
 
-                        int mNotificationId = 1;
-                        NotificationManager mNotifyMgr =
-                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    int mNotificationId = 1;
+                    NotificationManager mNotifyMgr =
+                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-                        // set pending intent launch
-                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mBuilder.setContentIntent(pendingIntent);
-                        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                    // set pending intent launch
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(pendingIntent);
+                    mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
                 }
             });
@@ -318,7 +318,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         signOut();
     }
 
-    // ask for sign out
+    /**
+     * ask for sign out
+     */
     private void signOut() {
         DialogInterface.OnClickListener signOutListener = new DialogInterface.OnClickListener() {
             @Override
@@ -356,7 +358,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
     /**
      * exchanges fragments
-     *
      * @param fragment fragment that goes in foreground
      */
     private void exchangeFragments(Fragment fragment) {
@@ -371,7 +372,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         if (menuItem.getItemId() == R.id.profile) {
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (menuItem.getItemId() == R.id.code) {
-            // TODO add by code fix
             final InputPrompt prompt = new InputPrompt(this);
             prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
                 @Override
@@ -384,6 +384,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                         }
                     }).execute(new ServiceParams(getString(R.string.team_path)
                             + client.getIdPerson() + "/code/" + prompt.getInput(), ServiceCaller.HTTP_GET, null));
+
                 }
             }, R.string.join, null, R.string.cancel);
             prompt.showPrompt();
@@ -420,4 +421,48 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             mapConfiguration.startLocationUpdates();
         }
     }
+
+    /**
+     * sets the notification message (panic or client)
+     * @param client user using app
+     * @param panic user that panics
+     * @return notification message
+     */
+    protected String setNotificationMessage(Person client, Person panic){
+
+        if(client.getIdPerson() == panic.getIdPerson())
+            return "Please come back to group area!";
+
+        return "User " + panic.getName() + " is panicking, go find this person!";
+
+    }
+
+    /**
+     * handles red marker click
+     */
+    MarkerClickHandler callbackMarkerClick = new MarkerClickHandler(){
+
+        @Override
+        public void onMarkerClick(String... args){
+            String username = args[0];
+            if(socket != null)
+                socket.send("/app/team/"+teamId+"/calmUser",username);
+
+        }
+    };
+
+    /**
+     * creates notification
+     * @param notification notification text
+     * @return notification builder
+     */
+    protected NotificationCompat.Builder setNotification(String notification){
+
+        return new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(notification);
+    }
+
+
 }

@@ -24,4 +24,5 @@ public interface TeamRepository extends JpaRepository<Team, String> {
     public List<Team> findByMembers_IdPerson(long id);
     public List<Team> findByActive(long active);
     public Team findByActiveAndMembers_IdPerson(long active,long id);
+    public Team findByPassword(String password);
 }
