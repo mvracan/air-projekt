@@ -26,8 +26,6 @@ public class InputPrompt extends AlertPrompt {
         super.prepare(title, positive, positiveMessage, negative, negativeMessage);
 
         editText = new EditText(getContext());
-        // TODO: check if EditText works and refactor
-
         this.getBuilder().setView(editText);
     }
 
