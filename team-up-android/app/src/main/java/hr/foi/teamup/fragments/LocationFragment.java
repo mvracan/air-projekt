@@ -37,7 +37,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
 
     GoogleMap mMap;
     MarkerClickHandler callback;
-    private float PANIC=0.8f;
+    private static final float PANIC = 0.8f;
     CameraUpdate zoomCamera;
 
     private volatile float zoom = 25;
@@ -145,24 +145,6 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
         }
     }
 
-
-
-    @Override
-    public void onPause() {
-         super.onPause();
-
-    }
-
-
-
-    @Override
-    public void onDestroyView() {
-
-
-        super.onDestroyView();
-
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -187,12 +169,11 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-       if(marker.getAlpha() != PANIC)
+        if(marker.getAlpha() != PANIC)
            return false;
 
-      final String panicUser = marker.getSnippet();
-      Logger.log("Marker data: " + panicUser);
-
+        final String panicUser = marker.getSnippet();
+        Logger.log("Marker data: " + panicUser);
 
         DialogInterface.OnClickListener signOutListener = new DialogInterface.OnClickListener() {
             @Override

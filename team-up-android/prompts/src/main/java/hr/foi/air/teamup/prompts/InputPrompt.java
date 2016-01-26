@@ -19,12 +19,13 @@ public class InputPrompt extends AlertPrompt {
     }
 
     @Override
-    public void prepare(int title, DialogInterface.OnClickListener positive, int positiveMessage,
+    public Prompt prepare(int title, DialogInterface.OnClickListener positive, int positiveMessage,
                         DialogInterface.OnClickListener negative, int negativeMessage) {
         super.prepare(title, positive, positiveMessage, negative, negativeMessage);
 
         // dialog input
         // TODO: check if EditText works and refactor
         this.getBuilder().setView(new EditText(getContext()));
+        return this;
     }
 }

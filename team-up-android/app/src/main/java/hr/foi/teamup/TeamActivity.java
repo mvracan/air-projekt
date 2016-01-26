@@ -370,16 +370,14 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         if (menuItem.getItemId() == R.id.profile) {
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (menuItem.getItemId() == R.id.code) {
-            InputPrompt prompt = new InputPrompt(this);
-            prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
+            new InputPrompt(this).prepare(R.string.join_group, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO join by code
+                    // TODO join by code, check prompting
 
 
                 }
-            }, R.string.join, null, R.string.cancel);
-            prompt.showPrompt();
+            }, R.string.join, null, R.string.cancel).showPrompt();
         } else if (menuItem.getItemId() == R.id.nfc) {
             startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId() == R.id.history) {
