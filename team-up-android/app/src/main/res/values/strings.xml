@@ -25,6 +25,8 @@
     <string name="group_name">Group name: </string>
     <string name="group_code">Group code: </string>
 
+    <string name="internet_error">Cannot connect to server, please check your internet connection</string>
+
     <!-- validation -->
     <string name="first_name_error">First name can only contain letters (min 3, max 45)</string>
     <string name="last_name_error">Last name can only contain letters (min 3, max 45)</string>

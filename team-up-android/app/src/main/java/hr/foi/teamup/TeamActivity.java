@@ -18,7 +18,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,8 +49,8 @@ import hr.foi.teamup.handlers.CodeCaller;
 import hr.foi.teamup.handlers.JoinGroupHandler;
 import hr.foi.teamup.handlers.MemberCookieHandler;
 import hr.foi.teamup.maps.LocationCallback;
-import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.maps.MapConfiguration;
+import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
@@ -137,16 +136,21 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 getString(hr.foi.teamup.webservice.R.string.team_person_path) + client.getIdPerson(),
                 ServiceCaller.HTTP_POST, null
         );
-        new ServiceAsyncTask(new ActiveTeamHandler(this, activeTeamCaller)).execute(params);
+        try {
+            new ServiceAsyncTask(new ActiveTeamHandler(this, activeTeamCaller)).execute(params);
+        } catch(Exception e) {
+            Toast.makeText(this, getString(R.string.internet_error), Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         // starts nfc foreground dispatcher
         try {
             startNfcAdapter();
             setNfcDispatchCallback(callback);
         } catch (NfcNotAvailableException e) {
-            Toast.makeText(this, "NFC is not turned on", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
         } catch (NfcNotEnabledException e) {
-            Toast.makeText(this, "NFC is not supported", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.nfc_not_enabled), Toast.LENGTH_LONG).show();
         }
     }
 
