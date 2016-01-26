@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,6 +45,7 @@ import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
+import hr.foi.teamup.fragments.ViewCustomization;
 import hr.foi.teamup.handlers.ActiveTeamHandler;
 import hr.foi.teamup.handlers.CodeCaller;
 import hr.foi.teamup.handlers.JoinGroupHandler;
@@ -213,7 +215,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 getCookie();
             } else {
                 setNavigationMenuItems(R.menu.menu);
-                teamFragment.setViewLayout(R.layout.layout_empty_data);
+                teamFragment.setViewLayout(R.layout.layout_empty_data, new ViewCustomization() {
+                    @Override
+                    public void customize(View v) {
+                        ((TextView)v.findViewById(R.id.empty_message)).setText(R.string.please_join);
+                    }
+                });
             }
         }
     };

@@ -52,9 +52,6 @@ public class ActiveTeamHandler extends ExtendedResponseHandler {
                 // call parent implementation
 
             }
-        } else {
-            Toast.makeText(getActivity(), "Currently without team! ", Toast.LENGTH_LONG).show();
-
         }
 
         getCaller().call(false);
