@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">nfcaccess</string>
     <string name="unknown_mime_type">Mime type is unknown</string>
-    <string name="unknown_error">Nfc adapter is not available or isn't working, use startNfcAdapter before beaming</string>
+    <string name="unknown_error">Nfc adapter is not available or is not working, use startNfcAdapter before beaming</string>
     <string name="nfc_mime_type">text/plain</string>
     <string name="nfc_not_available">Nfc adapter is not available on this phone</string>
     <string name="nfc_not_enabled">Nfc adapter is not enabled on this phone</string>
