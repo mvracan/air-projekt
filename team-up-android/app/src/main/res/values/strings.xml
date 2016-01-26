@@ -41,7 +41,6 @@
     <string name="history">History</string>
     <string name="log_out">Log out</string>
     <string name="leave_group">Leave group</string>
-    <string name="empty"></string>
 
     <!-- Create team -->
     <string name="team_name">Team name</string>
@@ -74,6 +73,7 @@
     <string name="nfc_error">NFC is not turned on, open NFC settings?</string>
     <string name="open_settings">Open settings</string>
     <string name="nfc_not_supported">This phone does not support NFC</string>
+    <string name="please_join">Please use NFC or code to join to group first</string>
 
     <!-- Prompt calm down user-->
     <string name="calmdown"> Calm down user? </string>

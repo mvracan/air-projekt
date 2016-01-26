@@ -16,6 +16,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -260,7 +261,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         public void onMessage(Map<String, String> headers, String body) {
 
             Logger.log(body);
-            Logger.log("user lost", Log.WARN);
             panicPerson = new Gson().fromJson(body, Person.class);
 
             runOnUiThread(new Runnable() {
@@ -349,7 +349,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.open_map) {
-            exchangeFragments(locationFragment);
+            if(teamId != null && TextUtils.isEmpty(teamId)) {
+                exchangeFragments(locationFragment);
+            } else {
+                Toast.makeText(this,
+                        getString(R.string.please_join), Toast.LENGTH_LONG).show();
+            }
             return true;
         } else {
             return super.onOptionsItemSelected(item);
