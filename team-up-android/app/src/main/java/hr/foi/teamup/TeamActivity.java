@@ -361,7 +361,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.open_map) {
-            if(teamId != null && TextUtils.isEmpty(teamId)){
+            if(teamId != null && !TextUtils.isEmpty(teamId)){
                 exchangeFragments(locationFragment);
             } else if(!((LocationManager)this.getSystemService(Context.LOCATION_SERVICE))
                     .isProviderEnabled(LocationManager.GPS_PROVIDER)){
