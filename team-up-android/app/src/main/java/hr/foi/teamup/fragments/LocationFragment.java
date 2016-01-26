@@ -24,10 +24,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 import hr.foi.air.teamup.Logger;
+import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.teamup.R;
 import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.model.Person;
+import hr.foi.teamup.model.Team;
 
 /*
  * shows markers on map
@@ -39,6 +41,8 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
     MarkerClickHandler callback;
     private static final float PANIC = 0.8f;
     CameraUpdate zoomCamera;
+    Person creator;
+
 
     private volatile float zoom = 25;
 
@@ -92,7 +96,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
             mMap.clear();
             Logger.log("Radius is " + radius);
             Logger.log("Zoom is " + zoom);
-            Person creator = teamMembers.get(0);
+            creator = teamMembers.get(0);
             LatLng creatorPosition = new LatLng(creator.getLocation().getLat(), creator.getLocation().getLng());
 
             // zoom to default position
@@ -156,7 +160,10 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
         zoomCamera = CameraUpdateFactory.zoomTo(this.zoom);
         mMap.animateCamera(zoomCamera);
         mMap.setOnCameraChangeListener(zoomListener);
-        mMap.setOnMarkerClickListener(this);
+
+        if(isCreator())
+            mMap.setOnMarkerClickListener(this);
+
     }
 
     @Override
@@ -192,6 +199,16 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
 
 
         return true;
+    }
+
+    public boolean isCreator(){
+
+    SessionManager manager = SessionManager.getInstance(getActivity());
+
+    Team t = manager.retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
+    Person p = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+
+    return (t.getCreator().getIdPerson()==p.getIdPerson())? true:false;
     }
 
 
