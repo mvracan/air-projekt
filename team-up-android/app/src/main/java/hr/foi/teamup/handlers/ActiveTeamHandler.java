@@ -50,13 +50,16 @@ public class ActiveTeamHandler extends ExtendedResponseHandler {
             } else {
                 Logger.log("Error in creating team session ", getClass().getName(), Log.DEBUG);
                 // call parent implementation
-                getCaller().call(false);
-                return false;
+
             }
         } else {
             Toast.makeText(getActivity(), "Currently without team! ", Toast.LENGTH_LONG).show();
-            return false;
+
         }
+
+        getCaller().call(false);
+        return false;
+
     }
 
 }
