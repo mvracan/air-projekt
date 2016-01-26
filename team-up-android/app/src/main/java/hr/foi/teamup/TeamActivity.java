@@ -31,7 +31,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
@@ -42,14 +41,13 @@ import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
 import hr.foi.air.teamup.prompts.AlertPrompt;
 import hr.foi.air.teamup.prompts.InputPrompt;
+import hr.foi.teamup.fragments.EmptyDataFragment;
 import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
 import hr.foi.teamup.fragments.ViewCustomization;
 import hr.foi.teamup.handlers.ActiveTeamHandler;
 import hr.foi.teamup.handlers.CodeCaller;
-import hr.foi.teamup.handlers.JoinGroupHandler;
-import hr.foi.teamup.handlers.MemberCookieHandler;
 import hr.foi.teamup.maps.LocationCallback;
 import hr.foi.teamup.maps.MapConfiguration;
 import hr.foi.teamup.maps.MarkerClickHandler;
@@ -57,11 +55,13 @@ import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.stomp.ListenerSubscription;
-import hr.foi.teamup.stomp.TeamConnection;
+import hr.foi.teamup.stomp.StompAuthentication;
+import hr.foi.teamup.stomp.StompSocket;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
+import hr.foi.teamup.webservice.ServiceResponseHandler;
 import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener,
@@ -71,11 +71,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private DrawerLayout mDrawer;
     private Person client;
     private double teamRadius;
-    private TeamConnection socket;
+    private StompAuthentication authentication;
+    private StompSocket socket;
     private String teamId;
-    private static final String USER_CHANNEL_PATH = "/user/queue/messages";
-    private static final String GROUP_PATH = "/topic/team/";
     private TeamFragment teamFragment;
+    private EmptyDataFragment emptyFragment;
     private LocationFragment locationFragment;
     private NavigationView navigationView;
     private Person panicPerson;
@@ -86,6 +86,10 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
+
+        // stomp dependencies
+        authentication = new StompAuthentication();
+        socket = new StompSocket();
 
         // instantiate location listeners
         mapConfiguration = new MapConfiguration(this, this);
@@ -123,27 +127,20 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         });
 
         // set main fragments
+        emptyFragment = new EmptyDataFragment();
         teamFragment = new TeamFragment();
         locationFragment = new LocationFragment();
         locationFragment.setCallback(callbackMarkerClick);
 
-        exchangeFragments(teamFragment);
+        exchangeFragments(emptyFragment);
 
         // get current user
         client = SessionManager.getInstance(getApplicationContext())
                 .retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
 
-        // get current team (does not need to exist)
-        ServiceParams params = new ServiceParams(
-                getString(hr.foi.teamup.webservice.R.string.team_person_path) + client.getIdPerson(),
-                ServiceCaller.HTTP_POST, null
-        );
-        try {
-            new ServiceAsyncTask(new ActiveTeamHandler(this, activeTeamCaller)).execute(params);
-        } catch(Exception e) {
-            Toast.makeText(this, getString(R.string.internet_error), Toast.LENGTH_LONG).show();
-            finish();
-        }
+        // gets form cookie for stomp authentication
+        authentication.authenticate(client);
+        getCurrentTeam();
 
         // starts nfc foreground dispatcher
         try {
@@ -158,10 +155,57 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
     @Override
     public void onLocationChanged(Location location) {
-        if (socket != null) {
-            socket.send("/app/updateLocation", location);
-        }
+        socket.send("/app/updateLocation", location);
     }
+
+    /**
+     * initiates stomp by adding channels and subscribing
+     */
+    private void initiateStomp() {
+        exchangeFragments(teamFragment);
+        socket.addSubscriptionChannel(subscriptionUserLost, getString(R.string.user_channel));
+        socket.addSubscriptionChannel(subscription, getString(R.string.group_channel) + teamId);
+        socket.subscribe(authentication.getCookie());
+    }
+
+    /**
+     * gets current team
+     */
+    private void getCurrentTeam() {
+        ServiceParams params = new ServiceParams(
+                getString(hr.foi.teamup.webservice.R.string.team_person_path) + client.getIdPerson(),
+                ServiceCaller.HTTP_POST, null
+        );
+        new ServiceAsyncTask(activeTeamHandler).execute(params);
+    }
+
+    SimpleResponseHandler activeTeamHandler = new SimpleResponseHandler() {
+        @Override
+        public boolean handleResponse(ServiceResponse response) {
+            if (response.getHttpCode() == 200) {
+
+                // convert json to person object
+                Team team = new Gson().fromJson(response.getJsonResponse(), Team.class);
+                // save team to session
+                SessionManager.getInstance(getApplicationContext())
+                        .createSession(team, SessionManager.TEAM_INFO_KEY);
+
+                // call parent implementation
+                teamId = String.valueOf(team.getIdTeam());
+                teamRadius = team.getRadius();
+
+                setNavigationMenuItems(R.menu.team_exist_menu);
+                initiateStomp();
+
+                return true;
+            } else {
+
+                setNavigationMenuItems(R.menu.menu);
+                exchangeFragments(emptyFragment);
+                return false;
+            }
+        }
+    };
 
     /**
      * gets team id and subscribes him to team channel
@@ -170,27 +214,29 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         @Override
         public void onMessageReceived(String message) {
             Logger.log(message);
+            teamId = message;
+            initiateStomp();
             // become a member
-            new ServiceAsyncTask(new MemberCookieHandler(TeamActivity.this, memberCaller)).execute(
+            /*new ServiceAsyncTask(new MemberCookieHandler(TeamActivity.this, memberCaller)).execute(
                     new ServiceParams("/team/" + message + "/person/" + client.getIdPerson(),
-                            ServiceCaller.HTTP_POST, null));
+                            ServiceCaller.HTTP_POST, null));*/
         }
     };
 
     /**
      * makes call to service to get the auth cookie
-     */
+     *
     public void getCookie() {
         new ServiceAsyncTask(new JoinGroupHandler(this, joinGroupCaller)).execute(new ServiceParams(
                 "/login",
                 ServiceCaller.HTTP_POST, ServiceCaller.X_WWW_FORM_URLENCODED, null,
                 "username=" + client.getCredentials().getUsername() +
                         "&password=" + client.getCredentials().getPassword()));
-    }
+    }*/
 
     /**
      * gets user cookie after auth
-     */
+     *
     CodeCaller memberCaller = new CodeCaller() {
         @Override
         public void call(boolean positive) {
@@ -212,22 +258,17 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 teamRadius = sessionTeam.getRadius();
 
                 setNavigationMenuItems(R.menu.team_exist_menu);
-                getCookie();
+                initiateStomp();
             } else {
                 setNavigationMenuItems(R.menu.menu);
-                teamFragment.setViewLayout(R.layout.layout_empty_data, new ViewCustomization() {
-                    @Override
-                    public void customize(View v) {
-                        ((TextView)v.findViewById(R.id.empty_message)).setText(R.string.please_join);
-                    }
-                });
+                exchangeFragments(emptyFragment);
             }
         }
     };
 
     /**
      * joins to group through subscription
-     */
+     *
     CodeCaller joinGroupCaller = new CodeCaller() {
         @Override
         public void call(boolean positive) {
@@ -242,7 +283,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 socket.start();
             }
         }
-    };
+    };*/
 
     /**
      * stomp message callback
@@ -258,6 +299,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    getCurrentTeam();
                     teamFragment.updateList(persons);
                     locationFragment.setUserLocations(persons, teamRadius);
                 }
@@ -280,7 +322,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 public void run() {
 
                     // make him red if fragment is visible
-
                     if (locationFragment.isVisible()) {
                         locationFragment.paintPerson(panicPerson, BitmapDescriptorFactory.HUE_RED);
                     }
@@ -339,7 +380,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             public void onClick(DialogInterface dialog, int which) {
                 SessionManager.getInstance(getApplicationContext()).destroyAll();
                 dialog.dismiss();
-                if (socket != null) socket.finish();
+                if (socket != null) socket.close();
                 for (int i = 0; i < getFragmentManager().getBackStackEntryCount(); ++i) {
                     getFragmentManager().popBackStack();
                 }
@@ -414,12 +455,16 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         } else if (menuItem.getItemId() == R.id.new_group) {
             startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
         } else if (menuItem.getItemId() == R.id.home) {
-            exchangeFragments(teamFragment);
+            if(SessionManager.getInstance(this)
+                    .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class) != null)
+                exchangeFragments(teamFragment);
+            else
+                exchangeFragments(emptyFragment);
         } else if (menuItem.getItemId() == R.id.leave_group) {
-            socket.finish();
+            socket.close();
             new ServiceAsyncTask(null).execute(new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path) + teamId + "/leave/" + client.getIdPerson(),
                     ServiceCaller.HTTP_POST, null));
-            teamFragment.setViewLayout(R.layout.layout_empty_data);
+            exchangeFragments(emptyFragment);
             setNavigationMenuItems(R.menu.menu);
 
         }
