@@ -1,17 +1,11 @@
 package hr.foi.teamup.stomp;
 
-
-
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import hr.foi.teamup.model.TeamMessage;
 
 /**
  *

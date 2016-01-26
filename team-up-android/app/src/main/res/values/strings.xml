@@ -73,6 +73,7 @@
     <string name="beam"> Please, align the back of your device with another device! </string>
     <string name="nfc_error">NFC is not turned on, open NFC settings?</string>
     <string name="open_settings">Open settings</string>
+    <string name="nfc_not_supported">This phone does not support NFC</string>
 
     <!-- Prompt calm down user-->
     <string name="calmdown"> Calm down user? </string>

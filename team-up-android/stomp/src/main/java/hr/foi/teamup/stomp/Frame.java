@@ -1,14 +1,15 @@
 package hr.foi.teamup.stomp;
 
-/**
- * Created by paz on 08.12.15..
- */
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * frame is sent through socket
+ * Created by paz on 08.12.15..
+ */
 public class Frame {
 //  private final static String CONTENT_LENGTH = "content-length";
 
@@ -21,7 +22,6 @@ public class Frame {
 
     /**
      * Constructor of a Frame object. All parameters of a frame can be instantiate
-     *
      * @param command
      * @param headers
      * @param body

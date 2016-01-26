@@ -372,10 +372,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         if (menuItem.getItemId() == R.id.profile) {
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (menuItem.getItemId() == R.id.code) {
+            // TODO add by code fix
             final InputPrompt prompt = new InputPrompt(this);
             prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+<<<<<<< HEAD
                     new ServiceAsyncTask(new SimpleResponseHandler() {
                         @Override
                         public boolean handleResponse(ServiceResponse response) {
@@ -384,8 +386,14 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                         }
                     }).execute(new ServiceParams(getString(R.string.team_path)
                             + client.getIdPerson() + "/code/" + prompt.getInput(), ServiceCaller.HTTP_GET, null));
+=======
+                    // TODO join by code
+
+
+>>>>>>> e70bc9a5d42ce5053db00e0b070d1384de1f74ba
                 }
-            }, R.string.join, null, R.string.cancel).showPrompt();
+            }, R.string.join, null, R.string.cancel);
+            prompt.showPrompt();
         } else if (menuItem.getItemId() == R.id.nfc) {
             startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId() == R.id.history) {

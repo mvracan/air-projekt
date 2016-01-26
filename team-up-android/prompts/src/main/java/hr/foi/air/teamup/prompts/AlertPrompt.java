@@ -30,11 +30,12 @@ public class AlertPrompt implements Prompt {
      * @param negative negative button action
      * @param negativeMessage negative button text id
      */
-    public void prepare(int title, DialogInterface.OnClickListener positive, int positiveMessage,
+    public Prompt prepare(int title, DialogInterface.OnClickListener positive, int positiveMessage,
                         DialogInterface.OnClickListener negative, int negativeMessage) {
         this.builder.setMessage(title)
                 .setPositiveButton(positiveMessage, positive)
                 .setNegativeButton(negativeMessage, negative);
+        return this;
     }
 
     @Override
@@ -42,11 +43,11 @@ public class AlertPrompt implements Prompt {
         this.builder.create().show();
     }
 
-    public Context getContext() {
+    protected Context getContext() {
         return context;
     }
 
-    public AlertDialog.Builder getBuilder() {
+    protected AlertDialog.Builder getBuilder() {
         return builder;
     }
 }

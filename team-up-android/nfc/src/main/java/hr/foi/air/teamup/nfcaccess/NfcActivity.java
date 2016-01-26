@@ -6,7 +6,7 @@ import android.nfc.NfcAdapter;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- *
+ * base nfc activity
  * Created by Tomislav Turek on 19.01.16..
  */
 abstract class NfcActivity extends AppCompatActivity {
@@ -19,10 +19,10 @@ abstract class NfcActivity extends AppCompatActivity {
      */
     protected void startNfcAdapter() throws NfcNotAvailableException, NfcNotEnabledException {
         if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC)) {
-            throw new NfcNotAvailableException("Nfc adapter is not available on this phone");
+            throw new NfcNotAvailableException(getString(R.string.nfc_not_available));
         }
         if((adapter = NfcAdapter.getDefaultAdapter(this))==null){
-            throw new NfcNotEnabledException("Nfc adapter is not enabled on this phone");
+            throw new NfcNotEnabledException(getString(R.string.nfc_not_enabled));
         }
     }
 
@@ -35,7 +35,7 @@ abstract class NfcActivity extends AppCompatActivity {
         setIntent(intent);
     }
 
-    public NfcAdapter getAdapter() {
+    protected NfcAdapter getAdapter() {
         return adapter;
     }
 

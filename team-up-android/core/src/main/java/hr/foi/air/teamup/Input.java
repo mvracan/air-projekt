@@ -1,7 +1,6 @@
 package hr.foi.air.teamup;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.EditText;
 
 import java.util.List;
@@ -76,12 +75,10 @@ public class Input {
         boolean valid = true;
         for (Input i: inputs) {
             if(!i.isValid()) {
-                Logger.log("Input -- there are invalid inputs", Log.WARN);
                 valid = false;
                 i.setError();
             }
         }
-        Logger.log("Input -- all fields are valid");
         return valid;
     }
 

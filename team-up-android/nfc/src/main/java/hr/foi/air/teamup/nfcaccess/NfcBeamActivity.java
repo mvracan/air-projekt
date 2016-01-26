@@ -1,6 +1,5 @@
 package hr.foi.air.teamup.nfcaccess;
 
-import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -15,8 +14,6 @@ import hr.foi.air.teamup.Logger;
 public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.CreateNdefMessageCallback {
 
     protected String message;
-    private static final String NFC_MIME_TYPE = "text/plain";
-    protected NfcBeamMessageCallback callback;
 
     /**
      * creates the ndef message to beam from passed message
@@ -25,7 +22,7 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
      */
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        return new NdefMessage(NdefRecord.createMime(NFC_MIME_TYPE, message.getBytes()));
+        return new NdefMessage(NdefRecord.createMime(getString(R.string.nfc_mime_type), message.getBytes()));
     }
 
     /**
@@ -33,16 +30,13 @@ public abstract class NfcBeamActivity extends NfcActivity implements NfcAdapter.
      * @param message message to beam to the phone, null if in reader mode
      * @throws NfcNotAvailableException thrown if adapter was not initialized
      */
-    protected void startNfcBeam(String message, NfcBeamMessageCallback callback) throws NfcNotAvailableException {
+    protected void startNfcBeam(String message) throws NfcNotAvailableException {
 
         NfcAdapter adapter = getAdapter();
         if(adapter == null) {
-            throw new NfcNotAvailableException("Nfc adapter is not available or isn't working," +
-                    " use startNfcAdapter before beaming");
+            throw new NfcNotAvailableException(getString(R.string.unknown_error));
         } else {
-            Logger.log("Sending message" + message);
             this.message = message;
-            this.callback = callback;
             adapter.setNdefPushMessageCallback(this, this);
         }
     }
