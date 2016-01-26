@@ -163,7 +163,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
 
         if(isCreator())
             mMap.setOnMarkerClickListener(this);
-        
+
     }
 
     @Override
