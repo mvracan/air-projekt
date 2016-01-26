@@ -8,8 +8,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.tech.NfcF;
 import android.os.Parcelable;
 
-import hr.foi.air.teamup.Logger;
-
 /**
  *
  * Created by Tomislav Turek on 19.01.16..
@@ -37,7 +35,7 @@ public abstract class NfcForegroundDispatcher extends NfcActivity {
         try {
             ndef.addDataType("*/*");
         } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("Mime type is unknown", e);
+            throw new RuntimeException(getString(R.string.unknown_mime_type), e);
         }
         mFilters = new IntentFilter[] {
                 ndef,
@@ -50,11 +48,8 @@ public abstract class NfcForegroundDispatcher extends NfcActivity {
         Intent intent = getIntent();
 
         if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            Logger.log("SReceiving team");
             Parcelable[] raw = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefMessage ndefMessage = (NdefMessage) raw[0];
-            Logger.log("Receiving team with id : " + new String(ndefMessage.getRecords()[0].getPayload()));
-
             nfcDispatchCallback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
         }
     }

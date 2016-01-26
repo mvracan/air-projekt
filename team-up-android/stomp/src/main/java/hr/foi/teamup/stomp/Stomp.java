@@ -1,9 +1,5 @@
 package hr.foi.teamup.stomp;
 
-/**
- * Created by paz on 08.12.15..
- */
-
 import android.util.Log;
 
 import java.io.IOException;
@@ -18,6 +14,10 @@ import de.roderick.weberknecht.WebSocket;
 import de.roderick.weberknecht.WebSocketEventHandler;
 import de.roderick.weberknecht.WebSocketMessage;
 
+/**
+ *
+ * Created by paz on 08.12.15..
+ */
 public class Stomp {
 
     private static final String TAG = Stomp.class.getSimpleName();

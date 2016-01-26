@@ -1,7 +1,5 @@
 package hr.foi.teamup.webservice;
 
-import java.io.Serializable;
-
 /**
  * defines service response
  * Created by Maja Vracan on 26.10.2015..

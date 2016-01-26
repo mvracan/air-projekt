@@ -35,12 +35,12 @@ public class BeamActivity extends NfcBeamActivity {
             startNfcAdapter();
 
             if(t!=null) {
-                startNfcBeam(Long.toString(t.getIdTeam()), callback);
+                startNfcBeam(Long.toString(t.getIdTeam()));
                 startAnimation();
             }
 
         } catch (NfcNotAvailableException e) {
-            Toast.makeText(this, "This phone does not support NFC", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.nfc_not_supported), Toast.LENGTH_LONG).show();
             finish();
         } catch (NfcNotEnabledException e) {
             // ask and open settings
