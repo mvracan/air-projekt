@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
@@ -114,7 +115,12 @@ public class LoginActivity extends Activity {
                 ServiceParams params = new ServiceParams(
                         getString(hr.foi.teamup.webservice.R.string.person_login_path),
                         ServiceCaller.HTTP_POST, credentials);
-                new ServiceAsyncTask(loginHandler).execute(params);
+                try {
+                    new ServiceAsyncTask(loginHandler).execute(params);
+                } catch(Exception e) {
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.internet_error), Toast.LENGTH_LONG).show();
+                }
             }
         }
     };

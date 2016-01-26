@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
@@ -17,11 +18,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,13 +45,14 @@ import hr.foi.air.teamup.prompts.InputPrompt;
 import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
+import hr.foi.teamup.fragments.ViewCustomization;
 import hr.foi.teamup.handlers.ActiveTeamHandler;
 import hr.foi.teamup.handlers.CodeCaller;
 import hr.foi.teamup.handlers.JoinGroupHandler;
 import hr.foi.teamup.handlers.MemberCookieHandler;
 import hr.foi.teamup.maps.LocationCallback;
-import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.maps.MapConfiguration;
+import hr.foi.teamup.maps.MarkerClickHandler;
 import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
@@ -136,16 +138,21 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 getString(hr.foi.teamup.webservice.R.string.team_person_path) + client.getIdPerson(),
                 ServiceCaller.HTTP_POST, null
         );
-        new ServiceAsyncTask(new ActiveTeamHandler(this, activeTeamCaller)).execute(params);
+        try {
+            new ServiceAsyncTask(new ActiveTeamHandler(this, activeTeamCaller)).execute(params);
+        } catch(Exception e) {
+            Toast.makeText(this, getString(R.string.internet_error), Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         // starts nfc foreground dispatcher
         try {
             startNfcAdapter();
             setNfcDispatchCallback(callback);
         } catch (NfcNotAvailableException e) {
-            Toast.makeText(this, "NFC is not turned on", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.nfc_not_available), Toast.LENGTH_LONG).show();
         } catch (NfcNotEnabledException e) {
-            Toast.makeText(this, "NFC is not supported", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.nfc_not_enabled), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -208,7 +215,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 getCookie();
             } else {
                 setNavigationMenuItems(R.menu.menu);
-                teamFragment.setViewLayout(R.layout.layout_empty_data);
+                teamFragment.setViewLayout(R.layout.layout_empty_data, new ViewCustomization() {
+                    @Override
+                    public void customize(View v) {
+                        ((TextView)v.findViewById(R.id.empty_message)).setText(R.string.please_join);
+                    }
+                });
             }
         }
     };
@@ -278,7 +290,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     v.vibrate(2000);
 
                     // issue notification
-                    NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client,panicPerson));
+                    NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client, panicPerson));
 
                     int mNotificationId = 1;
                     NotificationManager mNotifyMgr =
@@ -349,8 +361,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.open_map) {
-            if(teamId != null && TextUtils.isEmpty(teamId)) {
+            if(teamId != null && TextUtils.isEmpty(teamId)){
                 exchangeFragments(locationFragment);
+            } else if(!((LocationManager)this.getSystemService(Context.LOCATION_SERVICE))
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                Toast.makeText(this,
+                        getString(R.string.location_not_enabled), Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this,
                         getString(R.string.please_join), Toast.LENGTH_LONG).show();
@@ -401,9 +417,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             exchangeFragments(teamFragment);
         } else if (menuItem.getItemId() == R.id.leave_group) {
             socket.finish();
-            new ServiceAsyncTask(null).execute(new ServiceParams(hr.foi.teamup.webservice.R.string.team_path + teamId + "/leave/" + client.getIdPerson(),
+            new ServiceAsyncTask(null).execute(new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path) + teamId + "/leave/" + client.getIdPerson(),
                     ServiceCaller.HTTP_POST, null));
             teamFragment.setViewLayout(R.layout.layout_empty_data);
+            setNavigationMenuItems(R.menu.menu);
+
         }
 
         mDrawer.closeDrawers();
