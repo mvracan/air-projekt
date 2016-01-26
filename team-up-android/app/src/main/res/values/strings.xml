@@ -79,5 +79,7 @@
     <string name="calmdown"> Calm down user? </string>
     <string name="yes"> Yes </string>
 
+    <!-- Map -->
+    <string name="location_not_enabled">Turn on location</string>
 
 </resources>

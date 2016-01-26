@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
@@ -349,8 +350,12 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.open_map) {
-            if(teamId != null && TextUtils.isEmpty(teamId)) {
+            if(teamId != null && TextUtils.isEmpty(teamId)){
                 exchangeFragments(locationFragment);
+            } else if(!((LocationManager)this.getSystemService(Context.LOCATION_SERVICE))
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                Toast.makeText(this,
+                        getString(R.string.location_not_enabled), Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this,
                         getString(R.string.please_join), Toast.LENGTH_LONG).show();
