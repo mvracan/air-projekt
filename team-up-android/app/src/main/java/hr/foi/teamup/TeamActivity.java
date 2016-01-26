@@ -278,7 +278,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     v.vibrate(2000);
 
                     // issue notification
-                    NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client,panicPerson));
+                    NotificationCompat.Builder mBuilder = setNotification(setNotificationMessage(client, panicPerson));
 
                     int mNotificationId = 1;
                     NotificationManager mNotifyMgr =
@@ -349,6 +349,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.open_map) {
+
             exchangeFragments(locationFragment);
             return true;
         } else {
@@ -396,9 +397,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             exchangeFragments(teamFragment);
         } else if (menuItem.getItemId() == R.id.leave_group) {
             socket.finish();
-            new ServiceAsyncTask(null).execute(new ServiceParams(hr.foi.teamup.webservice.R.string.team_path + teamId + "/leave/" + client.getIdPerson(),
+            new ServiceAsyncTask(null).execute(new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path) + teamId + "/leave/" + client.getIdPerson(),
                     ServiceCaller.HTTP_POST, null));
             teamFragment.setViewLayout(R.layout.layout_empty_data);
+            setNavigationMenuItems(R.menu.menu);
+
         }
 
         mDrawer.closeDrawers();
