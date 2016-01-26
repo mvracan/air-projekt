@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/home"
@@ -23,8 +22,6 @@
     <group  android:id="@+id/join">
         <item android:id="@+id/code"
             android:title="@string/code"/>
-        <item android:id="@+id/nfc"
-            android:title="@string/nfc" />
     </group>
 
 </menu>

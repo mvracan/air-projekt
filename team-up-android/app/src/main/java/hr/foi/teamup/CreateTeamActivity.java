@@ -1,5 +1,6 @@
 package hr.foi.teamup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 import hr.foi.air.teamup.Input;
-import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.teamup.handlers.TeamCreateHandler;
 import hr.foi.teamup.model.Person;
@@ -43,8 +43,6 @@ public class CreateTeamActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submitButton);
         submit.setOnClickListener(onSubmit);
 
-        Logger.log("Radius : " +radius);
-
         inputs = Arrays.asList(
                 new Input(name, Input.TEXT_MAIN_PATTERN, getString(R.string.team_name_error)),
                 new Input(teamDesc, Input.TEXT_MAIN_PATTERN, getString(R.string.team_desc_error)),
@@ -61,14 +59,8 @@ public class CreateTeamActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Logger.log("CreateTeamActivity -- initiated creation of group");
-
-            Logger.log("Radius : " + radius.getText().toString());
 
             if(Input.validate(inputs)){
-
-                Logger.log("CreateTeamActivity -- creating new group and sending object to service");
-
                 // set team data
                 SessionManager manager = SessionManager.getInstance(getApplicationContext());
                 Person creator = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
@@ -97,4 +89,9 @@ public class CreateTeamActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, TeamActivity.class));
+        finish();
+    }
 }

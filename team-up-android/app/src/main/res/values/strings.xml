@@ -84,4 +84,8 @@
     <!-- Map -->
     <string name="location_not_enabled">Turn on location</string>
 
+    <!-- stomp -->
+    <string name="user_channel">/user/queue/messages</string>
+    <string name="group_channel">/topic/team/</string>
+
 </resources>

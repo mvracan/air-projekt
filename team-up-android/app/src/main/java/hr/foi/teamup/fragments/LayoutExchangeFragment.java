@@ -5,9 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import hr.foi.teamup.R;
 
 /**
  * fragment that is able to change fragments dynamically

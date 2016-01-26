@@ -1,5 +1,6 @@
 package hr.foi.teamup.fragments;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -20,7 +21,7 @@ import hr.foi.teamup.model.Team;
  * fragment containing current team members list
  * Created by Tomislav Turek on 05.12.15..
  */
-public class TeamFragment extends LayoutExchangeFragment {
+public class TeamFragment extends Fragment {
 
     ListView users;
     PersonAdapter adapter;
@@ -32,10 +33,10 @@ public class TeamFragment extends LayoutExchangeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setRetainInstance(true);
         View v = inflater.inflate(R.layout.fragment_team_current, container, false);
-        users = (ListView)v.findViewById(R.id.current_team_list);
+        users = (ListView) v.findViewById(R.id.current_team_list);
 
-        groupName = (TextView)v.findViewById(R.id.group_name);
-        groupCode = (TextView)v.findViewById(R.id.group_code);
+        groupName = (TextView) v.findViewById(R.id.group_name);
+        groupCode = (TextView) v.findViewById(R.id.group_code);
 
         return v;
     }
@@ -50,8 +51,10 @@ public class TeamFragment extends LayoutExchangeFragment {
             users.setAdapter(adapter);
             Team t= SessionManager.getInstance(getActivity().getApplicationContext())
                     .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
-            groupName.setText(t.getName());
-            groupCode.setText(t.getPassword());
+            if(t != null) {
+                groupName.setText(getString(R.string.group_name) + t.getName());
+                groupCode.setText(getString(R.string.group_code) + t.getPassword());
+            }
         }
     }
 }
