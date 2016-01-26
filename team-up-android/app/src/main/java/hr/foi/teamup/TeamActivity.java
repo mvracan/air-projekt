@@ -58,6 +58,8 @@ import hr.foi.teamup.stomp.TeamConnection;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
+import hr.foi.teamup.webservice.ServiceResponse;
+import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener,
         LocationCallback {
@@ -370,12 +372,18 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         if (menuItem.getItemId() == R.id.profile) {
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (menuItem.getItemId() == R.id.code) {
-            new InputPrompt(this).prepare(R.string.join_group, new DialogInterface.OnClickListener() {
+            final InputPrompt prompt = new InputPrompt(this);
+            prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO join by code, check prompting
-
-
+                    new ServiceAsyncTask(new SimpleResponseHandler() {
+                        @Override
+                        public boolean handleResponse(ServiceResponse response) {
+                            if(response.getHttpCode() == 200) callback.onMessageReceived(response.getJsonResponse());
+                            return true;
+                        }
+                    }).execute(new ServiceParams(getString(R.string.team_path)
+                            + client.getIdPerson() + "/code/" + prompt.getInput(), ServiceCaller.HTTP_GET, null));
                 }
             }, R.string.join, null, R.string.cancel).showPrompt();
         } else if (menuItem.getItemId() == R.id.nfc) {
