@@ -25,19 +25,16 @@ public class InputPrompt extends AlertPrompt {
                         DialogInterface.OnClickListener negative, int negativeMessage) {
         super.prepare(title, positive, positiveMessage, negative, negativeMessage);
 
-<<<<<<< HEAD
+
         // dialog input
         // TODO: check if EditText works and refactor
         this.getBuilder().setView(new EditText(getContext()));
         return this;
-=======
-        editText = new EditText(getContext());
-        this.getBuilder().setView(editText);
+
     }
 
     public String getInput() {
         return this.editText.getText().toString();
->>>>>>> 60b82e1a9436ce8803d496351f5c8291c7bc2124
     }
 
 }
