@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 
 /**
- *
+ * simple implementation that shows the progress dialog
  * Created by Tomislav Turek on 09.11.15..
  */
 public class LoadingPrompt extends AlertPrompt {

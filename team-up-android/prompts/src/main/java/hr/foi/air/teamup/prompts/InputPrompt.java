@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 
 /**
- *
+ * dialog that requires user input
  * Created by Tomislav Turek on 09.11.15..
  */
 public class InputPrompt extends AlertPrompt {

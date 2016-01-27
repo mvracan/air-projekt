@@ -171,6 +171,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         getCurrentTeam();
     }
 
+    /**
+     * executes when stomp socket gets closed
+     */
     OnStompCloseListener listener = new OnStompCloseListener() {
         @Override
         public void onClose() {
@@ -199,6 +202,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         new ServiceAsyncTask(activeTeamHandler).execute(params);
     }
 
+    /**
+     * executes when server returns if active team is present
+     */
     SimpleResponseHandler activeTeamHandler = new SimpleResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
@@ -233,7 +239,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     NfcBeamMessageCallback callback = new NfcBeamMessageCallback() {
         @Override
         public void onMessageReceived(String message) {
-            Logger.log(message);
             initiateStomp(message);
         }
     };

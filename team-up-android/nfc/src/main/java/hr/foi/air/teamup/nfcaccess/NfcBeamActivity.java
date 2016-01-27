@@ -5,8 +5,6 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 
-import hr.foi.air.teamup.Logger;
-
 /**
  * abstract activity to extend when nfc needs to be used
  * Created by Tomislav Turek on 07.12.15..

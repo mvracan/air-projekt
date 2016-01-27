@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 /**
- *
+ * presents user some information that needs confirmation
  * Created by Tomislav Turek on 09.11.15..
  */
 public class AlertPrompt implements Prompt {

@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- *
+ * creates and manages web service calls
  * Created by Tomislav Turek on 23.10.15..
  */
 public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResponse> {
@@ -18,6 +18,10 @@ public class ServiceAsyncTask extends AsyncTask<ServiceParams, Void, ServiceResp
     static final String mainUrl = "http://46.101.115.78:8080"; //"http://teamup-puding.rhcloud.com"
     SimpleResponseHandler handler;
 
+    /**
+     * default constructor
+     * @param handler code that is executed on web service response
+     */
     public ServiceAsyncTask(SimpleResponseHandler handler) {
         this.handler = handler;
     }
