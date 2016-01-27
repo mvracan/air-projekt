@@ -203,17 +203,17 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
 
     public boolean isCreator(){
 
-    SessionManager manager = SessionManager.getInstance(getActivity());
+        SessionManager manager = SessionManager.getInstance(getActivity());
 
-    Team t = manager.retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
-    Person p = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
+        Team t = manager.retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
+        Person p = manager.retrieveSession(SessionManager.PERSON_INFO_KEY, Person.class);
 
-    return (t.getCreator().getIdPerson()==p.getIdPerson())? true:false;
+        return (t.getCreator().getIdPerson() == p.getIdPerson());
     }
 
 
 
-    }
+}
 
 
 

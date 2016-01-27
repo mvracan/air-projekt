@@ -27,6 +27,7 @@ public class TeamFragment extends Fragment {
     PersonAdapter adapter;
     TextView groupName;
     TextView groupCode;
+    TextView counter;
 
     @Nullable
     @Override
@@ -37,6 +38,7 @@ public class TeamFragment extends Fragment {
 
         groupName = (TextView) v.findViewById(R.id.group_name);
         groupCode = (TextView) v.findViewById(R.id.group_code);
+        counter = (TextView) v.findViewById(R.id.counter);
 
         return v;
     }
@@ -49,11 +51,12 @@ public class TeamFragment extends Fragment {
         if(list != null && isVisible()) {
             adapter = new PersonAdapter(getActivity().getApplicationContext(), R.layout.fragment_team_current, list);
             users.setAdapter(adapter);
+            counter.setText(String.format(getString(R.string.counter), adapter.getCount()));
             Team t= SessionManager.getInstance(getActivity().getApplicationContext())
                     .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
             if(t != null) {
-                groupName.setText(getString(R.string.group_name) + t.getName());
-                groupCode.setText(getString(R.string.group_code) + t.getPassword());
+                groupName.setText(String.format(getString(R.string.group_name), t.getName()));
+                groupCode.setText(String.format(getString(R.string.group_code), t.getPassword()));
             }
         }
     }

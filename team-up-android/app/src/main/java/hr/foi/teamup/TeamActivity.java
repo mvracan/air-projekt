@@ -22,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -45,9 +44,6 @@ import hr.foi.teamup.fragments.EmptyDataFragment;
 import hr.foi.teamup.fragments.LocationFragment;
 import hr.foi.teamup.fragments.TeamFragment;
 import hr.foi.teamup.fragments.TeamHistoryFragment;
-import hr.foi.teamup.fragments.ViewCustomization;
-import hr.foi.teamup.handlers.ActiveTeamHandler;
-import hr.foi.teamup.handlers.CodeCaller;
 import hr.foi.teamup.maps.LocationCallback;
 import hr.foi.teamup.maps.MapConfiguration;
 import hr.foi.teamup.maps.MarkerClickHandler;
@@ -61,7 +57,6 @@ import hr.foi.teamup.webservice.ServiceAsyncTask;
 import hr.foi.teamup.webservice.ServiceCaller;
 import hr.foi.teamup.webservice.ServiceParams;
 import hr.foi.teamup.webservice.ServiceResponse;
-import hr.foi.teamup.webservice.ServiceResponseHandler;
 import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 public class TeamActivity extends NfcForegroundDispatcher implements NavigationView.OnNavigationItemSelectedListener,
@@ -140,6 +135,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         // gets form cookie for stomp authentication
         authentication.authenticate(client);
+
         getCurrentTeam();
 
         // starts nfc foreground dispatcher
@@ -161,11 +157,15 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     /**
      * initiates stomp by adding channels and subscribing
      */
-    private void initiateStomp() {
+    private void initiateStomp(String message) {
+        teamId = message;
+        new ServiceAsyncTask(null).execute(new ServiceParams("/team/" + teamId
+                + "/person/" + client.getIdPerson(), ServiceCaller.HTTP_POST, null));
         exchangeFragments(teamFragment);
         socket.addSubscriptionChannel(subscriptionUserLost, getString(R.string.user_channel));
         socket.addSubscriptionChannel(subscription, getString(R.string.group_channel) + teamId);
         socket.subscribe(authentication.getCookie());
+        getCurrentTeam();
     }
 
     /**
@@ -191,11 +191,11 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                         .createSession(team, SessionManager.TEAM_INFO_KEY);
 
                 // call parent implementation
-                teamId = String.valueOf(team.getIdTeam());
                 teamRadius = team.getRadius();
 
                 setNavigationMenuItems(R.menu.team_exist_menu);
-                initiateStomp();
+                if(!StompSocket.isActive())
+                    initiateStomp(String.valueOf(team.getIdTeam()));
 
                 return true;
             } else {
@@ -214,76 +214,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         @Override
         public void onMessageReceived(String message) {
             Logger.log(message);
-            teamId = message;
-            initiateStomp();
-            // become a member
-            /*new ServiceAsyncTask(new MemberCookieHandler(TeamActivity.this, memberCaller)).execute(
-                    new ServiceParams("/team/" + message + "/person/" + client.getIdPerson(),
-                            ServiceCaller.HTTP_POST, null));*/
+            initiateStomp(message);
         }
     };
-
-    /**
-     * makes call to service to get the auth cookie
-     *
-    public void getCookie() {
-        new ServiceAsyncTask(new JoinGroupHandler(this, joinGroupCaller)).execute(new ServiceParams(
-                "/login",
-                ServiceCaller.HTTP_POST, ServiceCaller.X_WWW_FORM_URLENCODED, null,
-                "username=" + client.getCredentials().getUsername() +
-                        "&password=" + client.getCredentials().getPassword()));
-    }*/
-
-    /**
-     * gets user cookie after auth
-     *
-    CodeCaller memberCaller = new CodeCaller() {
-        @Override
-        public void call(boolean positive) {
-            getCookie();
-        }
-    };
-
-    /**
-     * remote code that gets sent to active team handler to handle
-     * authentication cookies and navigation menu items
-     */
-    CodeCaller activeTeamCaller = new CodeCaller() {
-        @Override
-        public void call(boolean positive) {
-            if(positive) {
-                Team sessionTeam = SessionManager.getInstance(getApplicationContext())
-                        .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
-                teamId = String.valueOf(sessionTeam.getIdTeam());
-                teamRadius = sessionTeam.getRadius();
-
-                setNavigationMenuItems(R.menu.team_exist_menu);
-                initiateStomp();
-            } else {
-                setNavigationMenuItems(R.menu.menu);
-                exchangeFragments(emptyFragment);
-            }
-        }
-    };
-
-    /**
-     * joins to group through subscription
-     *
-    CodeCaller joinGroupCaller = new CodeCaller() {
-        @Override
-        public void call(boolean positive) {
-            HashMap<String, ListenerSubscription> subscriptionChannels = new HashMap<>();
-            String cookie = SessionManager.getInstance(getApplicationContext()).retrieveSession(SessionManager.COOKIE_KEY, String.class);
-
-            if (cookie != null) {
-                subscriptionChannels.put(USER_CHANNEL_PATH, subscriptionUserLost);
-                subscriptionChannels.put(GROUP_PATH + teamId, subscription);
-
-                socket = new TeamConnection(subscriptionChannels, cookie);
-                socket.start();
-            }
-        }
-    };*/
 
     /**
      * stomp message callback
@@ -299,7 +232,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    getCurrentTeam();
                     teamFragment.updateList(persons);
                     locationFragment.setUserLocations(persons, teamRadius);
                 }
@@ -441,7 +373,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     new ServiceAsyncTask(new SimpleResponseHandler() {
                         @Override
                         public boolean handleResponse(ServiceResponse response) {
-                            if(response.getHttpCode() == 200) callback.onMessageReceived(response.getJsonResponse());
+                            if(response.getHttpCode() == 200) initiateStomp(response.getJsonResponse());
                             return true;
                         }
                     }).execute(new ServiceParams(getString(R.string.team_path)

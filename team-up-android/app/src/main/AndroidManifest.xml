@@ -58,7 +58,7 @@
 
         </activity>
         <activity android:name=".CreateTeamActivity"/>
-        <activity android:name=".BeamActivity">
+        <activity android:name=".BeamActivity" android:screenOrientation="portrait">
 
         </activity>
 
