@@ -80,5 +80,4 @@ public class StompSocket {
             socket = null;
         }
     }
-
 }
