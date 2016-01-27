@@ -23,7 +23,9 @@
     <string name="user_status">Status</string>
     <string name="home">Home</string>
     <string name="group_name">Group name: %1$s</string>
-    <string name="group_code">Group code: %1$s</string>
+    <string name="group_name_non_param">Group name: </string>
+    <string name="group_code">Code: %1$s</string>
+    <string name="group_code_non_param">Code: </string>
     <string name="counter">Counter: %1$d</string>
 
     <string name="internet_error">Cannot connect to server, please check your internet connection</string>

@@ -75,6 +75,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private NavigationView navigationView;
     private Person panicPerson;
     private MapConfiguration mapConfiguration;
+    private Toolbar mToolbar;
 
 
     @Override
@@ -92,7 +93,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         mapConfiguration.createLocationRequest();
 
         // navigation menu
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar,
@@ -355,6 +356,16 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
      * @param fragment fragment that goes in foreground
      */
     private void exchangeFragments(Fragment fragment) {
+        exchangeFragments(fragment, R.string.app_name);
+    }
+
+    /**
+     * exchanges fragments with optional toolbar title
+     * @param fragment fragment that goes in foreground
+     * @param toolbarTitle title shown in toolbar
+     */
+    private void exchangeFragments(Fragment fragment, int toolbarTitle) {
+        mToolbar.setTitle(toolbarTitle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_frame, fragment);
         transaction.commit();
@@ -383,7 +394,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         } else if (menuItem.getItemId() == R.id.nfc) {
             startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId() == R.id.history) {
-            exchangeFragments(new TeamHistoryFragment());
+            exchangeFragments(new TeamHistoryFragment(), R.string.history);
         } else if (menuItem.getItemId() == R.id.new_group) {
             startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
         } else if (menuItem.getItemId() == R.id.home) {
@@ -398,7 +409,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     ServiceCaller.HTTP_POST, null));
             exchangeFragments(emptyFragment);
             setNavigationMenuItems(R.menu.menu);
-
+            SessionManager.getInstance(this).destroySession(SessionManager.TEAM_INFO_KEY);
         }
 
         mDrawer.closeDrawers();

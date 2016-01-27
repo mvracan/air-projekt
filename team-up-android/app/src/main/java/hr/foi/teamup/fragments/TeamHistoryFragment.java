@@ -76,7 +76,7 @@ public class TeamHistoryFragment extends LayoutExchangeFragment {
                         }
                     });
                 } else {
-                    setViewLayout(R.layout.fragment_team_history);
+                    //setViewLayout(R.layout.fragment_team_history);
                     teams.setAdapter(new TeamAdapter(getActivity().getApplicationContext(),
                             R.layout.fragment_team_history, t));
                 }
