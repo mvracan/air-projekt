@@ -105,7 +105,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
 
  	
  	}
-        
+        /*
         @EventListener
   public void handleSubscribeEvent(SessionSubscribeEvent sessionSubscribeEvent){
       
@@ -149,5 +149,5 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
           
       }
   }
-  
+  */
 }

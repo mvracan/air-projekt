@@ -57,6 +57,18 @@ public class TeamMessageController {
     
     } 
     
+    @MessageMapping("/team/{idTeam}/person/{idPerson}")
+    public void addToTeam(@DestinationVariable long idTeam, @DestinationVariable long idPerson){
+        
+        Team t = this.teamRepository.findByIdTeam(idTeam);
+        Person p = this.personRepository.findByIdPerson(idPerson);
+        
+        t.getMembers().add(p);
+        
+        this.teamRepository.save(t);
+        
+    }
+    
     @MessageMapping("/updateLocation")
     public void updateLocation(Message<Object> message, @Payload Location location){
 
