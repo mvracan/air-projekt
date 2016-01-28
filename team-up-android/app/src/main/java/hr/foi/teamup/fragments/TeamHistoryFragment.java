@@ -57,7 +57,9 @@ public class TeamHistoryFragment extends LayoutExchangeFragment {
         return v;
     }
 
-    // fills list view with teams from history
+    /**
+     * Fill list with gropu history fetched from web service
+     */
     SimpleResponseHandler historyHandler = new SimpleResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
