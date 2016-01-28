@@ -96,7 +96,9 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
             mMap.clear();
             Logger.log("Radius is " + radius);
             Logger.log("Zoom is " + zoom);
-            creator = teamMembers.get(0);
+            creator = SessionManager.getInstance(getActivity())
+                    .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class)
+                    .getCreator();
             LatLng creatorPosition = new LatLng(creator.getLocation().getLat(), creator.getLocation().getLng());
 
             // zoom to default position
@@ -123,7 +125,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
                 Logger.log("PANIC JE :" + p.getPanic());
                if(p.getPanic() == 1)
                    paintPerson(p, BitmapDescriptorFactory.HUE_RED);
-               else if(p == creator)
+               else if(isCreator(p))
                    paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
                else paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
 
@@ -175,7 +177,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
 
     /**
      * Calm down user with Prompts dialog
-     * @return
+     * @return true if person panics, false otherwise
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -195,10 +197,9 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
             }
         };
 
-        AlertPrompt signOutPrompt = new AlertPrompt(getActivity());
-        signOutPrompt.prepare(R.string.calmdown, signOutListener,
-                R.string.yes, null, R.string.cancel);
-        signOutPrompt.showPrompt();
+        new AlertPrompt(getActivity())
+                .prepare(R.string.calmdown, signOutListener, R.string.yes, null, R.string.cancel)
+                .showPrompt();
 
 
 
@@ -207,7 +208,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
 
     /**
      * Check creator role of user in current team
-     * @return
+     * @return true if is creator of group, false otherwise
      */
     public boolean isCreator(){
 
@@ -219,6 +220,12 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
         return (t.getCreator().getIdPerson() == p.getIdPerson());
     }
 
+    public boolean isCreator(Person p) {
+        return SessionManager
+                .getInstance(getActivity())
+                .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class)
+                .getCreator().getIdPerson() == p.getIdPerson();
+    }
 
 
 }
