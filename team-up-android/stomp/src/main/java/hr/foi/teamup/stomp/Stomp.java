@@ -26,6 +26,7 @@ public class Stomp {
     public static final int NOT_AGAIN_CONNECTED = 2;//Connection process is ongoing
     public static final int DECONNECTED_FROM_OTHER = 3;//Error, no more internet connection, etc.
     public static final int DECONNECTED_FROM_APP = 4;//application explicitely ask for shut down the connection
+    public static final String SOCKET_FINISH = "\"SOCKFIN\"";
 
     private static final String PREFIX_ID_SUBSCIPTION = "sub-";
     private static final String ACCEPT_VERSION_NAME = "accept-version";

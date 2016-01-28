@@ -15,6 +15,7 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,10 +34,12 @@ public class TeamController {
     
     TeamRepository teamRepository;
     PersonRepository personRepository;
+    private SimpMessagingTemplate template;
     
     @Autowired
-    public TeamController(TeamRepository groupRepository, PersonRepository personRepository) {
-         
+    public TeamController(TeamRepository groupRepository, PersonRepository personRepository, SimpMessagingTemplate template) {
+        
+        this.template = template;
         this.teamRepository = groupRepository;
         this.personRepository = personRepository;
     }
@@ -62,8 +65,11 @@ public class TeamController {
         Team found = this.teamRepository.findByIdTeam(idTeam);
         Person removePerson = this.personRepository.findByIdPerson(idPerson);
         
-        if(removePerson == found.getCreator())
+        if(removePerson == found.getCreator()){
+            template.convertAndSend("/topic/team/"+ idTeam, "SOCKFIN" );
             found.setActive(0);
+        }
+            
         
         found.getMembers().remove(removePerson);
         

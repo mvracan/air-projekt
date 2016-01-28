@@ -64,8 +64,8 @@ public class PersonAdapter extends BaseAdapter<Person> {
 
     /**
      * Sets icon based on user status
-     * @param holder
-     * @param panic
+     * @param holder view holder
+     * @param panic different from 1 gives green status, red otherwise
      */
     public void setStatusIcon(ViewHolder holder,int panic){
 
