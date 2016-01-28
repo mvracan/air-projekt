@@ -38,6 +38,7 @@ public class TeamConnection extends Thread implements Runnable {
     public void run() {
 
 
+
         if(active) {
             headersSetup.put("Cookie", cookie);
             Log.i("connect", "going to connect to stomp with cookie" + cookie);
@@ -84,8 +85,11 @@ public class TeamConnection extends Thread implements Runnable {
 
         String m = new Gson().toJson(message);
         Log.i("Stomp message", m);
-        this.client.send(dest,null, m);
+        this.client.send(dest, null, m);
 
     }
 
+    public int getStompState() {
+        return client.getConnection();
+    }
 }

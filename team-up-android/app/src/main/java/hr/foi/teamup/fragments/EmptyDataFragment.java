@@ -11,7 +11,7 @@ import android.widget.TextView;
 import hr.foi.teamup.R;
 
 /**
- *
+ * deliveres message that no team is present
  * Created by Tomislav Turek on 26.01.16..
  */
 public class EmptyDataFragment extends Fragment {

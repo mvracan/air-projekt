@@ -51,6 +51,7 @@ import hr.foi.teamup.model.Location;
 import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.stomp.ListenerSubscription;
+import hr.foi.teamup.stomp.OnStompCloseListener;
 import hr.foi.teamup.stomp.StompAuthentication;
 import hr.foi.teamup.stomp.StompSocket;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
@@ -75,6 +76,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private NavigationView navigationView;
     private Person panicPerson;
     private MapConfiguration mapConfiguration;
+    private Toolbar mToolbar;
 
 
     @Override
@@ -85,6 +87,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         // stomp dependencies
         authentication = new StompAuthentication();
         socket = new StompSocket();
+        socket.setOnStompCloseListener(listener);
 
         // instantiate location listeners
         mapConfiguration = new MapConfiguration(this, this);
@@ -92,7 +95,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         mapConfiguration.createLocationRequest();
 
         // navigation menu
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar,
@@ -169,6 +172,26 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     }
 
     /**
+     * executes when stomp socket gets closed
+     */
+    OnStompCloseListener listener = new OnStompCloseListener() {
+        @Override
+        public void onClose() {
+            new ServiceAsyncTask(null).execute(new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path)
+                    + teamId + "/leave/" + client.getIdPerson(),
+                    ServiceCaller.HTTP_POST, null));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    exchangeFragments(emptyFragment);
+                    setNavigationMenuItems(R.menu.menu);
+                    SessionManager.getInstance(getApplicationContext()).destroySession(SessionManager.TEAM_INFO_KEY);
+                }
+            });
+        }
+    };
+
+    /**
      * gets current team
      */
     private void getCurrentTeam() {
@@ -179,6 +202,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         new ServiceAsyncTask(activeTeamHandler).execute(params);
     }
 
+    /**
+     * executes when server returns if active team is present
+     */
     SimpleResponseHandler activeTeamHandler = new SimpleResponseHandler() {
         @Override
         public boolean handleResponse(ServiceResponse response) {
@@ -213,7 +239,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     NfcBeamMessageCallback callback = new NfcBeamMessageCallback() {
         @Override
         public void onMessageReceived(String message) {
-            Logger.log(message);
             initiateStomp(message);
         }
     };
@@ -228,6 +253,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             Type listType = new TypeToken<ArrayList<Person>>() {
             }.getType();
 
+            socket.refresh();
             final ArrayList<Person> persons = new Gson().fromJson(body, listType);
             runOnUiThread(new Runnable() {
                 @Override
@@ -355,6 +381,16 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
      * @param fragment fragment that goes in foreground
      */
     private void exchangeFragments(Fragment fragment) {
+        exchangeFragments(fragment, R.string.app_name);
+    }
+
+    /**
+     * exchanges fragments with optional toolbar title
+     * @param fragment fragment that goes in foreground
+     * @param toolbarTitle title shown in toolbar
+     */
+    private void exchangeFragments(Fragment fragment, int toolbarTitle) {
+        mToolbar.setTitle(toolbarTitle);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_frame, fragment);
         transaction.commit();
@@ -383,7 +419,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         } else if (menuItem.getItemId() == R.id.nfc) {
             startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId() == R.id.history) {
-            exchangeFragments(new TeamHistoryFragment());
+            exchangeFragments(new TeamHistoryFragment(), R.string.history);
         } else if (menuItem.getItemId() == R.id.new_group) {
             startActivity(new Intent(getApplicationContext(), CreateTeamActivity.class));
         } else if (menuItem.getItemId() == R.id.home) {
@@ -394,11 +430,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                 exchangeFragments(emptyFragment);
         } else if (menuItem.getItemId() == R.id.leave_group) {
             socket.close();
-            new ServiceAsyncTask(null).execute(new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path) + teamId + "/leave/" + client.getIdPerson(),
-                    ServiceCaller.HTTP_POST, null));
-            exchangeFragments(emptyFragment);
-            setNavigationMenuItems(R.menu.menu);
-
         }
 
         mDrawer.closeDrawers();

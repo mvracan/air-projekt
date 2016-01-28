@@ -14,7 +14,7 @@ import hr.foi.teamup.model.Team;
 import hr.foi.teamup.webservice.ServiceResponse;
 
 /**
- *
+ * used when team is created
  * Created by paz on 26.11.15..
  */
 public class TeamCreateHandler extends ResponseHandler {

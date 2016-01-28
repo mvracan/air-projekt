@@ -11,7 +11,7 @@ import hr.foi.teamup.webservice.ServiceResponse;
 import hr.foi.teamup.webservice.SimpleResponseHandler;
 
 /**
- *
+ * authenticates user for stomp socket
  * Created by Tomislav Turek on 26.01.16..
  */
 public class StompAuthentication {

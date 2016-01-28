@@ -170,6 +170,10 @@ public class Stomp {
         }
     }
 
+    public int getConnection() {
+        return connection;
+    }
+
     /**
      * Send a message to server through websocket
      *
