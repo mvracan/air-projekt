@@ -66,7 +66,6 @@ public class Frame {
     /**
      * Create a frame from a received message. This method is copied on the objective C one, in the MMPReactiveStompClient
      * library
-     *
      * @param data
      *  a part of the message received from network, which represented a frame
      * @return
@@ -104,33 +103,9 @@ public class Frame {
         return new Frame(command, headers, body);
     }
 
-//    No need this method, a single frame will be always be send because body of the message will never be excessive
-//    /**
-//     * Transform a message received from server in a Set of objects, named frame, manageable by java
-//     *
-//     * @param datas
-//     *        message received from network
-//     * @return
-//     *        a Set of Frame
-//     */
-//    public static Set<Frame> unmarshall(String datas){
-//      String data;
-//      String[] ref = datas.split(Byte.NULL + Byte.LF + "*");//NEED TO VERIFY THIS PARAMETER
-//      Set<Frame> results = new HashSet<Frame>();
-//
-//      for (int i = 0, len = ref.length; i < len; i++) {
-//            data = ref[i];
-//
-//            if ((data != null ? data.length() : 0) > 0){
-//              results.add(unmarshallSingle(data));//"unmarshallSingle" is the old name method for "fromString"
-//            }
-//        }
-//      return results;
-//    }
 
     /**
      * Create a frame with based fame component and convert them into a string
-     *
      * @param command
      * @param headers
      * @param body

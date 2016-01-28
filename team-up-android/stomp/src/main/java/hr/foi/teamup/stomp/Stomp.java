@@ -15,7 +15,7 @@ import de.roderick.weberknecht.WebSocketEventHandler;
 import de.roderick.weberknecht.WebSocketMessage;
 
 /**
- *
+ * Stomp
  * Created by paz on 08.12.15..
  */
 public class Stomp {
@@ -71,7 +71,6 @@ public class Stomp {
 
     /**
      * Constructor of a stomp object. Only url used to set up a connection with a server can be instantiate
-     *
      * @param url
      *      the url of the server to connect with
      */
@@ -123,15 +122,13 @@ public class Stomp {
                             onReceive.onMessage(frame.getHeaders(), frame.getBody());
                         } else{
                             Log.e(TAG, "Error : Subscription with id = " + subscription + " had not been subscribed");
-                            //ACTION TO DETERMINE TO MANAGE SUBCRIPTION ERROR
+
                         }
 
                     } else if(frame.getCommand().equals(COMMAND_RECEIPT)){
-                        //I DON'T KNOW WHAT A RECEIPT STOMP MESSAGE IS
 
                     } else if(frame.getCommand().equals(COMMAND_ERROR)){
                         Log.e(TAG, "Error : Headers = " + frame.getHeaders() + ", Body = " + frame.getBody());
-                        //ACTION TO DETERMINE TO MANAGE ERROR MESSAGE
 
                     } else {
 
@@ -178,7 +175,7 @@ public class Stomp {
     }
 
     /**
-     * Send a message to server thanks to websocket
+     * Send a message to server through websocket
      *
      * @param command
      *      one of a frame property, see {@link Frame} for more details
@@ -217,7 +214,7 @@ public class Stomp {
     }
 
     /**
-     * disconnection come from the server, without any intervention of client side. Operations order is very important
+     * Closing connection from server side
      */
     private void disconnectFromServer(){
         if(this.connection == CONNECTED){
@@ -228,7 +225,7 @@ public class Stomp {
     }
 
     /**
-     * disconnection come from the app, because the public method disconnect was called
+     * Closing connection from application
      */
     private void disconnectFromApp(){
         if(this.connection == DECONNECTED_FROM_APP){
@@ -238,7 +235,7 @@ public class Stomp {
     }
 
     /**
-     * Close the web socket connection with the server. Operations order is very important
+     * Close the web socket connection with the server
      */
     public void disconnect(){
         if(this.connection == CONNECTED){
@@ -248,9 +245,7 @@ public class Stomp {
     }
 
     /**
-     * Send a simple message to the server thanks to the body parameter
-     *
-     *
+     * Send a message to the server
      * @param destination
      *      The destination through a Stomp message will be send to the server
      * @param headers
@@ -282,7 +277,6 @@ public class Stomp {
     /**
      * Allow a client to send a subscription message to the server independently of the initialization of the web socket.
      * If connection have not been already done, just save the subscription
-     *
      * @param subscription
      *      a subscription object
      */
@@ -300,9 +294,7 @@ public class Stomp {
     }
 
     /**
-     * Subscribe to a Stomp channel, through messages will be send and received. A message send from a determine channel
-     * can not be receive in an another.
-     *
+     * Subscribe to a Stomp channel, through messages will be send and received.
      */
     private void subscribe(){
         if(this.connection == CONNECTED){
@@ -327,7 +319,6 @@ public class Stomp {
 
     /**
      * Destroy a subscription with its id
-     *
      * @param id
      *      the id of the subscription. This id is automatically setting up in the subscribe method
      */

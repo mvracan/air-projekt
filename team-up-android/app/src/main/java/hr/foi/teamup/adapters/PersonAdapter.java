@@ -62,7 +62,11 @@ public class PersonAdapter extends BaseAdapter<Person> {
         return vi;
     }
 
-
+    /**
+     * Sets icon based on user status
+     * @param holder
+     * @param panic
+     */
     public void setStatusIcon(ViewHolder holder,int panic){
 
         if(panic != 1)

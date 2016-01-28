@@ -32,7 +32,7 @@ import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 
 /*
- * shows markers on map
+ * User locations map fragment
  * Created by paz on 19.01.16..
  */
 public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
@@ -132,7 +132,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
     }
 
     /**
-     * paints the marker
+     * paints the marker based on user status
      * @param p person that is defined in the marker
      * @param marker color
      */
@@ -173,6 +173,10 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
         mMap.setOnCameraChangeListener(zoomListener);
     }
 
+    /**
+     * Calm down user with Prompts dialog
+     * @return
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
 
@@ -201,6 +205,10 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
         return true;
     }
 
+    /**
+     * Check creator role of user in current team
+     * @return
+     */
     public boolean isCreator(){
 
         SessionManager manager = SessionManager.getInstance(getActivity());
