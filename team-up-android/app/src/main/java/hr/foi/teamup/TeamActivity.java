@@ -3,7 +3,6 @@ package hr.foi.teamup;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -71,9 +70,9 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     private StompAuthentication authentication;
     private StompSocket socket;
     private String teamId;
-    private TeamFragment teamFragment;
+    private static TeamFragment teamFragment = new TeamFragment();
     private EmptyDataFragment emptyFragment;
-    private LocationFragment locationFragment;
+    private static LocationFragment locationFragment = new LocationFragment();
     private NavigationView navigationView;
     private Person panicPerson;
     private MapConfiguration mapConfiguration;
@@ -127,8 +126,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         // set main fragments
         emptyFragment = new EmptyDataFragment();
-        if(teamFragment == null) teamFragment = new TeamFragment();
-        locationFragment = new LocationFragment();
         locationFragment.setCallback(callbackMarkerClick);
 
         Team t = SessionManager.getInstance(this).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
@@ -314,10 +311,6 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     int mNotificationId = 1;
                     NotificationManager mNotifyMgr =
                             (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                    // set pending intent launch
-                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, getIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(pendingIntent);
                     mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
                 }
