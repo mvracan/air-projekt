@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Thread class for managing Stomp protocol
  * Created by paz on 14.12.15..
  */
 public class TeamConnection extends Thread implements Runnable {
@@ -21,13 +21,19 @@ public class TeamConnection extends Thread implements Runnable {
 
     boolean active;
 
-
+    /**
+     * Constructor with user subscription channels and JSESSIONID cookie
+     * @param subscriptions
+     * @param cookie
+     */
     public TeamConnection( HashMap<String, ListenerSubscription> subscriptions, String cookie) {
         this.subscriptions = subscriptions;
         this.cookie = cookie;
         this.active = true;
     }
-
+    /**
+     * Starts thread, establishes socket connection and subscribe user to subscribe channels
+    */
     @Override
     public void run() {
 
@@ -63,11 +69,18 @@ public class TeamConnection extends Thread implements Runnable {
 
     }
 
+    /**
+     * Stops thread and disconnect websocket from server
+     */
     public void finish() {
         active = false;
         client.disconnect();
     }
-
+    /**
+     * Send message through Stomp to destination path
+     * @param dest
+     * @Param message
+     */
     public <T> void send(String dest, T message){
 
         String m = new Gson().toJson(message);

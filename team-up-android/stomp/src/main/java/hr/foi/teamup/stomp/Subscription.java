@@ -1,7 +1,7 @@
 package hr.foi.teamup.stomp;
 
 /**
- *
+ * Definition of Stomp subscription
  * Created by paz on 08.12.15..
  */
 public class Subscription {
