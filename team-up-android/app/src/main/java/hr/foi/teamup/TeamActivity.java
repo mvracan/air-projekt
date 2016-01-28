@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import hr.foi.air.teamup.Logger;
+import hr.foi.air.teamup.ModularityCallback;
 import hr.foi.air.teamup.SessionManager;
 import hr.foi.air.teamup.nfcaccess.NfcBeamMessageCallback;
 import hr.foi.air.teamup.nfcaccess.NfcForegroundDispatcher;
@@ -234,12 +235,20 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     };
 
     /**
+     * callback that every module can use
      * gets team id and subscribes him to team channel
      */
-    NfcBeamMessageCallback callback = new NfcBeamMessageCallback() {
+    ModularityCallback callback = new ModularityCallback() {
         @Override
-        public void onMessageReceived(String message) {
-            initiateStomp(message);
+        public void onAction(String message) {
+            new ServiceAsyncTask(new SimpleResponseHandler() {
+                @Override
+                public boolean handleResponse(ServiceResponse response) {
+                    if(response.getHttpCode() == 200) initiateStomp(response.getJsonResponse());
+                    return true;
+                }
+            }).execute(new ServiceParams(getString(R.string.team_path)
+                    + client.getIdPerson() + "/code/" + message, ServiceCaller.HTTP_GET, null));
         }
     };
 
@@ -253,7 +262,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
             Type listType = new TypeToken<ArrayList<Person>>() {
             }.getType();
 
-            socket.refresh();
+            //socket.refresh();
             final ArrayList<Person> persons = new Gson().fromJson(body, listType);
             runOnUiThread(new Runnable() {
                 @Override
@@ -402,20 +411,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         if (menuItem.getItemId() == R.id.profile) {
             startActivity(new Intent(getApplicationContext(), UserProfileActivity.class));
         } else if (menuItem.getItemId() == R.id.code) {
-            final InputPrompt prompt = new InputPrompt(this);
-            prompt.prepare(R.string.join_group, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    new ServiceAsyncTask(new SimpleResponseHandler() {
-                        @Override
-                        public boolean handleResponse(ServiceResponse response) {
-                            if(response.getHttpCode() == 200) initiateStomp(response.getJsonResponse());
-                            return true;
-                        }
-                    }).execute(new ServiceParams(getString(R.string.team_path)
-                            + client.getIdPerson() + "/code/" + prompt.getInput(), ServiceCaller.HTTP_GET, null));
-                }
-            }, R.string.join, null, R.string.cancel).showPrompt();
+            new InputPrompt(this).prepare(R.string.join_group, callback, R.string.join, R.string.cancel).showPrompt();
         } else if (menuItem.getItemId() == R.id.nfc) {
             startActivity(new Intent(this, BeamActivity.class));
         } else if (menuItem.getItemId() == R.id.history) {

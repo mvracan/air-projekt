@@ -8,6 +8,8 @@ import android.nfc.NfcAdapter;
 import android.nfc.tech.NfcF;
 import android.os.Parcelable;
 
+import hr.foi.air.teamup.ModularityCallback;
+
 /**
  *
  * Created by Tomislav Turek on 19.01.16..
@@ -17,9 +19,10 @@ public abstract class NfcForegroundDispatcher extends NfcActivity {
     protected PendingIntent mPendingIntent;
     protected IntentFilter[] mFilters;
     protected String[][] mTechLists;
-    protected NfcBeamMessageCallback nfcDispatchCallback;
+    //protected NfcBeamMessageCallback nfcDispatchCallback;
+    protected ModularityCallback nfcDispatchCallback;
 
-    public void setNfcDispatchCallback(NfcBeamMessageCallback callback) {
+    public void setNfcDispatchCallback(ModularityCallback callback) {
         this.nfcDispatchCallback = callback;
     }
 
@@ -50,7 +53,7 @@ public abstract class NfcForegroundDispatcher extends NfcActivity {
         if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
             Parcelable[] raw = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefMessage ndefMessage = (NdefMessage) raw[0];
-            nfcDispatchCallback.onMessageReceived(new String(ndefMessage.getRecords()[0].getPayload()));
+            nfcDispatchCallback.onAction(new String(ndefMessage.getRecords()[0].getPayload()));
         }
     }
 }

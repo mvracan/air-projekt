@@ -35,7 +35,7 @@ public class BeamActivity extends NfcBeamActivity {
             startNfcAdapter();
 
             if(t!=null) {
-                startNfcBeam(Long.toString(t.getIdTeam()));
+                startNfcBeam(t.getNfcCode());
                 startAnimation();
             }
 

@@ -65,7 +65,7 @@ public class StompSocket {
             socket.finish();
         socket = new TeamConnection(subscriptionChannels, cookie);
         socket.start();
-        schedule();
+        //schedule();
     }
 
     /**
@@ -96,7 +96,7 @@ public class StompSocket {
      * @return true if active, false otherwise
      */
     public static boolean isActive() {
-        return socket.getStompState() == Stomp.CONNECTED;
+        return socket != null && socket.getStompState() == Stomp.CONNECTED;
     }
 
     /**
