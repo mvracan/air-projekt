@@ -92,6 +92,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
      * @param radius team radius
      */
     public void setUserLocations(ArrayList<Person> teamMembers, double radius){
+
         if(isVisible()) {
             mMap.clear();
             Logger.log("Radius is " + radius);
