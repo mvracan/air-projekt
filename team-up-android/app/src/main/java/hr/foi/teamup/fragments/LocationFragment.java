@@ -42,6 +42,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
     private static final float PANIC = 0.8f;
     CameraUpdate zoomCamera;
     Person creator;
+    boolean firstTime;
 
 
     private volatile float zoom = 25;
@@ -54,6 +55,7 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        if(savedInstanceState == null) firstTime = true;
     }
 
     private static View view;
@@ -96,18 +98,30 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
             mMap.clear();
             Logger.log("Radius is " + radius);
             Logger.log("Zoom is " + zoom);
-            creator = SessionManager.getInstance(getActivity())
-                    .retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class)
-                    .getCreator();
+            for (Person p : teamMembers) {
+
+                if(isCreator(p)) creator = p;
+
+                Logger.log("PANIC JE :" + p.getPanic());
+                if(p.getPanic() == 1)
+                    paintPerson(p, BitmapDescriptorFactory.HUE_RED);
+                else if(isCreator(p))
+                    paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
+                else paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
+
+            }
             LatLng creatorPosition = new LatLng(creator.getLocation().getLat(), creator.getLocation().getLng());
 
-            // zoom to default position
-            CameraUpdate center =
-                    CameraUpdateFactory.newLatLng(creatorPosition);
+            if (firstTime) {
+                // zoom to default position
+                CameraUpdate center =
+                        CameraUpdateFactory.newLatLng(creatorPosition);
 
-            zoomCamera = CameraUpdateFactory.zoomTo(this.zoom);
-            mMap.moveCamera(center);
-            mMap.animateCamera(zoomCamera);
+                zoomCamera = CameraUpdateFactory.zoomTo(this.zoom);
+                mMap.moveCamera(center);
+                mMap.animateCamera(zoomCamera);
+                firstTime = false;
+            }
 
             // draw radius
             CircleOptions teamRadius = new CircleOptions()
@@ -118,18 +132,6 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
                     .fillColor(Color.parseColor("#500084d3"));
 
             mMap.addCircle(teamRadius);
-
-
-            for (Person p : teamMembers) {
-
-                Logger.log("PANIC JE :" + p.getPanic());
-               if(p.getPanic() == 1)
-                   paintPerson(p, BitmapDescriptorFactory.HUE_RED);
-               else if(isCreator(p))
-                   paintPerson(p, BitmapDescriptorFactory.HUE_GREEN);
-               else paintPerson(p, BitmapDescriptorFactory.HUE_VIOLET);
-
-            }
         }
     }
 
@@ -220,6 +222,11 @@ public class LocationFragment extends Fragment implements GoogleMap.OnMarkerClic
         return (t.getCreator().getIdPerson() == p.getIdPerson());
     }
 
+    /**
+     * check creator role in certain user
+     * @param p user to check
+     * @return true if creator, false otherwise
+     */
     public boolean isCreator(Person p) {
         return SessionManager
                 .getInstance(getActivity())

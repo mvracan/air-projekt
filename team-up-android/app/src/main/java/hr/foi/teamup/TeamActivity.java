@@ -35,7 +35,6 @@ import java.util.Map;
 import hr.foi.air.teamup.Logger;
 import hr.foi.air.teamup.ModularityCallback;
 import hr.foi.air.teamup.SessionManager;
-import hr.foi.air.teamup.nfcaccess.NfcBeamMessageCallback;
 import hr.foi.air.teamup.nfcaccess.NfcForegroundDispatcher;
 import hr.foi.air.teamup.nfcaccess.NfcNotAvailableException;
 import hr.foi.air.teamup.nfcaccess.NfcNotEnabledException;
@@ -53,6 +52,7 @@ import hr.foi.teamup.model.Person;
 import hr.foi.teamup.model.Team;
 import hr.foi.teamup.stomp.ListenerSubscription;
 import hr.foi.teamup.stomp.OnStompCloseListener;
+import hr.foi.teamup.stomp.Stomp;
 import hr.foi.teamup.stomp.StompAuthentication;
 import hr.foi.teamup.stomp.StompSocket;
 import hr.foi.teamup.webservice.ServiceAsyncTask;
@@ -127,11 +127,15 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
 
         // set main fragments
         emptyFragment = new EmptyDataFragment();
-        teamFragment = new TeamFragment();
+        if(teamFragment == null) teamFragment = new TeamFragment();
         locationFragment = new LocationFragment();
         locationFragment.setCallback(callbackMarkerClick);
 
-        exchangeFragments(emptyFragment);
+        Team t = SessionManager.getInstance(this).retrieveSession(SessionManager.TEAM_INFO_KEY, Team.class);
+        if(t == null)
+            exchangeFragments(emptyFragment);
+        else
+            teamId = String.valueOf(t.getIdTeam());
 
         // get current user
         client = SessionManager.getInstance(getApplicationContext())
@@ -178,6 +182,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
     OnStompCloseListener listener = new OnStompCloseListener() {
         @Override
         public void onClose() {
+            SessionManager.getInstance(getApplicationContext()).destroySession(SessionManager.TEAM_INFO_KEY);
             new ServiceAsyncTask(null).execute(new ServiceParams(getString(hr.foi.teamup.webservice.R.string.team_path)
                     + teamId + "/leave/" + client.getIdPerson(),
                     ServiceCaller.HTTP_POST, null));
@@ -189,6 +194,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                     SessionManager.getInstance(getApplicationContext()).destroySession(SessionManager.TEAM_INFO_KEY);
                 }
             });
+            teamId = null;
         }
     };
 
@@ -259,10 +265,15 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
         @Override
         public void onMessage(Map<String, String> headers, String body) {
             Logger.log(body);
+
+            if(body.equals(Stomp.SOCKET_FINISH)) {
+                socket.close();
+                return;
+            }
+
             Type listType = new TypeToken<ArrayList<Person>>() {
             }.getType();
 
-            //socket.refresh();
             final ArrayList<Person> persons = new Gson().fromJson(body, listType);
             runOnUiThread(new Runnable() {
                 @Override
@@ -305,8 +316,7 @@ public class TeamActivity extends NfcForegroundDispatcher implements NavigationV
                             (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                     // set pending intent launch
-                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
-                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), -1, getIntent(), PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(pendingIntent);
                     mNotifyMgr.notify(mNotificationId, mBuilder.build());
 

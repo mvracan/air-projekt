@@ -1,10 +1,6 @@
 package hr.foi.teamup.stomp;
 
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import hr.foi.air.teamup.Logger;
 
 /**
  * wraps stomp socket to group join algorithm
@@ -14,7 +10,6 @@ public class StompSocket {
 
     private static TeamConnection socket;
     private HashMap<String, ListenerSubscription> subscriptionChannels;
-    private Timer ping;
     OnStompCloseListener onStompCloseListener;
 
     /**
@@ -22,7 +17,6 @@ public class StompSocket {
      */
     public StompSocket() {
         subscriptionChannels = new HashMap<>();
-        ping = new Timer();
     }
 
     /**
@@ -65,19 +59,6 @@ public class StompSocket {
             socket.finish();
         socket = new TeamConnection(subscriptionChannels, cookie);
         socket.start();
-        //schedule();
-    }
-
-    /**
-     * schedules ping to leave group if no response is given in 4 seconds
-     */
-    private void schedule() {
-        ping.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                close();
-            }
-        }, 4000);
     }
 
     /**
@@ -97,16 +78,6 @@ public class StompSocket {
      */
     public static boolean isActive() {
         return socket != null && socket.getStompState() == Stomp.CONNECTED;
-    }
-
-    /**
-     * refresh timer schedule
-     */
-    public void refresh() {
-        ping.cancel();
-        ping.purge();
-        ping = new Timer();
-        schedule();
     }
 
     /**

@@ -51,6 +51,10 @@ public class InputPrompt extends AlertPrompt {
         return this;
     }
 
+    /**
+     *
+     * @return input text from dialog
+     */
     public String getInput() {
         return this.editText.getText().toString();
     }

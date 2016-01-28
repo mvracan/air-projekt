@@ -49,7 +49,7 @@ public class TeamFragment extends Fragment {
      */
     public void updateList(ArrayList<Person> list){
         if(list != null && isVisible()) {
-            adapter = new PersonAdapter(getActivity().getApplicationContext(), R.layout.fragment_team_current, list);
+            adapter = new PersonAdapter(getActivity(), R.layout.fragment_team_current, list);
             users.setAdapter(adapter);
             counter.setText(String.format(getString(R.string.counter), adapter.getCount()));
             Team t= SessionManager.getInstance(getActivity().getApplicationContext())
